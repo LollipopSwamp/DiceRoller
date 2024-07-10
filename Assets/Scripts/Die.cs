@@ -21,7 +21,7 @@ public class Die
     public int result;
     public int dieId;
     public int groupId;
-    private int dieIdIndex = 0;
+    private static int dieIdIndex = 0;
 
     public Die(DieType _dieType, int _groupId, float _scale)
     {
@@ -33,7 +33,7 @@ public class Die
         dieId = dieIdIndex;
         dieIdIndex += 1;
 
-        Debug.Log(string.Concat("Creating ", dieType, " || Die ID: ", dieId));
+        //Debug.Log(string.Concat("Creating ", dieType, " || Die ID: ", dieId));
 
 
         switch (dieType)
@@ -83,5 +83,9 @@ public class Die
     public string GetDieTypeString()
     {
         return nameof(dieType);
+    }
+    public void PrintDie()
+    {
+        Debug.Log(string.Concat("DieType: ", dieType, " || GroupID: ", groupId, " || Result: ", result));
     }
 }

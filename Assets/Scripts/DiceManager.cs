@@ -5,11 +5,12 @@ using UnityEngine;
 public class DiceManager : MonoBehaviour
 {
     //dice prefabs
+    public GameObject selectedPrefab;
     public GameObject d20Prefab;
     public GameObject d6Prefab;
 
     //public int resultsSaved = 0;
-    public Dictionary<int, DieGroup> dieGroups = new Dictionary<int,DieGroup>();
+    public List<DieGroup> dieGroups = new List<DieGroup>();
 
 
     void Start()
@@ -19,13 +20,13 @@ public class DiceManager : MonoBehaviour
         PrintAllDice();
     }
 
-    void Update()
+    void CheckFinalResults()
     {
         //check if dice are still rolling
         bool allResultsStored = true;
-        foreach (var g in dieGroups)
+        foreach (DieGroup g in dieGroups)
         {
-            if (g.Value.groupResult == -1)
+            if (g.groupResult == -1)
             {
                 allResultsStored = false;
                 break;
@@ -35,71 +36,114 @@ public class DiceManager : MonoBehaviour
         //if dice done rolling, print results
         if(allResultsStored)
         {
-            foreach (var g in dieGroups)
+            foreach (DieGroup g in dieGroups)
             {
-                Debug.Log(string.Concat("GroupID: ", g.Value.groupId, " || Group Result: ", g.Value.groupResult));
+                Debug.Log(string.Concat("GroupID: ", g.groupId, " || Group Result: ", g.groupResult));
             }
         }
+
     }
-    public static void UpdateDie(Die die)
+    public void UpdateDie(Die die)
     {
+        for (int i = 0; i < dieGroups.Count; ++i)
+        {
+            if (dieGroups[i].groupId == die.groupId)
+            {
+                for (int j = 0; j < dieGroups[i].dice.Count; ++j)
+                {
+                    if (dieGroups[i].dice[j].dieId == die.dieId)
+                    {
+                        dieGroups[i].dice[j] = die;
+                    }
+                }
+            }
+            dieGroups[i].CheckResults();
+        }
+        CheckFinalResults();
         return;
     }
     void InstantiateDice()
     {
+        //create die objects
         Vector3 position = new Vector3(-9,15,6);
-        foreach (var g in dieGroups)
+        foreach (DieGroup g in dieGroups)
         {
-            foreach (var d in g.Value.dice)
+            MeshRenderer mr;
+            string dieName = "";
+            foreach (Die d in g.dice)
             {
-                GameObject diePrefab;
-                switch (d.Value.dieType)
+                switch (d.dieType)
                 {
                     case Die.DieType.d6:
-                        diePrefab = d6Prefab;
+                        selectedPrefab = d6Prefab;
+                        dieName = "d6 (ID: " + d.dieId.ToString() + ")";
                         break;
                     case Die.DieType.d20:
-                        diePrefab = d20Prefab;
+                        selectedPrefab = d20Prefab;
+                        dieName = "d20 (ID: " + d.dieId.ToString() + ")";
                         break;
 
                 }
-                GameObject dieObj = Instantiate(d6Prefab, position, Quaternion.identity);
+                GameObject dieObj = Instantiate(selectedPrefab, position, Quaternion.identity);
+                dieObj.name = dieName;
+                mr = dieObj.GetComponent<MeshRenderer>();
+                mr.material.color = new Color(0, 204, 102, 255);
+
+
                 Roll roll = dieObj.GetComponent<Roll>();
-                roll.SetDie(d.Value);
+                roll.SetDie(d);
+                roll.SetDiceManager(gameObject);
                 position.x += 3;
             }
             position = new Vector3(-9,15,position.z - 3);
         }
+
+        //change dice colors
     }
 
     void CreateDummyDice()
     {
-        //create DieGroup object
+
+        //create DieGroup objects
         DieGroup dieGroup0 = new DieGroup(
+            DieGroup.ResultsType.Advantage
+        );
+        DieGroup dieGroup1 = new DieGroup(
             DieGroup.ResultsType.Sum
         );
-
-        //create die dictionary
-        Dictionary<int, Die> dieGroupDict0 = new Dictionary<int, Die>();
+        //create die lists
+            //d20
+        List<Die> dieList0 = new List<Die>();
+        for (int i = 0; i < 2; i++)
+        {
+            Die die = new Die(Die.DieType.d20, dieGroup0.groupId, 1);
+            dieList0.Add(die);
+        }
+            //d6
+        List<Die> dieList1 = new List<Die>();
         for (int i = 0; i < 3; i++)
         {
-            die = new Die(Die.DieType.d6, dieGroupDict0.groupId, 1);
-            dieGroupDict0.Add(die.dieId,die);
+            Die die = new Die(Die.DieType.d6, dieGroup1.groupId, 1);
+            dieList1.Add(die);
         }
+        //add dice to DieGroups
+        dieGroup0.AddDice(dieList0);
+        dieGroup1.AddDice(dieList1);
 
 
-        //add DieGroup object to dieGroup dictionary
-        dieGroups.Add(dieGroup0.groupId,dieGroup0);
+        //add DieGroups object to dieGroup list
+        dieGroups.Add(dieGroup0);
+        dieGroups.Add(dieGroup1);
     }
 
     public void PrintAllDice()
     {
-        foreach (DieGroup g in  dieGroups)
+        foreach (DieGroup g in dieGroups)
         {
             Debug.Log(string.Concat("GroupID: ", g.groupId, " || Results Type: ", g.resultsType));
             foreach (Die d in g.dice)
             {
-                Debug.Log(string.Concat("DieType: ", d.dieType, " || Result: ", d.result));
+                d.PrintDie();
             }
         }
     }

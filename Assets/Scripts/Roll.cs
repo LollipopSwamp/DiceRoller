@@ -5,10 +5,9 @@ using UnityEngine;
 
 public class Roll : MonoBehaviour
 {
-
     public LayerMask layersToHit;
     public bool randomVelocityRotation;
-    public static GameObject diceManager;
+    public GameObject dmObj;
     public bool dieIsMoving;
 
     private Rigidbody rb;
@@ -17,6 +16,7 @@ public class Roll : MonoBehaviour
     private static DateTime start;
     private bool lockRotation;
     private Die die;
+    public int dieResult;
 
     private Quaternion savedRotation = new Quaternion(0, 0, 0, 1);
 
@@ -58,15 +58,14 @@ public class Roll : MonoBehaviour
                 //if ray is hitting floor, lock rotation and store globalVariables
                 if (Physics.Raycast(ray, out RaycastHit hit, die.rayLength, layersToHit) && die.result == -1)
                 {
-                    //if (hit.collider.tag == "Floor")
-                    //{
-                        Debug.Log(string.Concat("Rolled ", i + 1));
-                        die.result = i + 1;
-                        DiceManager.GetComponent<DiceManager>().UpdateDie(die);
+                    die.result = i + 1;
+                    dieResult = die.result;
+                    DiceManager dm = dmObj.GetComponent<DiceManager>();
+                    Debug.Log(string.Concat(die.dieType, " (ID ", die.dieId, ") rolled ", die.result));
+                    dm.GetComponent<DiceManager>().UpdateDie(die);
 
-                        savedRotation = transform.rotation;
-                        lockRotation = true;
-                    //}
+                    savedRotation = transform.rotation;
+                    lockRotation = true;
                 };
 
             }
@@ -90,6 +89,10 @@ public class Roll : MonoBehaviour
     public void SetDie(Die _die)
     {
         die = _die;
+    }
+    public void SetDiceManager(GameObject _dmObj)
+    {
+        dmObj = _dmObj;
     }
 
     bool dieIsStopped()

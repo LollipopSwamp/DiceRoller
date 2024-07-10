@@ -8,7 +8,7 @@ public class DieGroup
 {
     private static int groupIdIndex = 0;
     public int groupId;
-    public Dictionary<int, Die> dice = new Dictionary<int, Die>();
+    public List<Die> dice = new List<Die>();
     public int groupResult = -1;
 
     //results type
@@ -19,31 +19,27 @@ public class DieGroup
     public enum DieColor { White, Red, Orange, Yellow, Green, Blue, Purple, Pink };
     public DieColor dieColor = DieColor.White;
 
-    public DieGroup( ResultsType _resultsType)
+    public DieGroup(ResultsType _resultsType)
     {
         resultsType = _resultsType;
         groupId = groupIdIndex;
         groupIdIndex += 1;
     }
 
-    public void AddDie(Die die)
+    public void AddDice(List<Die> _dice)
     {
-        dice.Add(die.dieId,die);
+        dice = _dice;
     }
 
-    void Update()
+    public void CheckResults()
     {
         //check if dice are still rolling
         bool diceStillRolling = false;
         foreach (var d in dice)
         {
-            if (d.Value.result == -1)
+            if (d.result == -1)
             {
                 diceStillRolling = true;
-            }
-            else
-            {
-                Debug.Log(d.Value.result);
             }
         }
 
@@ -54,21 +50,22 @@ public class DieGroup
             switch (resultsType)
             {
                 case ResultsType.Sum:
-                    foreach (var d in dice)
+                    foreach (Die d in dice)
                     {
-                        _groupResult += d.Value.result;
+                        _groupResult += d.result;
+                        Debug.Log(d.result);
                     }
                     break;
                 case ResultsType.Advantage:
-                    foreach (var d in dice)
+                    foreach (Die d in dice)
                     {
-                        _groupResult += Math.Max(d.Value.result, _groupResult);
+                        _groupResult = Math.Max(d.result, _groupResult);
                     }
                     break;
                 case ResultsType.Disadvantage:
-                    foreach (var d in dice)
+                    foreach (Die d in dice)
                     {
-                        _groupResult += Math.Min(d.Value.result, _groupResult);
+                        _groupResult = Math.Min(d.result, _groupResult);
                     }
                     break;
             }
