@@ -5,23 +5,23 @@ using UnityEngine;
 
 public class Floor : MonoBehaviour
 {
-    public GameObject globalVariables;
+    //public GameObject diceManager;
 
-    private DateTime delayedTime;
+    //private DateTime delayedTime;
     void Start()
     {
-        delayedTime = DateTime.Now.AddSeconds(5);
+        //delayedTime = DateTime.Now.AddSeconds(5);
     }
         
     void Update()
     {
-        int unsavedResults = globalVariables.GetComponent<Results>().numOfDice - globalVariables.GetComponent<Results>().resultsSaved;
+        //int unsavedResults = diceManager.GetComponent<DiceManager>().numOfDice - diceManager.GetComponent<DiceManager>().resultsSaved;
         //Debug.Log(unsavedResults);
-        if (DateTime.Now > delayedTime && unsavedResults > 0)
-        {
-            Debug.Log("Dice results pending, moving floor down");
-            //transform.Translate(-Vector3.up);
-            delayedTime = DateTime.Now.AddSeconds(5);
-        }
+        //if (DateTime.Now > delayedTime && unsavedResults > 0)
+        //{
+        //    Debug.Log("Dice results pending, moving floor down");
+        //    //transform.Translate(-Vector3.up);
+        //    delayedTime = DateTime.Now.AddSeconds(5);
+        //}
     }
 }

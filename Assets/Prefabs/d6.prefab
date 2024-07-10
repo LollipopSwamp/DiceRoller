@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2502054034715465637}
   - component: {fileID: 8734667366669549552}
   - component: {fileID: 2561711860734949747}
-  - component: {fileID: 2584962900501905147}
+  - component: {fileID: 3333898362051020638}
   m_Layer: 7
   m_Name: d6
   m_TagString: Dice
@@ -83,7 +83,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2, y: 2, z: 2}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &2584962900501905147
+--- !u!114 &3333898362051020638
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -92,17 +92,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 3022694146834697503}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bb98f4aab8359c74eabd80adf076f59c, type: 3}
+  m_Script: {fileID: 11500000, guid: 172844c715b30d8469978f46c60356b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ColorIndex: 0
   layersToHit:
     serializedVersion: 2
     m_Bits: 8
-  lockRotation: 0
   randomVelocityRotation: 1
-  results: {fileID: 0}
-  dieResult: -1
+  diceManager: {fileID: 0}
   dieIsMoving: 0
 --- !u!1 &3368637623658807850
 GameObject:

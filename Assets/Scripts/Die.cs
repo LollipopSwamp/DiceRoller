@@ -2,165 +2,77 @@ using System.Collections;
 using DateTime = System.DateTime;
 using System.Collections.Generic;
 using UnityEngine;
+using static Die;
 
-public class Die : MonoBehaviour
+public class Die
 {
 
-    public int ColorIndex;
-    public LayerMask layersToHit;
-    public bool lockRotation;
-    public bool randomVelocityRotation;
-    public GameObject globalVariables;
-    public int dieResult = -1;
-    public static float rayLength = 1.25f;
-    public bool dieIsMoving;
+    //sides on die
+    public enum DieType { d4, d6, d8, d10, d12, d20 };
+    public DieType dieType = DieType.d4;
 
-    private Rigidbody rb;
-    private MeshRenderer mr;
-    private Material material;
+    //die group types
 
-    private static DateTime start;
-    private Quaternion savedRotation = new Quaternion(0, 0, 0, 1);
-    private List<Color> colors = new List<Color> {
-        new Color(0f,0f,0f,0f), //white/null 0
-        new Color(255f,0f,0f,63f), //red 1
-        new Color(255f,127f,0f,63f), //orange 2
-        new Color(255f,255f,0f,63f), //yellow 3
-        new Color(0f,255f,0f,63f), //green 4
-        new Color(0f,0f,255f,63f), //blue 5
-        new Color(127f,0f,127f,63f), //purple 6
-        new Color(255f,0f,255f,63f) //pink 7
-    };
-    //rays and directions
-    private List<Ray> rays = new List<Ray>();
-    private Vector3[] d6Directions = {
-            new Vector3(0,-rayLength,0), //1
-            new Vector3(rayLength,0,0), //2
-            new Vector3(0,0,rayLength), //3
-            new Vector3(0,0,-rayLength), //4
-            new Vector3(-rayLength,0,0), //5
-            new Vector3(0,rayLength,0) //6
-        };
-    private Vector3[] d20Directions = {
-        new Vector3(-0.30f, 0.94f, -0.17f), //1
-        new Vector3(-0.31f, -0.93f, -0.18f), //2
-        new Vector3(0.79f, 0.57f, -0.21f), //3
-        new Vector3(-0.49f, -0.37f, 0.79f), //4
-        new Vector3(-0.98f, 0.00f, -0.19f), //5
-        new Vector3(0.62f, 0.00f, 0.78f), //6
-        new Vector3(-0.21f, 0.57f, -0.80f), //7
-        new Vector3(0.79f, -0.58f, -0.20f), //8
-        new Vector3(0.21f, 0.57f, 0.79f), //9
-        new Vector3(0.48f, -0.37f, -0.79f), //10
-        new Vector3(-0.48f, 0.37f, 0.79f), //11
-        new Vector3(-0.21f, -0.57f, -0.79f), //12
-        new Vector3(-0.79f, 0.58f, 0.20f), //13
-        new Vector3(0.21f, -0.57f, 0.80f), //14
-        new Vector3(-0.62f, -0.00f, -0.78f), //15
-        new Vector3(0.98f, -0.00f, 0.19f), //16
-        new Vector3(0.49f, 0.37f, -0.79f), //17
-        new Vector3(-0.79f, -0.57f, 0.21f), //18
-        new Vector3(0.31f, 0.93f, 0.18f), //19
-        new Vector3(0.30f, -0.94f, 0.17f) //20
-    };
+    //ray directions & length
+    public float scale;
+    public float rayLength = 1.25f;
+    public Vector3[] rayDirections;
 
-    void Start()
+    //die result
+    public int result;
+
+    public Die(DieType _dieType, float _scale)
     {
-        //init variables
-        rb = GetComponent<Rigidbody>();
-        mr = GetComponent<MeshRenderer>();
-        material = GetComponent<Material>();
-        start = DateTime.Now;
+        dieType = _dieType;
+        scale = _scale;
+        result = -1;
 
-        //set color
-        if (ColorIndex != 0)
+        switch (dieType)
         {
-            material.color = colors[ColorIndex % colors.Count];
-            Debug.Log(colors[ColorIndex % colors.Count]);
-        }
-
-        //set random rotation and velocity
-        if (randomVelocityRotation)
-        {
-            Debug.Log("Random rotation and velocity");
-            transform.rotation = Random.rotation;
-            System.Random r = new System.Random();
-            float velocityX = (float)(r.NextDouble() - 0.5) * 50;
-            float velocityZ = (float)(r.NextDouble() - 0.5) * 50;
-            rb.velocity = new Vector3(velocityX, 3, velocityZ);
-        }
-        //ray test
-    }
-
-    void Update()
-    {
-        //Raycast hit and draw rays
-        if (dieIsStopped() && dieResult == -1)
-        {
-            //check all directions for rays
-            for (int i = 0; i < d20Directions.Length; ++i)
-            {
-                //create + draw ray
-                Ray ray = new Ray(transform.position, transform.rotation * (d20Directions[i]*rayLength));
-                Debug.DrawRay(transform.position, ray.direction, Color.red, 1f, true);
-
-                //if ray is hitting floor, lock rotation and store globalVariables
-                if (Physics.Raycast(ray, out RaycastHit hit, rayLength, layersToHit))
-                {
-                    if (hit.collider.tag == "Floor")
-                    {
-                        Debug.Log(string.Concat("Rolled ", i + 1));
-                        dieResult = i + 1;
-                        globalVariables.GetComponent<Results>().DieResultTotal(dieResult);
-
-                        savedRotation = transform.rotation;
-                        lockRotation = true;
-                    }
+            case DieType.d6:
+                rayDirections = new Vector3[] {
+                        new Vector3(0,-1,0)*rayLength, //1
+                        new Vector3(1,0,0)*rayLength, //2
+                        new Vector3(0,0,1)*rayLength, //3
+                        new Vector3(0,0,-1)*rayLength, //4
+                        new Vector3(-1,0,0)*rayLength, //5
+                        new Vector3(0,1,0)*rayLength //6
                 };
+                break;
+            case DieType.d20:
+                rayDirections = new Vector3[] {
+                    new Vector3(-0.30f, 0.94f, -0.17f)*rayLength, //1
+                    new Vector3(-0.31f, -0.93f, -0.18f)*rayLength, //2
+                    new Vector3(0.79f, 0.57f, -0.21f)*rayLength, //3
+                    new Vector3(-0.49f, -0.37f, 0.79f)*rayLength, //4
+                    new Vector3(-0.98f, 0.00f, -0.19f)*rayLength, //5
+                    new Vector3(0.62f, 0.00f, 0.78f)*rayLength, //6
+                    new Vector3(-0.21f, 0.57f, -0.80f)*rayLength, //7
+                    new Vector3(0.79f, -0.58f, -0.20f)*rayLength, //8
+                    new Vector3(0.21f, 0.57f, 0.79f)*rayLength, //9
+                    new Vector3(0.48f, -0.37f, -0.79f)*rayLength, //10
+                    new Vector3(-0.48f, 0.37f, 0.79f)*rayLength, //11
+                    new Vector3(-0.21f, -0.57f, -0.79f)*rayLength, //12
+                    new Vector3(-0.79f, 0.58f, 0.20f)*rayLength, //13
+                    new Vector3(0.21f, -0.57f, 0.80f)*rayLength, //14
+                    new Vector3(-0.62f, -0.00f, -0.78f)*rayLength, //15
+                    new Vector3(0.98f, -0.00f, 0.19f)*rayLength, //16
+                    new Vector3(0.49f, 0.37f, -0.79f)*rayLength, //17
+                    new Vector3(-0.79f, -0.57f, 0.21f)*rayLength, //18
+                    new Vector3(0.31f, 0.93f, 0.18f)*rayLength, //19
+                    new Vector3(0.30f, -0.94f, 0.17f)*rayLength //20
+                };
+                break;
 
-            }
         }
-
-        //disable rotation from physics
-        if (lockRotation)
-        {
-            transform.rotation = savedRotation;
-        }
-
-        //reset die if cocked
-        if ( dieResult == -1 && DateTime.Now > start.AddSeconds(5) && dieIsStopped())
-        {
-            resetDie();
-            start = DateTime.Now;
-        }
-
     }
-    bool dieIsStopped()
+
+    public void SetResult(int _result)
     {
-        if (Mathf.Abs(rb.velocity.x) < 0.005f && Mathf.Abs(rb.velocity.y) < 0.005f && Mathf.Abs(rb.velocity.z) < 0.005f)
-        {
-            //Debug.Log(string.Concat(transform.name, "No velocity"));
-            dieIsMoving = false;
-            rb.velocity = Vector3.zero;
-            return true;
-        }
-        else
-        {
-            dieIsMoving = true;
-            return false;
-        }
+        result = _result;
     }
-
-    void resetDie()
+    public string GetDieTypeString()
     {
-        Debug.Log("Resetting die");
-        transform.rotation = Random.rotation;
-        System.Random r = new System.Random();
-        float velocityX = (float)(r.NextDouble() - 0.5) * 50;
-        float velocityZ = (float)(r.NextDouble() - 0.5) * 50;
-        rb.velocity = new Vector3(velocityX, 3, velocityZ);
-        transform.position = new Vector3(0, 15, 0);
-
+        return nameof(dieType);
     }
-
 }

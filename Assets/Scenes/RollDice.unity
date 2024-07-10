@@ -355,25 +355,43 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 45, y: -45, z: 0}
---- !u!1 &839932180 stripped
+--- !u!1 &800027062 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8324557794498829559, guid: c5e9a285576c5bd47b934b622783e248,
     type: 3}
   m_PrefabInstance: {fileID: 900052420}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &839932187
+--- !u!114 &800027063 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 9128442531945031316, guid: c5e9a285576c5bd47b934b622783e248,
+    type: 3}
+  m_PrefabInstance: {fileID: 900052420}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 800027062}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb98f4aab8359c74eabd80adf076f59c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &800027069
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 839932180}
+  m_GameObject: {fileID: 800027062}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f29a58ea78b70dd4ab6779d3f3ac7e73, type: 3}
+  m_Script: {fileID: 11500000, guid: aa403241a05e9f7448bd01b0148ef62f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lockRotation: 1
+  die: {fileID: 800027063}
+  layersToHit:
+    serializedVersion: 2
+    m_Bits: 8
+  randomVelocityRotation: 1
+  diceManager: {fileID: 1406613666}
+  dieIsMoving: 0
 --- !u!1001 &900052420
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -382,6 +400,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 276744384533981467, guid: c5e9a285576c5bd47b934b622783e248,
+        type: 3}
+      propertyPath: m_UseGravity
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8324557794498829559, guid: c5e9a285576c5bd47b934b622783e248,
         type: 3}
       propertyPath: m_Name
@@ -390,17 +413,17 @@ PrefabInstance:
     - target: {fileID: 8704637405811934797, guid: c5e9a285576c5bd47b934b622783e248,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8704637405811934797, guid: c5e9a285576c5bd47b934b622783e248,
-        type: 3}
-      propertyPath: m_LocalPosition.y
       value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 8704637405811934797, guid: c5e9a285576c5bd47b934b622783e248,
         type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 8704637405811934797, guid: c5e9a285576c5bd47b934b622783e248,
+        type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 8704637405811934797, guid: c5e9a285576c5bd47b934b622783e248,
         type: 3}
@@ -439,18 +462,43 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9128442531945031316, guid: c5e9a285576c5bd47b934b622783e248,
         type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9128442531945031316, guid: c5e9a285576c5bd47b934b622783e248,
-        type: 3}
-      propertyPath: lockRotation
+      propertyPath: scale
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9128442531945031316, guid: c5e9a285576c5bd47b934b622783e248,
         type: 3}
-      propertyPath: randomVelocityRotation
+      propertyPath: dieType
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 9128442531945031316, guid: c5e9a285576c5bd47b934b622783e248,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9128442531945031316, guid: c5e9a285576c5bd47b934b622783e248,
+        type: 3}
+      propertyPath: rayLength
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9128442531945031316, guid: c5e9a285576c5bd47b934b622783e248,
+        type: 3}
+      propertyPath: lockRotation
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9128442531945031316, guid: c5e9a285576c5bd47b934b622783e248,
+        type: 3}
+      propertyPath: globalVariables
+      value: 
+      objectReference: {fileID: 1406613666}
+    - target: {fileID: 9128442531945031316, guid: c5e9a285576c5bd47b934b622783e248,
+        type: 3}
+      propertyPath: layersToHit.m_Bits
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 9128442531945031316, guid: c5e9a285576c5bd47b934b622783e248,
+        type: 3}
+      propertyPath: randomVelocityRotation
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -459,7 +507,7 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8324557794498829559, guid: c5e9a285576c5bd47b934b622783e248,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 839932187}
+      addedObject: {fileID: 800027069}
   m_SourcePrefab: {fileID: 100100000, guid: c5e9a285576c5bd47b934b622783e248, type: 3}
 --- !u!1 &963194225
 GameObject:
@@ -671,7 +719,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94af2dd2033427f4380e9f943f649063, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  globalVariables: {fileID: 1406613666}
 --- !u!1 &1046989087
 GameObject:
   m_ObjectHideFlags: 0
@@ -889,28 +936,15 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1406613668}
-  - component: {fileID: 1406613667}
+  - component: {fileID: 1406613669}
+  - component: {fileID: 1406613670}
   m_Layer: 0
-  m_Name: GlobalVariables
+  m_Name: DiceManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1406613667
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1406613666}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 32736ad2e7793c34689c9bb7f5f6d36f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  numOfDice: 2
-  resultsSaved: 0
 --- !u!4 &1406613668
 Transform:
   m_ObjectHideFlags: 0
@@ -926,6 +960,34 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1406613669
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1406613666}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e52bbf99dab0204db406737d9a6a802, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1406613670
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1406613666}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 040959d481183c84b9d2218f3351fa07, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  groupId: 0
+  dice: []
+  resultsType: 0
+  dieColor: 0
 --- !u!1 &1855342211
 GameObject:
   m_ObjectHideFlags: 0
