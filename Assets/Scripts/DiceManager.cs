@@ -9,13 +9,15 @@ public class DiceManager : MonoBehaviour
     public GameObject d20Prefab;
     public GameObject d6Prefab;
 
+
     //public int resultsSaved = 0;
     public List<DieGroup> dieGroups = new List<DieGroup>();
 
 
     void Start()
     {
-        CreateDummyDice();
+        CreateDummyDice0();
+        //CreateDummyDice1();
         InstantiateDice();
         PrintAllDice();
     }
@@ -68,7 +70,6 @@ public class DiceManager : MonoBehaviour
         Vector3 position = new Vector3(-9,15,6);
         foreach (DieGroup g in dieGroups)
         {
-            MeshRenderer mr;
             string dieName = "";
             foreach (Die d in g.dice)
             {
@@ -86,8 +87,7 @@ public class DiceManager : MonoBehaviour
                 }
                 GameObject dieObj = Instantiate(selectedPrefab, position, Quaternion.identity);
                 dieObj.name = dieName;
-                mr = dieObj.GetComponent<MeshRenderer>();
-                mr.material.color = new Color(0, 204, 102, 255);
+                dieObj.GetComponent<MeshRenderer>().material.color = g.dieColor[g.colorIndex];
 
 
                 Roll roll = dieObj.GetComponent<Roll>();
@@ -101,15 +101,17 @@ public class DiceManager : MonoBehaviour
         //change dice colors
     }
 
-    void CreateDummyDice()
+    void CreateDummyDice0()
     {
 
         //create DieGroup objects
         DieGroup dieGroup0 = new DieGroup(
-            DieGroup.ResultsType.Advantage
+            DieGroup.ResultsType.Advantage,
+            1
         );
         DieGroup dieGroup1 = new DieGroup(
-            DieGroup.ResultsType.Sum
+            DieGroup.ResultsType.Sum,
+            2
         );
         //create die lists
             //d20
@@ -136,6 +138,26 @@ public class DiceManager : MonoBehaviour
         dieGroups.Add(dieGroup1);
     }
 
+    void CreateDummyDice1()
+    {
+
+        //create DieGroup objects
+        DieGroup dieGroup0 = new DieGroup(
+            DieGroup.ResultsType.Advantage,
+            1
+        );
+        //create die lists
+        List<Die> dieList0 = new List<Die>();
+        Die die = new Die(Die.DieType.d6, dieGroup0.groupId, 1);
+        dieList0.Add(die);
+
+        //add dice to DieGroups
+        dieGroup0.AddDice(dieList0);
+
+
+        //add DieGroups object to dieGroup list
+        dieGroups.Add(dieGroup0);
+    }
     public void PrintAllDice()
     {
         foreach (DieGroup g in dieGroups)

@@ -11,10 +11,12 @@ public class Roll : MonoBehaviour
     public bool dieIsMoving;
 
     private Rigidbody rb;
-    //private MeshRenderer mr;
-    //private Material material;
+    public Vector3 velocity;
+    public Quaternion quaternion;
+    private MeshRenderer mr;
+    private Material material;
     private static DateTime start;
-    private bool lockRotation;
+    private bool lockMovement;
     private Die die;
     public int dieResult;
 
@@ -27,9 +29,8 @@ public class Roll : MonoBehaviour
     {
         //init variables
         rb = GetComponent<Rigidbody>();
-        //mr = GetComponent<MeshRenderer>();
-        //material = GetComponent<Material>();
         start = DateTime.Now;
+
 
         //set random rotation and velocity
         if (randomVelocityRotation)
@@ -64,17 +65,18 @@ public class Roll : MonoBehaviour
                     Debug.Log(string.Concat(die.dieType, " (ID ", die.dieId, ") rolled ", die.result));
                     dm.GetComponent<DiceManager>().UpdateDie(die);
 
-                    savedRotation = transform.rotation;
-                    lockRotation = true;
+                    //savedRotation = transform.rotation;
+                    lockMovement = true;
                 };
 
             }
         }
 
         //disable rotation from physics
-        if (lockRotation)
+        if (lockMovement && die.result != -1)
         {
-            transform.rotation = savedRotation;
+            //transform.rotation = savedRotation;
+            gameObject.GetComponent<Rigidbody>().isKinematic = true;
         }
 
         //reset die if cocked
@@ -101,7 +103,6 @@ public class Roll : MonoBehaviour
         {
             //Debug.Log(string.Concat(transform.name, "No velocity"));
             dieIsMoving = false;
-            rb.velocity = Vector3.zero;
             return true;
         }
         else

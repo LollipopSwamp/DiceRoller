@@ -40,12 +40,12 @@ public class Die
         {
             case DieType.d6:
                 rayDirections = new Vector3[] {
-                        new Vector3(0,-1,0)*rayLength, //1
+                        new Vector3(0,0,-1)*rayLength, //1
                         new Vector3(1,0,0)*rayLength, //2
-                        new Vector3(0,0,1)*rayLength, //3
-                        new Vector3(0,0,-1)*rayLength, //4
+                        new Vector3(0,-1,0)*rayLength, //3
+                        new Vector3(0,1,0)*rayLength, //4
                         new Vector3(-1,0,0)*rayLength, //5
-                        new Vector3(0,1,0)*rayLength //6
+                        new Vector3(0,0,1)*rayLength //6
                 };
                 break;
             case DieType.d20:

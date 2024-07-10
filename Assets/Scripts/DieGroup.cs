@@ -16,12 +16,23 @@ public class DieGroup
     public ResultsType resultsType = ResultsType.Sum;
 
     //die color
-    public enum DieColor { White, Red, Orange, Yellow, Green, Blue, Purple, Pink };
-    public DieColor dieColor = DieColor.White;
+    public int colorIndex;
+    public List<Color> dieColor = new List<Color>()
+    {
+        Color.white, //white
+        Color.red, //red
+        new Color(1,0.65f,0,1), //orange
+        Color.yellow, //yellow
+        Color.green, //green
+        Color.blue, //blue
+        new Color(0.62f,0.13f,0.94f,1), //purple
+        new Color(1,0.75f,0.8f,1) //pink
+    };
 
-    public DieGroup(ResultsType _resultsType)
+    public DieGroup(ResultsType _resultsType, int _colorIndex)
     {
         resultsType = _resultsType;
+        colorIndex = _colorIndex;
         groupId = groupIdIndex;
         groupIdIndex += 1;
     }
