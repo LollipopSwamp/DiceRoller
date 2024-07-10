@@ -11,21 +11,30 @@ public class Die
     public enum DieType { d4, d6, d8, d10, d12, d20 };
     public DieType dieType = DieType.d4;
 
-    //die group types
 
     //ray directions & length
     public float scale;
     public float rayLength = 1.25f;
     public Vector3[] rayDirections;
 
-    //die result
+    //other vars
     public int result;
+    public int dieId;
+    public int groupId;
+    private int dieIdIndex = 0;
 
-    public Die(DieType _dieType, float _scale)
+    public Die(DieType _dieType, int _groupId, float _scale)
     {
         dieType = _dieType;
+        groupId = _groupId;
         scale = _scale;
         result = -1;
+
+        dieId = dieIdIndex;
+        dieIdIndex += 1;
+
+        Debug.Log(string.Concat("Creating ", dieType, " || Die ID: ", dieId));
+
 
         switch (dieType)
         {

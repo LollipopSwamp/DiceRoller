@@ -8,7 +8,7 @@ public class Roll : MonoBehaviour
 
     public LayerMask layersToHit;
     public bool randomVelocityRotation;
-    public GameObject diceManager;
+    public static GameObject diceManager;
     public bool dieIsMoving;
 
     private Rigidbody rb;
@@ -16,7 +16,7 @@ public class Roll : MonoBehaviour
     //private Material material;
     private static DateTime start;
     private bool lockRotation;
-    private Die die = new Die(Die.DieType.d20, 1);
+    private Die die;
 
     private Quaternion savedRotation = new Quaternion(0, 0, 0, 1);
 
@@ -31,13 +31,9 @@ public class Roll : MonoBehaviour
         //material = GetComponent<Material>();
         start = DateTime.Now;
 
-        //create test d20 die object
-        Debug.Log(die.result);
-
         //set random rotation and velocity
         if (randomVelocityRotation)
         {
-            Debug.Log("Random rotation and velocity");
             transform.rotation = Random.rotation;
             System.Random r = new System.Random();
             float velocityX = (float)(r.NextDouble() - 0.5) * 50;
@@ -49,7 +45,7 @@ public class Roll : MonoBehaviour
     void Update()
     {
         //Raycast hit and draw rays
-        if (dieIsStopped() && die.result == -1)
+        if (dieIsStopped())
         {
             //check all directions for rays
             for (int i = 0; i < die.rayDirections.Length; ++i)
@@ -66,7 +62,7 @@ public class Roll : MonoBehaviour
                     //{
                         Debug.Log(string.Concat("Rolled ", i + 1));
                         die.result = i + 1;
-                        //diceManager.GetComponent<DiceManager>().StoreResult(die);
+                        DiceManager.GetComponent<DiceManager>().UpdateDie(die);
 
                         savedRotation = transform.rotation;
                         lockRotation = true;
@@ -90,6 +86,12 @@ public class Roll : MonoBehaviour
         }
 
     }
+
+    public void SetDie(Die _die)
+    {
+        die = _die;
+    }
+
     bool dieIsStopped()
     {
         if (Mathf.Abs(rb.velocity.x) < 0.005f && Mathf.Abs(rb.velocity.y) < 0.005f && Mathf.Abs(rb.velocity.z) < 0.005f)

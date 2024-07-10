@@ -9,63 +9,87 @@ public class DiceManager : MonoBehaviour
     public GameObject d6Prefab;
 
     //public int resultsSaved = 0;
-    private List<DieGroup> dieGroups = new List<DieGroup>();
-
+    public Dictionary<int, DieGroup> dieGroups = new Dictionary<int,DieGroup>();
 
 
     void Start()
     {
         CreateDummyDice();
         InstantiateDice();
-        //PrintAllDice();
+        PrintAllDice();
+    }
+
+    void Update()
+    {
+        //check if dice are still rolling
+        bool allResultsStored = true;
+        foreach (var g in dieGroups)
+        {
+            if (g.Value.groupResult == -1)
+            {
+                allResultsStored = false;
+                break;
+            }
+        }
+
+        //if dice done rolling, print results
+        if(allResultsStored)
+        {
+            foreach (var g in dieGroups)
+            {
+                Debug.Log(string.Concat("GroupID: ", g.Value.groupId, " || Group Result: ", g.Value.groupResult));
+            }
+        }
+    }
+    public static void UpdateDie(Die die)
+    {
+        return;
     }
     void InstantiateDice()
     {
         Vector3 position = new Vector3(-9,15,6);
-        foreach (DieGroup g in dieGroups)
+        foreach (var g in dieGroups)
         {
-            foreach (Die d in g.dice)
+            foreach (var d in g.Value.dice)
             {
-                switch (d.dieType)
+                GameObject diePrefab;
+                switch (d.Value.dieType)
                 {
                     case Die.DieType.d6:
-                        Instantiate(d6Prefab, position, Quaternion.identity);
+                        diePrefab = d6Prefab;
                         break;
                     case Die.DieType.d20:
-                        Instantiate(d20Prefab, position, Quaternion.identity);
+                        diePrefab = d20Prefab;
                         break;
+
                 }
+                GameObject dieObj = Instantiate(d6Prefab, position, Quaternion.identity);
+                Roll roll = dieObj.GetComponent<Roll>();
+                roll.SetDie(d.Value);
                 position.x += 3;
             }
             position = new Vector3(-9,15,position.z - 3);
         }
     }
+
     void CreateDummyDice()
     {
-        List<Die> dieGroupList0 = new List<Die>()
-        {
-            new Die(Die.DieType.d20, 1),
-            new Die(Die.DieType.d20, 1)
-        };
+        //create DieGroup object
         DieGroup dieGroup0 = new DieGroup(
-            0,
-            dieGroupList0,
-            DieGroup.ResultsType.Advantage
-        );
-        //dieGroups.Add( dieGroup0 );
-
-        List<Die> dieGroupList1 = new List<Die>()
-        {
-            new Die(Die.DieType.d6, 1),
-            new Die(Die.DieType.d6, 1),
-            new Die(Die.DieType.d6, 1)
-        };
-        DieGroup dieGroup1 = new DieGroup(
-            0,
-            dieGroupList1,
             DieGroup.ResultsType.Sum
         );
-        dieGroups.Add(dieGroup1);
+
+        //create die dictionary
+        Dictionary<int, Die> dieGroupDict0 = new Dictionary<int, Die>();
+        for (int i = 0; i < 3; i++)
+        {
+            die = new Die(Die.DieType.d6, dieGroupDict0.groupId, 1);
+            dieGroupDict0.Add(die.dieId,die);
+        }
+
+
+        //add DieGroup object to dieGroup dictionary
+        dieGroups.Add(dieGroup0.groupId,dieGroup0);
     }
 
     public void PrintAllDice()
@@ -75,7 +99,7 @@ public class DiceManager : MonoBehaviour
             Debug.Log(string.Concat("GroupID: ", g.groupId, " || Results Type: ", g.resultsType));
             foreach (Die d in g.dice)
             {
-                Debug.Log(d.dieType);
+                Debug.Log(string.Concat("DieType: ", d.dieType, " || Result: ", d.result));
             }
         }
     }
