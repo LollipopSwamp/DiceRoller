@@ -76,6 +76,7 @@ public class Die
         }
     }
 
+
     public void SetResult(int _result)
     {
         result = _result;

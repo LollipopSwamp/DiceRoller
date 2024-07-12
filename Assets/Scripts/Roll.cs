@@ -9,18 +9,18 @@ public class Roll : MonoBehaviour
     public bool randomVelocityRotation;
     public GameObject dmObj;
     public bool dieIsMoving;
+    public Vector3 velocity;
+    //public Quaternion quaternion;
+    public int dieResult;
+    public Vector3 initialPosition;
 
     private Rigidbody rb;
-    public Vector3 velocity;
-    public Quaternion quaternion;
     private MeshRenderer mr;
     private Material material;
     private static DateTime start;
     private bool lockMovement;
-    private Die die;
-    public int dieResult;
-
-    private Quaternion savedRotation = new Quaternion(0, 0, 0, 1);
+    public Die die;
+    public bool collisionOn = true;
 
     //rays and directions
     private List<Ray> rays = new List<Ray>();
@@ -65,7 +65,6 @@ public class Roll : MonoBehaviour
                     Debug.Log(string.Concat(die.dieType, " (ID ", die.dieId, ") rolled ", die.result));
                     dm.GetComponent<DiceManager>().UpdateDie(die);
 
-                    //savedRotation = transform.rotation;
                     lockMovement = true;
                 };
 
@@ -75,7 +74,6 @@ public class Roll : MonoBehaviour
         //disable rotation from physics
         if (lockMovement && die.result != -1)
         {
-            //transform.rotation = savedRotation;
             gameObject.GetComponent<Rigidbody>().isKinematic = true;
         }
 
@@ -88,13 +86,11 @@ public class Roll : MonoBehaviour
 
     }
 
-    public void SetDie(Die _die)
+    public void SetVars(Die _die, GameObject _dmObj, Vector3 _initialPosition)
     {
         die = _die;
-    }
-    public void SetDiceManager(GameObject _dmObj)
-    {
         dmObj = _dmObj;
+        initialPosition = _initialPosition;
     }
 
     bool dieIsStopped()
@@ -112,7 +108,26 @@ public class Roll : MonoBehaviour
         }
     }
 
-    void resetDie()
+    public void SetCollision(bool _collisionOn)
+    {
+        collisionOn = _collisionOn;
+        gameObject.GetComponent<Collider>().enabled = collisionOn;
+    }
+
+    public void ToggleCollision()
+    {
+        collisionOn = !collisionOn;
+        if (collisionOn)
+        {
+            Physics.IgnoreCollision(gameObject.GetComponent<Collider>(), GetComponent<Collider>());
+        }
+        else
+        {
+            Physics.IgnoreCollision(gameObject.GetComponent<Collider>(), GetComponent<Collider>(), false);
+        }
+    }
+
+    public void ResetDie()
     {
         Debug.Log("Resetting die");
         transform.rotation = Random.rotation;
@@ -120,8 +135,7 @@ public class Roll : MonoBehaviour
         float velocityX = (float)(r.NextDouble() - 0.5) * 50;
         float velocityZ = (float)(r.NextDouble() - 0.5) * 50;
         rb.velocity = new Vector3(velocityX, 3, velocityZ);
-        transform.position = new Vector3(0, 15, 0);
-
+        transform.position = initialPosition;
     }
     public void printDirections()
     {

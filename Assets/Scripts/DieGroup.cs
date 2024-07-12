@@ -8,8 +8,10 @@ public class DieGroup
 {
     private static int groupIdIndex = 0;
     public int groupId;
+    public string groupName;
     public List<Die> dice = new List<Die>();
     public int groupResult = -1;
+    public int modifier;
 
     //results type
     public enum ResultsType { Sum, Advantage, Disadvantage };
@@ -29,12 +31,14 @@ public class DieGroup
         new Color(1,0.75f,0.8f,1) //pink
     };
 
-    public DieGroup(ResultsType _resultsType, int _colorIndex)
+    public DieGroup(string _groupName, ResultsType _resultsType, int _colorIndex, int _modifier)
     {
+        groupName = _groupName;
         resultsType = _resultsType;
         colorIndex = _colorIndex;
         groupId = groupIdIndex;
         groupIdIndex += 1;
+        modifier = _modifier;
     }
 
     public void AddDice(List<Die> _dice)
@@ -64,7 +68,6 @@ public class DieGroup
                     foreach (Die d in dice)
                     {
                         _groupResult += d.result;
-                        Debug.Log(d.result);
                     }
                     break;
                 case ResultsType.Advantage:
