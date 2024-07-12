@@ -10,8 +10,10 @@ public class UI : MonoBehaviour
 
     public GameObject resultsUI;
     public static bool showResultsUI = false;
-    public List<GameObject> textObjects = new List<GameObject>();
+    public List<GameObject> textPanels = new List<GameObject>();
 
+    private List<string> groupNameStrings = new List<string>();
+    private List<string> dieTypesStrings = new List<string>();
     private List<string> resultStrings = new List<string>();
 
     public void ToggleMainUI()
@@ -28,21 +30,22 @@ public class UI : MonoBehaviour
     public void ShowResults(List<DieGroup> _dieGroups)
     {
         GetResultsStrings(_dieGroups);
-        ShowResultsText();
+        UpdateResultsText(_dieGroups);
     }
 
-    void ShowResultsText()
+    void UpdateResultsText(List<DieGroup> _dieGroups)
     {
         for (int i = 0; i < 10; i++)
         {
             Debug.Log(i.ToString() + " | " + resultStrings.Count.ToString()) ;
             if (i > resultStrings.Count-1)
             {
-                textObjects[i].GetComponent<TMP_Text>().text = "";
+                textPanels[i].GetComponent<RollResultsPanel>().ResetPanel();
             }
             else
             {
-                textObjects[i].GetComponent<TMP_Text>().text = resultStrings[i];
+                Color textColor = _dieGroups[i].GetColor();
+                textPanels[i].GetComponent<RollResultsPanel>().UpdateText(groupNameStrings[i], dieTypesStrings[i], resultStrings[i], textColor);
             }
         }
     }
@@ -52,13 +55,13 @@ public class UI : MonoBehaviour
         Debug.Log("Showing results");
         foreach (DieGroup g in  _dieGroups)
         {
-            string currResultsString = "";
 
             //dieGroup name
-            currResultsString += g.groupName + " | ";
+            groupNameStrings.Add(g.groupName);
 
             //dice types
-            string[] dieTypesStrings = new string[]
+            string displayString = "";
+            string[] dieTypesNames = new string[]
             {
                 "d20",//0
                 "d12",//1
@@ -68,43 +71,44 @@ public class UI : MonoBehaviour
                 "d4"//5
             };
 
-            int[] dieTypes = new int[7];
+            int[] dieTypesCount = new int[6];
             foreach (Die d in g.dice)
             {
                 switch (d.dieType)
                 {
                     case Die.DieType.d20:
-                        dieTypes[0] += 1;
+                        dieTypesCount[0] += 1;
                         break;
                     case Die.DieType.d12:
-                        dieTypes[1] += 1;
+                        dieTypesCount[1] += 1;
                         break;
                     case Die.DieType.d10:
-                        dieTypes[2] += 1;
+                        dieTypesCount[2] += 1;
                         break;
                     case Die.DieType.d8:
-                        dieTypes[3] += 1;
+                        dieTypesCount[3] += 1;
                         break;
                     case Die.DieType.d6:
-                        dieTypes[4] += 1;
+                        dieTypesCount[4] += 1;
                         break;
                     case Die.DieType.d4:
-                        dieTypes[5] += 1;
+                        dieTypesCount[5] += 1;
                         break;
                 }
             }
-            for (int i = 0; i < dieTypes.Length; i++)
+            for (int i = 0; i < dieTypesCount.Length; i++)
             {
-                if (dieTypes[i] != 0)
+                if (dieTypesCount[i] != 0)
                 {
-                    currResultsString += dieTypes[i].ToString() + dieTypesStrings[i].ToString() + " + ";
+                    displayString += dieTypesCount[i].ToString() + dieTypesNames[i] + " + ";
                 }
             }
-            currResultsString += g.modifier.ToString() + " | ";
+            displayString += g.modifier.ToString();
+            dieTypesStrings.Add(displayString);
+
 
             //groupResult
-            currResultsString += "Result: " + (g.groupResult + g.modifier).ToString();
-            resultStrings.Add(currResultsString);
+            resultStrings.Add("Result: " + (g.groupResult + g.modifier).ToString());
 
         }
     }

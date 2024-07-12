@@ -86,4 +86,8 @@ public class DieGroup
             groupResult = _groupResult;
         }
     }
+    public Color GetColor()
+    {
+        return dieColor[colorIndex];
+    }
 }
