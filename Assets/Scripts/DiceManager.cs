@@ -10,6 +10,9 @@ public class DiceManager : MonoBehaviour
     public GameObject d20Prefab;
     public GameObject d6Prefab;
 
+    //ui object
+    public GameObject ui;
+
 
     //public int resultsSaved = 0;
     public List<DieGroup> dieGroups = new List<DieGroup>();
@@ -20,7 +23,7 @@ public class DiceManager : MonoBehaviour
     private bool allResultsStored;
     public GameObject walls;
 
-    void Start()
+    public void RollDice()
     {
         CreateDummyDice("To Hit0", DieGroup.ResultsType.Advantage, 1, 5, 2, Die.DieType.d20);
         CreateDummyDice("Damage0", DieGroup.ResultsType.Sum, 2, 5, 3, Die.DieType.d6);
@@ -71,13 +74,18 @@ public class DiceManager : MonoBehaviour
             }
         }
 
-        //if dice done rolling, print results
+        //if dice done rolling, print results and show results ui
         if (allResultsStored)
         {
+            //print results
             foreach (DieGroup g in dieGroups)
             {
                 Debug.Log(string.Concat("Group: ", g.groupId, " || Roll Result: ", g.groupResult, " || Modifer: ", g.modifier, " || Total Result: ", g.groupResult + g.modifier));
             }
+            //send results to UI
+            //ui.GetComponent<UI>().ToggleMainUI();
+            ui.GetComponent<UI>().ToggleResultsUI();
+            ui.GetComponent<UI>().ShowResults(dieGroups);
         }
 
     }
