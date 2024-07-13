@@ -59,7 +59,7 @@ public class UI : MonoBehaviour
             //dieGroup name
             groupNameStrings.Add(g.groupName);
 
-            //dice types
+            //dice0 types
             string displayString = "";
             string[] dieTypesNames = new string[]
             {
@@ -72,7 +72,7 @@ public class UI : MonoBehaviour
             };
 
             int[] dieTypesCount = new int[6];
-            foreach (Die d in g.dice)
+            foreach (Die d in g.dice0)
             {
                 switch (d.dieType)
                 {
@@ -103,12 +103,12 @@ public class UI : MonoBehaviour
                     displayString += dieTypesCount[i].ToString() + dieTypesNames[i] + " + ";
                 }
             }
-            displayString += g.modifier.ToString();
+            displayString += g.toHitModifier.ToString();
             dieTypesStrings.Add(displayString);
 
 
-            //groupResult
-            resultStrings.Add("Result: " + (g.groupResult + g.modifier).ToString());
+            //toHitResult
+            resultStrings.Add("Result: " + (g.toHitResult + g.toHitModifier).ToString());
 
         }
     }

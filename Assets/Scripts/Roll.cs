@@ -49,6 +49,7 @@ public class Roll : MonoBehaviour
         if (dieIsStopped())
         {
             //check all directions for rays
+            Debug.Log(die.rayDirections.Length);
             for (int i = 0; i < die.rayDirections.Length; ++i)
             {
                 //create + draw ray
@@ -78,11 +79,11 @@ public class Roll : MonoBehaviour
         }
 
         //reset die if cocked
-        if (die.result == -1 && DateTime.Now > start.AddSeconds(5) && dieIsStopped())
-        {
+        //if (die.result == -1 && DateTime.Now > start.AddSeconds(5) && dieIsStopped())
+        //{
             //resetDie();
-            start = DateTime.Now;
-        }
+            //start = DateTime.Now;
+        //}
 
     }
 

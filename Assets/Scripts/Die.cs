@@ -74,6 +74,7 @@ public class Die
                 break;
 
         }
+        PrintDie();
     }
 
 
@@ -88,5 +89,6 @@ public class Die
     public void PrintDie()
     {
         Debug.Log(string.Concat("DieType: ", dieType, " || GroupID: ", groupId, " || Result: ", result));
+        Debug.Log(rayDirections.Length);
     }
 }

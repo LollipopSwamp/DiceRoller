@@ -5,36 +5,34 @@ using DateTime = System.DateTime;
 
 public class DiceManager : MonoBehaviour
 {
-    //dice prefabs
+    //dice0 prefabs
     private GameObject selectedPrefab;
     public GameObject d20Prefab;
     public GameObject d6Prefab;
+    public GameObject dieGroupPrefab;
 
     //ui object
     public GameObject ui;
 
 
     //public int resultsSaved = 0;
-    public List<DieGroup> dieGroups = new List<DieGroup>();
-    public List<GameObject> diceObjects = new List<GameObject>();
+    public List<DieGroup> dieGroups0 = new List<DieGroup>();
+    public List<GameObject> dieGroups = new List<GameObject>();
+    public List<GameObject> dice0Objects = new List<GameObject>();
 
     //cocked die vars
     private static DateTime start;
     private bool allResultsStored;
     public GameObject walls;
 
+
+    void Start()
+    {
+        RollDice();
+    }
     public void RollDice()
     {
-        CreateDummyDice("To Hit0", DieGroup.ResultsType.Advantage, 1, 5, 2, Die.DieType.d20);
-        CreateDummyDice("Damage0", DieGroup.ResultsType.Sum, 2, 5, 3, Die.DieType.d6);
-        CreateDummyDice("To Hit1", DieGroup.ResultsType.Advantage, 3, 5, 2, Die.DieType.d20);
-        CreateDummyDice("Damage1", DieGroup.ResultsType.Sum, 4, 5, 5, Die.DieType.d6);
-        CreateDummyDice("Damage2", DieGroup.ResultsType.Sum, 5, 5, 5, Die.DieType.d6);
-        //string _groupName, DieGroup.ResultsType _resultsType, int colorIndex, int _modifier, int numOfDice, Die.DieType _dieType)
-
-        //CreateDummyDice0();
-        //CreateDummyDice1();
-        InstantiateDice();
+        CreateDieGroup("group0",DieGroup.GroupType.Attack, DieGroup.ResultsType.Advantage,5,2);
         PrintAllDice();
         start = DateTime.Now;
         allResultsStored = false;
@@ -44,7 +42,7 @@ public class DiceManager : MonoBehaviour
         if (DateTime.Now > start.AddSeconds(5))
         {
             start = DateTime.Now;
-            foreach(GameObject d in diceObjects)
+            foreach(GameObject d in dice0Objects)
             {
                 if (d.GetComponent<Roll>().die.result != -1)
                 {
@@ -61,197 +59,133 @@ public class DiceManager : MonoBehaviour
             }
         }
     }
+
     void CheckFinalResults()
     {
         allResultsStored = true;
-        //check if dice are still rolling
-        foreach (DieGroup g in dieGroups)
+        //check if dice0 are still rolling
+        foreach (GameObject g in dieGroups)
         {
-            if (g.groupResult == -1)
+            if (g.GetComponent<DieGroup>().toHitResult == -1)
             {
                 allResultsStored = false;
                 break;
             }
         }
 
-        //if dice done rolling, print results and show results ui
+        //if dice0 done rolling, print results and show results ui
         if (allResultsStored)
         {
             //print results
-            foreach (DieGroup g in dieGroups)
+            foreach (GameObject g in dieGroups)
             {
-                Debug.Log(string.Concat("Group: ", g.groupId, " || Roll Result: ", g.groupResult, " || Modifer: ", g.modifier, " || Total Result: ", g.groupResult + g.modifier));
+                Debug.Log(string.Concat("Group: ", g.GetComponent<DieGroup>().groupId, " || Roll Result: ", g.GetComponent<DieGroup>().toHitResult, " || Modifer: ", g.GetComponent<DieGroup>().toHitModifier, " || Total Result: ", g.GetComponent<DieGroup>().toHitResult + g.GetComponent<DieGroup>().toHitModifier));
             }
             //send results to UI
             //ui.GetComponent<UI>().ToggleMainUI();
             ui.GetComponent<UI>().ToggleResultsUI();
-            ui.GetComponent<UI>().ShowResults(dieGroups);
+            //ui.GetComponent<UI>().ShowResults(dieGroups);
         }
 
     }
-    public void UpdateDie(Die die)
+
+    void CreateDieGroup(string _groupName, DieGroup.GroupType _groupType, DieGroup.ResultsType _resultsType, int _modifier,  int _colorIndex)
     {
-        for (int i = 0; i < dieGroups.Count; ++i)
-        {
-            if (dieGroups[i].groupId == die.groupId)
-            {
-                for (int j = 0; j < dieGroups[i].dice.Count; ++j)
-                {
-                    if (dieGroups[i].dice[j].dieId == die.dieId)
-                    {
-                        dieGroups[i].dice[j] = die;
-                    }
-                }
-            }
-            dieGroups[i].CheckResults();
-        }
-        CheckFinalResults();
-        return;
-    }
-    void InstantiateDice()
-    {
-        //create die objects
-        Vector3 position = new Vector3(-9,15,6);
-        foreach (DieGroup g in dieGroups)
-        {
-            string dieName = "";
-            foreach (Die d in g.dice)
-            {
-                switch (d.dieType)
-                {
-                    case Die.DieType.d6:
-                        selectedPrefab = d6Prefab;
-                        dieName = "d6 (ID: " + d.dieId.ToString() + ")";
-                        break;
-                    case Die.DieType.d20:
-                        selectedPrefab = d20Prefab;
-                        dieName = "d20 (ID: " + d.dieId.ToString() + ")";
-                        break;
+        //create dieGroup
+        GameObject dieGroup = Instantiate(dieGroupPrefab, Vector3.zero, Quaternion.identity);
+        dieGroup.transform.SetParent(gameObject.transform);
 
-                }
-                GameObject dieObj = Instantiate(selectedPrefab, position, Quaternion.identity);
-                dieObj.name = dieName;
-                dieObj.GetComponent<MeshRenderer>().material.color = g.dieColor[g.colorIndex];
-                diceObjects.Add(dieObj);
-
-
-                Roll roll = dieObj.GetComponent<Roll>();
-                roll.SetVars(d, gameObject, position);
-                position.x += 3;
-            }
-            position = new Vector3(-9,15,position.z - 3);
-        }
-
-        //change dice colors
-    }
-
-    void CreateDummyDice(string _groupName, DieGroup.ResultsType _resultsType, int colorIndex, int _modifier, int numOfDice, Die.DieType _dieType)
-    {
-        //create DieGroup objects
-        DieGroup dieGroup = new DieGroup(
-            _groupName,
-            _resultsType,
-            colorIndex,
-            _modifier
-        );
-        //create die lists
+        //add dice
+        //test dice, 3d6
         List<Die> dieList = new List<Die>();
-        for (int i = 0; i < numOfDice; i++)
+        for (int i = 0; i < 3; i++)
         {
-            Die die = new Die(_dieType, dieGroup.groupId, 1);
+            Die die = new Die(Die.DieType.d6, dieGroup.GetComponent<DieGroup>().groupId, 1);
             dieList.Add(die);
         }
-        //add dice to DieGroups
-        dieGroup.AddDice(dieList);
-
-        //add DieGroups object to dieGroup list
+        dieGroup.GetComponent<DieGroup>().AddToHitDice(DieGroup.ResultsType.Advantage, 5);
+        dieGroup.GetComponent<DieGroup>().AddDamageDice(dieList, 5);
         dieGroups.Add(dieGroup);
+        //dieGroup.GetComponent<DieGroup>().SetVariables();
+        dieGroup.GetComponent<DieGroup>().colorIndex = 2;
+        dieGroup.GetComponent<DieGroup>().SetVariables(_groupName, _groupType, _resultsType, _modifier, _colorIndex);
+        
 
     }
-    void CreateDummyDice0()
+    void InstantiateDieGroups()
     {
 
-        //create DieGroup objects
-        DieGroup dieGroup0 = new DieGroup(
-            "To hit",
-            DieGroup.ResultsType.Advantage,
-            1,
-            5
-        );
-        DieGroup dieGroup1 = new DieGroup(
-            "Damage",
-            DieGroup.ResultsType.Sum,
-            2,
-            3
-        );
-        DieGroup dieGroup2 = new DieGroup(
-            "Damage",
-            DieGroup.ResultsType.Sum,
-            3,
-            3
-        );
-        //create die lists
-        //d20
-        List<Die> dieList0 = new List<Die>();
-        for (int i = 0; i < 2; i++)
+        Vector3 position = new Vector3(-9, 15, 6);
+        foreach (DieGroup dieGroup in dieGroups)
         {
-            Die die = new Die(Die.DieType.d20, dieGroup0.groupId, 1);
-            dieList0.Add(die);
+            position.x += dieGroup.GetComponent<DieGroup>().groupId * 3;
+            position = InstantiateDice(dieGroup.GetComponent<dieGroup>().toHitDice, position, dieGroup);
+            position = InstantiateDice(dieGroup.GetComponent<dieGroup>().diceToHitBonus, position);
+            position = InstantiateDice(dieGroup.GetComponent<dieGroup>().damageDice, position);
+            position.z = 6;
         }
-        //d6
-        List<Die> dieList1 = new List<Die>();
-        for (int i = 0; i < 3; i++)
-        {
-            Die die = new Die(Die.DieType.d6, dieGroup1.groupId, 1);
-            dieList1.Add(die);
-        }
-        //d6
-        List<Die> dieList2 = new List<Die>();
-        for (int i = 0; i < 3; i++)
-        {
-            Die die = new Die(Die.DieType.d6, dieGroup2.groupId, 1);
-            dieList2.Add(die);
-        }
-        //add dice to DieGroups
-        dieGroup0.AddDice(dieList0);
-        dieGroup1.AddDice(dieList1);
-        dieGroup2.AddDice(dieList2);
-
-
-        //add DieGroups object to dieGroup list
-        dieGroups.Add(dieGroup0);
-        dieGroups.Add(dieGroup1);
-        dieGroups.Add(dieGroup2);
     }
 
-    void CreateDummyDice1()
+    Vector3 InstantiateDice(List<Die> dice, Vector3 position, GameObject parent)
     {
+        foreach (Die d in dieGroup.GetComponent<dieGroup>().toHitDice)
+        {
+            string dieName = "";
+            switch (d.dieType)
+            {
+                case Die.DieType.d6:
+                    selectedPrefab = d6Prefab;
+                    dieName = "d6 (ID: " + d.dieId.ToString() + ")";
+                    break;
+                case Die.DieType.d20:
+                    selectedPrefab = d20Prefab;
+                    dieName = "d20 (ID: " + d.dieId.ToString() + ")";
+                    break;
 
-        //create DieGroup objects
-        DieGroup dieGroup0 = new DieGroup(
-            "To hit",
-            DieGroup.ResultsType.Advantage,
-            1,
-            2
-        );
-        //create die lists
-        List<Die> dieList0 = new List<Die>();
-        Die die = new Die(Die.DieType.d6, dieGroup0.groupId, 1);
-        dieList0.Add(die);
+            }
+            //create die gameobject
+            GameObject dieObj = Instantiate(selectedPrefab, position, Quaternion.identity);
+            dieObj.name = dieName;
+            dieObj.GetComponent<MeshRenderer>().material.color = parent.GetComponent<DieGroup>().GetColor();
+            dieObj.transform.SetParent(parent.transform);
 
-        //add dice to DieGroups
-        dieGroup0.AddDice(dieList0);
-
-
-        //add DieGroups object to dieGroup list
-        dieGroups.Add(dieGroup0);
+            //set roll variables
+            Roll roll = dieObj.GetComponent<Roll>();
+            roll.SetVars(d, gameObject, position);
+            position.z += 3;
+        }
+        return position;
     }
+    
     public void PrintAllDice()
     {
-        foreach (DieGroup g in dieGroups)
+        foreach (GameObject g in dieGroups)
         {
-            Debug.Log(string.Concat("GroupID: ", g.groupId, " || Results Type: ", g.resultsType));
-            foreach (Die d in g.dice)
+            g.GetComponent<DieGroup>().PrintDieGroup();
+            //to hit
+            if (g.GetComponent<DieGroup>().diceToHit.Count != 0)
+            {
+                Debug.Log("== To Hit Dice ==");
+            }
+            foreach (Die d in g.GetComponent<DieGroup>().diceToHit)
+            {
+                d.PrintDie();
+            }
+            //to hit bonus
+            if (g.GetComponent<DieGroup>().diceToHit.Count != 0)
+            {
+                Debug.Log("== To Hit Bonus Dice ==");
+            }
+            foreach (Die d in g.GetComponent<DieGroup>().diceToHitBonus)
+            {
+                d.PrintDie();
+            }
+            //damage
+            if (g.GetComponent<DieGroup>().diceToHit.Count != 0)
+            {
+                Debug.Log("== Damage Dice ==");
+            }
+            foreach (Die d in g.GetComponent<DieGroup>().damageDice)
             {
                 d.PrintDie();
             }
