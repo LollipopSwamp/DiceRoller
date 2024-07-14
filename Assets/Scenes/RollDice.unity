@@ -4795,8 +4795,11 @@ MonoBehaviour:
     type: 3}
   d6Prefab: {fileID: 3022694146834697503, guid: eed346ff2dc8e6d4088f639ccd0aa81d,
     type: 3}
+  dieGroupPrefab: {fileID: 6180085107868288599, guid: 1975cdfa7bc40734caedc47f31da5d71,
+    type: 3}
   ui: {fileID: 1527631138}
-  diceObjects: []
+  dieGroups: []
+  dice0Objects: []
   walls: {fileID: 178053538}
 --- !u!1 &1454996011
 GameObject:

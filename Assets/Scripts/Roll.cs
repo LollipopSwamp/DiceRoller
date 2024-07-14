@@ -13,6 +13,7 @@ public class Roll : MonoBehaviour
     //public Quaternion quaternion;
     public int dieResult;
     public Vector3 initialPosition;
+    private DieGroup dieGroup;
 
     private Rigidbody rb;
     private MeshRenderer mr;
@@ -30,6 +31,7 @@ public class Roll : MonoBehaviour
         //init variables
         rb = GetComponent<Rigidbody>();
         start = DateTime.Now;
+        dieGroup = gameObject.GetComponentInParent<DieGroup>();
 
 
         //set random rotation and velocity
@@ -49,7 +51,7 @@ public class Roll : MonoBehaviour
         if (dieIsStopped())
         {
             //check all directions for rays
-            Debug.Log(die.rayDirections.Length);
+            //Debug.Log(die.rayDirections.Length);
             for (int i = 0; i < die.rayDirections.Length; ++i)
             {
                 //create + draw ray
@@ -64,7 +66,7 @@ public class Roll : MonoBehaviour
                     dieResult = die.result;
                     DiceManager dm = dmObj.GetComponent<DiceManager>();
                     Debug.Log(string.Concat(die.dieType, " (ID ", die.dieId, ") rolled ", die.result));
-                    dm.GetComponent<DiceManager>().UpdateDie(die);
+                    dieGroup.UpdateDie(die);
 
                     lockMovement = true;
                 };
@@ -77,14 +79,6 @@ public class Roll : MonoBehaviour
         {
             gameObject.GetComponent<Rigidbody>().isKinematic = true;
         }
-
-        //reset die if cocked
-        //if (die.result == -1 && DateTime.Now > start.AddSeconds(5) && dieIsStopped())
-        //{
-            //resetDie();
-            //start = DateTime.Now;
-        //}
-
     }
 
     public void SetVars(Die _die, GameObject _dmObj, Vector3 _initialPosition)

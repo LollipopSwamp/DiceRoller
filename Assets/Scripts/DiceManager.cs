@@ -11,14 +11,16 @@ public class DiceManager : MonoBehaviour
     public GameObject d6Prefab;
     public GameObject dieGroupPrefab;
 
+    //die instantiate position
+    private static Vector3 dieStartPosition = new Vector3(-9, 15, 6);
+
     //ui object
     public GameObject ui;
 
 
     //public int resultsSaved = 0;
-    public List<DieGroup> dieGroups0 = new List<DieGroup>();
     public List<GameObject> dieGroups = new List<GameObject>();
-    public List<GameObject> dice0Objects = new List<GameObject>();
+    public List<GameObject> allDiceObjects = new List<GameObject>();
 
     //cocked die vars
     private static DateTime start;
@@ -32,7 +34,8 @@ public class DiceManager : MonoBehaviour
     }
     public void RollDice()
     {
-        CreateDieGroup("group0",DieGroup.GroupType.Attack, DieGroup.ResultsType.Advantage,5,2);
+        CreateDieGroup("Bite Attack",DieGroup.GroupType.Attack, DieGroup.ResultsType.Advantage,5,2);
+        InstantiateDieGroups();
         PrintAllDice();
         start = DateTime.Now;
         allResultsStored = false;
@@ -42,7 +45,7 @@ public class DiceManager : MonoBehaviour
         if (DateTime.Now > start.AddSeconds(5))
         {
             start = DateTime.Now;
-            foreach(GameObject d in dice0Objects)
+            foreach(GameObject d in allDiceObjects)
             {
                 if (d.GetComponent<Roll>().die.result != -1)
                 {
@@ -59,7 +62,6 @@ public class DiceManager : MonoBehaviour
             }
         }
     }
-
     void CheckFinalResults()
     {
         allResultsStored = true;
@@ -96,14 +98,20 @@ public class DiceManager : MonoBehaviour
         dieGroup.transform.SetParent(gameObject.transform);
 
         //add dice
-        //test dice, 3d6
+        //test damage dice, 3d6
         List<Die> dieList = new List<Die>();
         for (int i = 0; i < 3; i++)
         {
             Die die = new Die(Die.DieType.d6, dieGroup.GetComponent<DieGroup>().groupId, 1);
             dieList.Add(die);
         }
+        //add to hit bonus die
+        Die bonusDie = new Die(Die.DieType.d6, dieGroup.GetComponent<DieGroup>().groupId, 1);
+        List<Die> bonusDieList = new List<Die>();
+        bonusDieList.Add(bonusDie);
+        //add dice to dieGroup
         dieGroup.GetComponent<DieGroup>().AddToHitDice(DieGroup.ResultsType.Advantage, 5);
+        dieGroup.GetComponent<DieGroup>().AddToHitBonusDice(bonusDieList);
         dieGroup.GetComponent<DieGroup>().AddDamageDice(dieList, 5);
         dieGroups.Add(dieGroup);
         //dieGroup.GetComponent<DieGroup>().SetVariables();
@@ -115,20 +123,19 @@ public class DiceManager : MonoBehaviour
     void InstantiateDieGroups()
     {
 
-        Vector3 position = new Vector3(-9, 15, 6);
-        foreach (DieGroup dieGroup in dieGroups)
+        foreach (GameObject dieGroup in dieGroups)
         {
-            position.x += dieGroup.GetComponent<DieGroup>().groupId * 3;
-            position = InstantiateDice(dieGroup.GetComponent<dieGroup>().toHitDice, position, dieGroup);
-            position = InstantiateDice(dieGroup.GetComponent<dieGroup>().diceToHitBonus, position);
-            position = InstantiateDice(dieGroup.GetComponent<dieGroup>().damageDice, position);
-            position.z = 6;
+            dieStartPosition.x += dieGroup.GetComponent<DieGroup>().groupId * 3;
+            InstantiateDice(dieGroup.GetComponent<DieGroup>().toHitDice, dieGroup);
+            InstantiateDice(dieGroup.GetComponent<DieGroup>().toHitBonusDice, dieGroup);
+            InstantiateDice(dieGroup.GetComponent<DieGroup>().damageDice, dieGroup);
+            dieStartPosition.z = 6;
         }
     }
 
-    Vector3 InstantiateDice(List<Die> dice, Vector3 position, GameObject parent)
+    void InstantiateDice(List<Die> dice, GameObject parent)
     {
-        foreach (Die d in dieGroup.GetComponent<dieGroup>().toHitDice)
+        foreach (Die d in dice)
         {
             string dieName = "";
             switch (d.dieType)
@@ -144,17 +151,27 @@ public class DiceManager : MonoBehaviour
 
             }
             //create die gameobject
-            GameObject dieObj = Instantiate(selectedPrefab, position, Quaternion.identity);
+            GameObject dieObj = Instantiate(selectedPrefab, dieStartPosition, Quaternion.identity);
             dieObj.name = dieName;
             dieObj.GetComponent<MeshRenderer>().material.color = parent.GetComponent<DieGroup>().GetColor();
             dieObj.transform.SetParent(parent.transform);
+            allDiceObjects.Add(dieObj);
 
             //set roll variables
             Roll roll = dieObj.GetComponent<Roll>();
-            roll.SetVars(d, gameObject, position);
-            position.z += 3;
+            roll.SetVars(d, gameObject, dieStartPosition);
+            IterateDieStartPosition();
         }
-        return position;
+    }
+    public void IterateDieStartPosition()
+    { //initiate is (-9, 15, 6);
+        dieStartPosition.x += 3;
+        if ( dieStartPosition.x > 9)
+        {
+            dieStartPosition.x = -9;
+            dieStartPosition.z -= 3;
+        }
+        Debug.Log(dieStartPosition);
     }
     
     public void PrintAllDice()
@@ -163,25 +180,25 @@ public class DiceManager : MonoBehaviour
         {
             g.GetComponent<DieGroup>().PrintDieGroup();
             //to hit
-            if (g.GetComponent<DieGroup>().diceToHit.Count != 0)
+            if (g.GetComponent<DieGroup>().toHitDice.Count != 0)
             {
                 Debug.Log("== To Hit Dice ==");
             }
-            foreach (Die d in g.GetComponent<DieGroup>().diceToHit)
+            foreach (Die d in g.GetComponent<DieGroup>().toHitDice)
             {
                 d.PrintDie();
             }
             //to hit bonus
-            if (g.GetComponent<DieGroup>().diceToHit.Count != 0)
+            if (g.GetComponent<DieGroup>().toHitDice.Count != 0)
             {
                 Debug.Log("== To Hit Bonus Dice ==");
             }
-            foreach (Die d in g.GetComponent<DieGroup>().diceToHitBonus)
+            foreach (Die d in g.GetComponent<DieGroup>().toHitBonusDice)
             {
                 d.PrintDie();
             }
             //damage
-            if (g.GetComponent<DieGroup>().diceToHit.Count != 0)
+            if (g.GetComponent<DieGroup>().toHitDice.Count != 0)
             {
                 Debug.Log("== Damage Dice ==");
             }

@@ -153,5 +153,6 @@ MonoBehaviour:
   dmObj: {fileID: 0}
   dieIsMoving: 0
   velocity: {x: 0, y: 0, z: 0}
-  quaternion: {x: 0, y: 0, z: 0, w: 0}
   dieResult: 0
+  initialPosition: {x: 0, y: 0, z: 0}
+  collisionOn: 1
