@@ -131,14 +131,14 @@ public class DiceManager : MonoBehaviour
         foreach (GameObject dieGroup in dieGroups)
         {
             dieStartPosition.x += dieGroup.GetComponent<DieGroup>().groupId * 3;
-            InstantiateDice(dieGroup.GetComponent<DieGroup>().toHitDice, dieGroup);
-            InstantiateDice(dieGroup.GetComponent<DieGroup>().toHitBonusDice, dieGroup);
-            InstantiateDice(dieGroup.GetComponent<DieGroup>().damageDice, dieGroup);
+            InstantiateDice(dieGroup.GetComponent<DieGroup>().toHitDice, dieGroup, true);
+            InstantiateDice(dieGroup.GetComponent<DieGroup>().toHitBonusDice, dieGroup, true);
+            InstantiateDice(dieGroup.GetComponent<DieGroup>().damageDice, dieGroup, false);
             dieStartPosition.z = 6;
         }
     }
 
-    void InstantiateDice(List<Die> dice, GameObject parent)
+    void InstantiateDice(List<Die> dice, GameObject parent, bool _darkColor)
     {
         foreach (Die d in dice)
         {
@@ -158,7 +158,8 @@ public class DiceManager : MonoBehaviour
             //create die gameobject
             GameObject dieObj = Instantiate(selectedPrefab, dieStartPosition, Quaternion.identity);
             dieObj.name = dieName;
-            dieObj.GetComponent<MeshRenderer>().material.color = parent.GetComponent<DieGroup>().GetColor();
+            dieObj.GetComponent<MeshRenderer>().material.color = parent.GetComponent<DieGroup>().GetColor(_darkColor);
+
             dieObj.transform.SetParent(parent.transform);
             allDiceObjects.Add(dieObj);
 

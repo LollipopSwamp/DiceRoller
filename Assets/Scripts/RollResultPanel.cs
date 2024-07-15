@@ -38,7 +38,7 @@ public class RollResultPanel : MonoBehaviour
         groupId = g.groupId;
         groupName = g.groupName;
         gameObject.name = groupName + " Panel";
-        gameObject.GetComponent<CanvasRenderer>().SetColor(g.GetColor());
+        gameObject.GetComponent<CanvasRenderer>().SetColor(g.GetColor(false));
         //if roll was standard
         if (g.toHitDice.Count == 0)
         {

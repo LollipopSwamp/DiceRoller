@@ -23,7 +23,7 @@ public class DieGroup : MonoBehaviour
     public bool diceStillRolling = true;
 
     //roll type
-    public enum GroupType { Attack, Normal };
+    public enum GroupType { Attack, Standard };
     private GroupType groupType = GroupType.Attack;
 
     //results type
@@ -32,16 +32,27 @@ public class DieGroup : MonoBehaviour
 
     //die color
     public int colorIndex = 0;
-    private static List<Color> dieColor = new List<Color>()
+    private static List<Color> dieColorDark = new List<Color>()
+    {
+        new Color(0.9f,0.9f,0.9f,1), //white grey
+        new Color(1,0,0,1), //red
+        new Color(1,0.40f,0,1), //orange
+        new Color(1,1,0,1), //yellow
+        new Color(0,0.8f,1,1), //green
+        new Color(0,0.4f,1,1), //blue
+        new Color(0.75f,0,1,1), //purple
+        new Color(1,0.4f,1,1) //pink
+    };
+    private static List<Color> dieColorLight = new List<Color>()
     {
         Color.white, //white
-        Color.red, //red
-        new Color(1,0.60f,0,1), //orange
-        Color.yellow, //yellow
-        Color.green, //green
-        Color.blue, //blue
-        new Color(0.62f,0.13f,0.94f,1), //purple
-        new Color(1,0.75f,0.8f,1) //pink
+        new Color(1, 0.4f, 0.4f,1), //red
+        new Color(1,0.60f,0.3f,1), //orange
+        new Color(1,1,.04f,1), //yellow
+        new Color(0.4f,1,0.4f,1), //green
+        new Color(0.4f,0.65f,1,1), //blue
+        new Color(0.85f,0.3f,1,1), //purple
+        new Color(1,0.6f,1,1) //pink
     };
 
     //set variables for attack, no bonus to hit
@@ -58,9 +69,16 @@ public class DieGroup : MonoBehaviour
         damageResult = 0;
     }
 
-    public Color GetColor()
+    public Color GetColor(bool _darkColor)
     {
-        return dieColor[colorIndex];
+        if (_darkColor)
+        {
+            return dieColorDark[colorIndex];
+        }
+        else
+        {
+            return dieColorLight[colorIndex];
+        }
     }
 
     //add attack dice, no bonus to hit
@@ -193,6 +211,7 @@ public class DieGroup : MonoBehaviour
             {
                 damageResult += d.result;
             }
+            damageResult += damageModifier;
 
             //tell DiceManager to check final results
             transform.parent.gameObject.GetComponent<DiceManager>().CheckFinalResults();
