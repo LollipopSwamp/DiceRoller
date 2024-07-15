@@ -20,7 +20,7 @@ public class DieGroup : MonoBehaviour
     public int toHitModifier;
     public int damageModifier;
 
-    public RollResult rollResult;
+    public bool diceStillRolling = true;
 
     //roll type
     public enum GroupType { Attack, Normal };
@@ -36,7 +36,7 @@ public class DieGroup : MonoBehaviour
     {
         Color.white, //white
         Color.red, //red
-        new Color(1,0.65f,0,1), //orange
+        new Color(1,0.60f,0,1), //orange
         Color.yellow, //yellow
         Color.green, //green
         Color.blue, //blue
@@ -51,7 +51,7 @@ public class DieGroup : MonoBehaviour
         resultsType = _resultsType;
         groupType = _groupType;
         colorIndex = _colorIndex;
-        //groupId = groupIdIndex;
+        groupId = groupIdIndex;
         groupIdIndex += 1;
         toHitModifier = _modifier;
         toHitResult = 0;
@@ -141,6 +141,7 @@ public class DieGroup : MonoBehaviour
         {
             if (d.result == -1)
             {
+                diceStillRolling = true;
                 return true;
             }
         }
@@ -148,6 +149,7 @@ public class DieGroup : MonoBehaviour
         {
             if (d.result == -1)
             {
+                diceStillRolling = true;
                 return true;
             }
         }
@@ -155,9 +157,11 @@ public class DieGroup : MonoBehaviour
         {
             if (d.result == -1)
             {
+                diceStillRolling = true;
                 return true;
             }
         }
+        diceStillRolling = false;
         return false;
     }
 
@@ -189,9 +193,9 @@ public class DieGroup : MonoBehaviour
             {
                 damageResult += d.result;
             }
-            rollResult = new RollResult(gameObject);
-            rollResult.PrintRollResult();
-            //PrintDieGroup();
+
+            //tell DiceManager to check final results
+            transform.parent.gameObject.GetComponent<DiceManager>().CheckFinalResults();
         }
     }
 

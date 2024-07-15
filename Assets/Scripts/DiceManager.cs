@@ -14,8 +14,9 @@ public class DiceManager : MonoBehaviour
     //die instantiate position
     private static Vector3 dieStartPosition = new Vector3(-9, 15, 6);
 
-    //ui object
-    public GameObject ui;
+    //ui objects
+    public GameObject mainUi;
+    public GameObject resultsUi;
 
 
     //public int resultsSaved = 0;
@@ -30,11 +31,13 @@ public class DiceManager : MonoBehaviour
 
     void Start()
     {
-        RollDice();
+        //RollDice();
     }
     public void RollDice()
     {
         CreateDieGroup("Bite Attack",DieGroup.GroupType.Attack, DieGroup.ResultsType.Advantage,5,2);
+        CreateDieGroup("Claws Attack", DieGroup.GroupType.Attack, DieGroup.ResultsType.Advantage, 5, 5);
+        Debug.Log(dieGroups.Count);
         InstantiateDieGroups();
         PrintAllDice();
         start = DateTime.Now;
@@ -62,16 +65,16 @@ public class DiceManager : MonoBehaviour
             }
         }
     }
-    void CheckFinalResults()
+    public void CheckFinalResults()
     {
         allResultsStored = true;
         //check if dice0 are still rolling
         foreach (GameObject g in dieGroups)
         {
-            if (g.GetComponent<DieGroup>().toHitResult == -1)
+            if (g.GetComponent<DieGroup>().diceStillRolling)
             {
                 allResultsStored = false;
-                break;
+                return;
             }
         }
 
@@ -85,7 +88,8 @@ public class DiceManager : MonoBehaviour
             }
             //send results to UI
             //ui.GetComponent<UI>().ToggleMainUI();
-            ui.GetComponent<UI>().ToggleResultsUI();
+            resultsUi.GetComponent<ResultsUI>().ToggleVisibility();
+            resultsUi.GetComponent<ResultsUI>().CreateResultsPanels(dieGroups);
             //ui.GetComponent<UI>().ShowResults(dieGroups);
         }
 
@@ -96,6 +100,7 @@ public class DiceManager : MonoBehaviour
         //create dieGroup
         GameObject dieGroup = Instantiate(dieGroupPrefab, Vector3.zero, Quaternion.identity);
         dieGroup.transform.SetParent(gameObject.transform);
+        dieGroup.name = _groupName;
 
         //add dice
         //test damage dice, 3d6
