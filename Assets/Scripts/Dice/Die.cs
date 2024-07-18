@@ -10,6 +10,11 @@ public class Die
     //sides on die
     public enum DieType { d4, d6, d8, d10, d12, d20 };
     public DieType dieType = DieType.d4;
+    public int dieTypeIndex;
+
+    //sub diegroup type
+    public enum DieSubGroup { ToHit, ToHitBonus, Damage };
+    public DieSubGroup dieSubGroup = DieSubGroup.Damage;
 
 
     //ray directions & length
@@ -18,16 +23,16 @@ public class Die
     public Vector3[] rayDirections;
 
     //other vars
-    public int result;
+    public int result = -1;
     public int dieId;
     public int groupId;
     private static int dieIdIndex = 0;
 
-    public Die(DieType _dieType, int _groupId, float _scale)
+    public Die(DieType _dieType, int _groupId)
     {
         dieType = _dieType;
         groupId = _groupId;
-        scale = _scale;
+        //scale = _scale;
         result = -1;
 
         dieId = dieIdIndex;
@@ -82,12 +87,100 @@ public class Die
     {
         result = _result;
     }
+
+    public void SetGroupID(int _groupId)
+    {
+        groupId = _groupId;
+    }
     public string GetDieTypeString()
     {
-        return nameof(dieType);
+        return GetDieTypeString(dieTypeIndex);
+    }
+    public static string GetDieTypeString(int _dieTypeIndex)
+    {
+        switch (_dieTypeIndex)
+        {
+            case 0:
+                return "d20";
+            case 1:
+                return "d12";
+            case 2:
+                return "d10";
+            case 3:
+                return "d8";
+            case 4:
+                return "d6";
+            case 5:
+                return "d4";
+            default:
+                return "DieTypeError";
+        }
+    }
+    public static string GetDieTypeString(DieType _dieType)
+    {
+        switch (_dieType)
+        {
+            case DieType.d20:
+                return "d20";
+            case DieType.d12:
+                return "d12";
+            case DieType.d10:
+                return "d10";
+            case DieType.d8:
+                return "d8";
+            case DieType.d6:
+                return "d6";
+            case DieType.d4:
+                return "d4";
+            default:
+                return "DieTypeError";
+        }
     }
     public void PrintDie()
     {
         Debug.Log(string.Concat("DieType: ", dieType, " || GroupID: ", groupId, " || Result: ", result));
+    }
+
+    public static int DieTypeToIndex(DieType _dieType)
+    {
+        switch (_dieType)
+        {
+            case DieType.d20:
+                return 0;
+            case DieType.d12:
+                return 1;
+            case DieType.d10:
+                return 2;
+            case DieType.d8:
+                return 3;
+            case DieType.d6:
+                return 4;
+            case DieType.d4:
+                return 5;
+            default:
+                Debug.Log("Error in IndexToDieType, returning d20 index (0)");
+                return 0;
+        }
+    }
+    public static DieType IndexToDieType(int _index)
+    {
+        switch (_index)
+        {
+            case 0:
+                return DieType.d20;
+            case 1:
+                return DieType.d12;
+            case 2:
+                return DieType.d10;
+            case 3:
+                return DieType.d8;
+            case 4:
+                return DieType.d6;
+            case 5:
+                return DieType.d4;
+            default:
+                Debug.Log("Error in IndexToDieType, returning d20");
+                return DieType.d20;
+        }
     }
 }

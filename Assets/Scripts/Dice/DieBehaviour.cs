@@ -3,7 +3,7 @@ using DateTime = System.DateTime;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Roll : MonoBehaviour
+public class DieBehaviour : MonoBehaviour
 {
     public LayerMask layersToHit;
     public bool randomVelocityRotation;
@@ -11,9 +11,10 @@ public class Roll : MonoBehaviour
     public bool dieIsMoving;
     public Vector3 velocity;
     //public Quaternion quaternion;
-    public int dieResult;
+    public int dieResult = -1;
     public Vector3 initialPosition;
-    private DieGroup dieGroup;
+    //private DieGroup dieGroup;
+    private DieGroupBehaviour dieGroupBehaviour;
 
     private Rigidbody rb;
     private MeshRenderer mr;
@@ -31,7 +32,9 @@ public class Roll : MonoBehaviour
         //init variables
         rb = GetComponent<Rigidbody>();
         start = DateTime.Now;
-        dieGroup = gameObject.GetComponentInParent<DieGroup>();
+        GameObject parent = transform.parent.gameObject;
+        dieGroupBehaviour = parent.GetComponent<DieGroupBehaviour>();
+        Debug.Log(dieGroupBehaviour);
 
 
         //set random rotation and velocity
@@ -48,7 +51,7 @@ public class Roll : MonoBehaviour
     void Update()
     {
         //Raycast hit and draw rays
-        if (dieIsStopped())
+        if (DieIsStopped())
         {
             //check all directions for rays
             //Debug.Log(die.rayDirections.Length);
@@ -64,9 +67,8 @@ public class Roll : MonoBehaviour
                 {
                     die.result = i + 1;
                     dieResult = die.result;
-                    DiceManager dm = dmObj.GetComponent<DiceManager>();
                     Debug.Log(string.Concat(die.dieType, " (ID ", die.dieId, ") rolled ", die.result));
-                    dieGroup.UpdateDie(die);
+                    dieGroupBehaviour.UpdateDie(die);
 
                     lockMovement = true;
                 };
@@ -88,7 +90,7 @@ public class Roll : MonoBehaviour
         initialPosition = _initialPosition;
     }
 
-    bool dieIsStopped()
+    bool DieIsStopped()
     {
         if (Mathf.Abs(rb.velocity.x) < 0.005f && Mathf.Abs(rb.velocity.y) < 0.005f && Mathf.Abs(rb.velocity.z) < 0.005f)
         {

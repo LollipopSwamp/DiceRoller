@@ -153,6 +153,6 @@ MonoBehaviour:
   dmObj: {fileID: 0}
   dieIsMoving: 0
   velocity: {x: 0, y: 0, z: 0}
-  dieResult: 0
+  dieResult: -1
   initialPosition: {x: 0, y: 0, z: 0}
   collisionOn: 1
