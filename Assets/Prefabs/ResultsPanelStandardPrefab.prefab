@@ -453,17 +453,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   groupId: 0
   groupName: 
-  resultsType: 0
+  toHitType: 0
   toHitDieTypes: 
   toHitResult: 
   damageDieTypes: 
   damageResult: 
   attackRoll: 0
-  standardTextPanels: []
-  attackTextPanels:
+  standardTextPanels:
   - {fileID: 1903957639100750019}
   - {fileID: 2199898789678358607}
   - {fileID: 8835673031809088069}
+  attackTextPanels: []
 --- !u!1 &5435623462003066801
 GameObject:
   m_ObjectHideFlags: 0

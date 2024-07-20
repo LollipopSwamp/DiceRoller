@@ -36,7 +36,7 @@ public class DieGroupBehaviour : MonoBehaviour
             dice.Add(dieObj);
 
             //set DieBehaviour variables
-            Die d20 = new Die(Die.DieType.d20, dieGroup.groupId);
+            Die d20 = new Die(Die.DieType.d20, dieGroup.groupId, Die.DieSubGroup.ToHit);
             DieBehaviour dieBehaviour = dieObj.GetComponent<DieBehaviour>();
             dieBehaviour.SetVars(d20, gameObject, nextStartPosition);
 
@@ -54,7 +54,7 @@ public class DieGroupBehaviour : MonoBehaviour
                 dice.Add(dieObj);
 
                 //set DieBehaviour variables
-                Die d20 = new Die(Die.DieType.d20, dieGroup.groupId);
+                Die d20 = new Die(Die.DieType.d20, dieGroup.groupId, Die.DieSubGroup.ToHit);
                 DieBehaviour dieBehaviour = dieObj.GetComponent<DieBehaviour>();
                 dieBehaviour.SetVars(d20, gameObject, nextStartPosition);
 
@@ -73,7 +73,7 @@ public class DieGroupBehaviour : MonoBehaviour
             dice.Add(dieObj);
 
             //set DieBehaviour variables
-            Die die = new Die(dieType, dieGroup.groupId);
+            Die die = new Die(dieType, dieGroup.groupId, Die.DieSubGroup.ToHitBonus);
             DieBehaviour dieBehaviour = dieObj.GetComponent<DieBehaviour>();
             dieBehaviour.SetVars(die, gameObject, nextStartPosition);
 
@@ -91,7 +91,7 @@ public class DieGroupBehaviour : MonoBehaviour
             dice.Add(dieObj);
 
             //set DieBehaviour variables
-            Die die = new Die(dieType, dieGroup.groupId);
+            Die die = new Die(dieType, dieGroup.groupId, Die.DieSubGroup.Damage);
             DieBehaviour dieBehaviour = dieObj.GetComponent<DieBehaviour>();
             dieBehaviour.SetVars(die, gameObject, nextStartPosition);
 

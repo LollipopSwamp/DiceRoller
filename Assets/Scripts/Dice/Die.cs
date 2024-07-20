@@ -28,10 +28,11 @@ public class Die
     public int groupId;
     private static int dieIdIndex = 0;
 
-    public Die(DieType _dieType, int _groupId)
+    public Die(DieType _dieType, int _groupId, DieSubGroup _dieSubGroup)
     {
         dieType = _dieType;
         groupId = _groupId;
+        dieSubGroup = _dieSubGroup;
         //scale = _scale;
         result = -1;
 
@@ -52,6 +53,7 @@ public class Die
                         new Vector3(-1,0,0)*rayLength, //5
                         new Vector3(0,0,1)*rayLength //6
                 };
+                dieTypeIndex = 1;
                 break;
             case DieType.d20:
                 rayDirections = new Vector3[] {
@@ -76,6 +78,7 @@ public class Die
                     new Vector3(0.31f, 0.93f, 0.18f)*rayLength, //19
                     new Vector3(0.30f, -0.94f, 0.17f)*rayLength //20
                 };
+                dieTypeIndex = 5;
                 break;
 
         }
@@ -101,17 +104,17 @@ public class Die
         switch (_dieTypeIndex)
         {
             case 0:
-                return "d20";
-            case 1:
-                return "d12";
-            case 2:
-                return "d10";
-            case 3:
-                return "d8";
-            case 4:
-                return "d6";
-            case 5:
                 return "d4";
+            case 1:
+                return "d6";
+            case 2:
+                return "d8";
+            case 3:
+                return "d10";
+            case 4:
+                return "d12";
+            case 5:
+                return "d20";
             default:
                 return "DieTypeError";
         }

@@ -29,12 +29,19 @@ public class ResultsUI : MonoBehaviour
         for (int i = 0; i < dieGroups.Count; i++)
         {
             //create panel from prefab
-            GameObject resultPanel = Instantiate(resultsPanelPrefabAttack, Vector3.zero, Quaternion.identity, transform);
-            resultPanel.transform.localPosition = new Vector3(0, 390 - (80 * i), 0);
-            resultPanel.GetComponent<RollResultPanel>().Init(dieGroups[i]);
-
-            //set text
-            //RollResult rollResult = dieGroups[i].GetComponent<dieGroups>().rollResult;
+            DieGroupBehaviour dieGroupB = dieGroups[i].GetComponent<DieGroupBehaviour>();
+            if (dieGroupB.dieGroup.toHitType == DieGroup.ToHitType.None)
+            {
+                GameObject resultPanel = Instantiate(resultsPanelPrefabStandard, Vector3.zero, Quaternion.identity, transform);
+                resultPanel.transform.localPosition = new Vector3(0, 390 - (80 * i), 0);
+                resultPanel.GetComponent<RollResultPanel>().Init(dieGroups[i]);
+            }
+            else
+            {
+                GameObject resultPanel = Instantiate(resultsPanelPrefabAttack, Vector3.zero, Quaternion.identity, transform);
+                resultPanel.transform.localPosition = new Vector3(0, 390 - (80 * i), 0);
+                resultPanel.GetComponent<RollResultPanel>().Init(dieGroups[i]);
+            }
 
 
         }

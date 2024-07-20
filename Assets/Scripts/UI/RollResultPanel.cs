@@ -31,13 +31,13 @@ public class RollResultPanel : MonoBehaviour
         gameObject.name = groupName + " Panel";
         gameObject.GetComponent<CanvasRenderer>().SetColor(dieGroup.GetColor(false));
         //if roll was standard
-        if (dieGroupB.dieGroup.toHitType == DieGroup.ToHitType.Standard)
+        if (dieGroupB.dieGroup.toHitType == DieGroup.ToHitType.None)
         {
             SetVars(dieGroupB);
             SetTextStandard();
         }
         //if roll is attack
-        else if (dieGroupB.dieGroup.toHitType != DieGroup.ToHitType.None)
+        else
         {
             SetVars(dieGroupB);
             SetTextAttack();
@@ -64,6 +64,21 @@ public class RollResultPanel : MonoBehaviour
             }
         }
         //add die type names to string
+        switch (dieGroup.toHitType)
+        {
+            case DieGroup.ToHitType.Standard:
+                toHitDieTypes += "d20 + ";
+                break;
+            case DieGroup.ToHitType.Advantage:
+                toHitDieTypes += "d20 (ADV) + ";
+                break;
+            case DieGroup.ToHitType.Disadvantage:
+                toHitDieTypes += "d20 (DIS) + ";
+                break;
+            case DieGroup.ToHitType.None:
+                Debug.Log("Error with ToHitType");
+                break;
+        }
         for (int i = 0; i < toHitBonusDieTypesCount.Length; i++)
         {
             if (toHitBonusDieTypesCount[i] != 0)
@@ -71,6 +86,7 @@ public class RollResultPanel : MonoBehaviour
                 toHitDieTypes += toHitBonusDieTypesCount[i].ToString() + Die.GetDieTypeString(i) + " + ";
             }
         }
+        toHitDieTypes += dieGroup.toHitModifier.ToString();
         for (int i = 0; i < damageDieTypesCount.Length; i++)
         {
             if (damageDieTypesCount[i] != 0)
@@ -78,6 +94,7 @@ public class RollResultPanel : MonoBehaviour
                 damageDieTypes += damageDieTypesCount[i].ToString() + Die.GetDieTypeString(i) + " + ";
             }
         }
+        damageDieTypes += dieGroup.damageModifier.ToString();
 
         //set result vars
         toHitResult = "Result: " + (dieGroupB.toHitResult + dieGroup.toHitModifier).ToString();
@@ -86,12 +103,14 @@ public class RollResultPanel : MonoBehaviour
     
     void SetTextStandard()
     {
+        Debug.Log("Setting standard text");
         standardTextPanels[0].GetComponent<TMP_Text>().text = groupName;
         standardTextPanels[1].GetComponent<TMP_Text>().text = damageDieTypes;
         standardTextPanels[2].GetComponent<TMP_Text>().text = damageResult;
     }
     void SetTextAttack()
     {
+        Debug.Log("Setting attack text");
         attackTextPanels[0].GetComponent<TMP_Text>().text = groupName;
         attackTextPanels[1].GetComponent<TMP_Text>().text = toHitDieTypes;
         attackTextPanels[2].GetComponent<TMP_Text>().text = toHitResult;

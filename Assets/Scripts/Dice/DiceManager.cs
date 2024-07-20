@@ -98,20 +98,47 @@ public class DiceManager : MonoBehaviour
     void CreateTestDieGroups()
     {
         //create attack die group (advantage) with 3d6 for damage
-        List<Die.DieType> damageDieTypes = new List<Die.DieType>()
+        List<Die.DieType> damageDieTypes0 = new List<Die.DieType>()
         {
             Die.DieType.d6,
             Die.DieType.d6,
             Die.DieType.d6
         };
-        DieGroup dieGroup0 = new DieGroup("Claw Attack", DieGroup.ToHitType.Advantage, 5, damageDieTypes, 3, 1);
-        GameObject dieGroupB = Instantiate(dieGroupBehaviourPrefab, Vector3.zero, Quaternion.identity, transform);
-        dieGroupB.name = dieGroup0.groupName;
-        dieGroupB.GetComponent<DieGroupBehaviour>().InstantiateDice(dieGroup0);
+        DieGroup dieGroup0 = new DieGroup("Claw Attack", DieGroup.ToHitType.Advantage, 5, damageDieTypes0, 3, 2);
+        GameObject dieGroupB0 = Instantiate(dieGroupBehaviourPrefab, Vector3.zero, Quaternion.identity, transform);
+        dieGroupB0.name = dieGroup0.groupName;
+        dieGroupObjects.Add(dieGroupB0);
+        dieGroupB0.GetComponent<DieGroupBehaviour>().InstantiateDice(dieGroup0);
 
         //create attack die group with 1d6 bonus to hit and 3d6 for damage
+        List<Die.DieType> toHitBonusDice1 = new List<Die.DieType>()
+        {
+            Die.DieType.d6
+        };
+        List<Die.DieType> damageDieTypes1 = new List<Die.DieType>()
+        {
+            Die.DieType.d6,
+            Die.DieType.d6,
+            Die.DieType.d6
+        };
+        DieGroup dieGroup1 = new DieGroup("Bite Attack", toHitBonusDice1, DieGroup.ToHitType.Disadvantage, 7, damageDieTypes1, 5, 8);
+        GameObject dieGroupB1 = Instantiate(dieGroupBehaviourPrefab, Vector3.zero, Quaternion.identity, transform);
+        dieGroupB1.name = dieGroup1.groupName;
+        dieGroupObjects.Add(dieGroupB1);
+        dieGroupB1.GetComponent<DieGroupBehaviour>().InstantiateDice(dieGroup1);
 
         //create non-attack die group with 3d6 for damage
+        List<Die.DieType> damageDieTypes2 = new List<Die.DieType>()
+        {
+            Die.DieType.d6,
+            Die.DieType.d6,
+            Die.DieType.d6
+        };
+        DieGroup dieGroup2 = new DieGroup("Just Damage", damageDieTypes2, 5, 1);
+        GameObject dieGroupB2 = Instantiate(dieGroupBehaviourPrefab, Vector3.zero, Quaternion.identity, transform);
+        dieGroupB2.name = dieGroup2.groupName;
+        dieGroupObjects.Add(dieGroupB2);
+        dieGroupB2.GetComponent<DieGroupBehaviour>().InstantiateDice(dieGroup2);
     }
 
     public void CreateDieGroup(DieGroup _dieGroup)

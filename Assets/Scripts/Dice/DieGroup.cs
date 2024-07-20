@@ -23,31 +23,34 @@ public class DieGroup
     public int colorIndex = 0;
     private static List<Color> dieColorDark = new List<Color>()
     {
-        new Color(0.9f,0.9f,0.9f,1), //white grey
-        new Color(1,0,0,1), //red
-        new Color(1,0.40f,0,1), //orange
-        new Color(1,1,0,1), //yellow
-        new Color(0,0.8f,1,1), //green
-        new Color(0,0.4f,1,1), //blue
-        new Color(0.75f,0,1,1), //purple
-        new Color(1,0.4f,1,1) //pink
+        new Color(0.9f,0.9f,0.9f,1), //white grey 0 
+        new Color(1,0,0,1), //red 1
+        new Color(1,0.40f,0,1), //orange 2
+        new Color(1,1,0,1), //yellow 3
+        new Color(0,0,1,1), //green 4
+        new Color(0,0.4f,1,1), //blue 5
+        new Color(1,0,1,1), //pink 6
+        new Color(0.5f,0,0.5f,1), //purple 7
+        new Color(0.4f,0.25f,0,1), //brown 8
+        new Color(0.4f,0.4f,0.4f,1) //grey 9
     };
     private static List<Color> dieColorLight = new List<Color>()
     {
-        Color.white, //white
-        new Color(1, 0.4f, 0.4f,1), //red
-        new Color(1,0.60f,0.3f,1), //orange
-        new Color(1,1,.04f,1), //yellow
-        new Color(0.4f,1,0.4f,1), //green
-        new Color(0.4f,0.65f,1,1), //blue
-        new Color(0.85f,0.3f,1,1), //purple
-        new Color(1,0.6f,1,1) //pink
+        Color.white, //white 0
+        new Color(1, 0.3f, 0.3f,1), //red 1
+        new Color(1,0.60f,0.3f,1), //orange 2
+        new Color(1,1,.60f,1), //yellow 3
+        new Color(0.4f,1,0.4f,1), //green 4
+        new Color(0.4f,0.65f,1,1), //blue 5
+        new Color(1,0.5f,1,1), //pink 6
+        new Color(0.6f,0,0.4f,1), //purple 7
+        new Color(0.6f,0.4f,0,1), //brown 8
+        new Color(0.5f,0.5f,0.5f,1) //grey 9
     };
 
     public DieGroup()
     {
-        groupId = groupIdIndex;
-        groupIdIndex++;
+        groupId = -1;
 
         groupName = "dieGroup" + groupId.ToString();
 
@@ -60,6 +63,11 @@ public class DieGroup
         colorIndex = 0;
 
         toHitType = ToHitType.Standard;
+    }
+    public void CommitDieGroup()
+    {
+        groupId = groupIdIndex;
+        ++groupIdIndex;
     }
 
     //includes to hit dice and bonus to hit dice
@@ -101,7 +109,7 @@ public class DieGroup
     }
 
     //standard roll
-    public DieGroup(string _groupName,  List<Die.DieType> _damageDice, int _damageModifier, int _colorIndex, ToHitType _toHitType)
+    public DieGroup(string _groupName,  List<Die.DieType> _damageDice, int _damageModifier, int _colorIndex)
     {
         groupId = groupIdIndex;
         groupIdIndex++;
@@ -116,7 +124,7 @@ public class DieGroup
 
         colorIndex = _colorIndex;
 
-        toHitType = _toHitType;
+        toHitType = ToHitType.None;
     }
 
     public Color GetColor(bool _darkColor)
@@ -128,6 +136,17 @@ public class DieGroup
         else
         {
             return dieColorLight[colorIndex];
+        }
+    }
+    public static Color GetColor(int _colorIndexbool, bool _darkColor)
+    {
+        if (_darkColor)
+        {
+            return dieColorDark[_colorIndexbool];
+        }
+        else
+        {
+            return dieColorLight[_colorIndexbool];
         }
     }
 }

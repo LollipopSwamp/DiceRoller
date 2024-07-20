@@ -4,15 +4,34 @@ using UnityEngine;
 
 public class DieGroupSetup : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public DieGroup dieGroupToCreate = new DieGroup();
+    public bool attackRoll;
 
-    // Update is called once per frame
-    void Update()
+    public void SetToHitType(int _toHitTypeIndex)
     {
-        
+        switch (_toHitTypeIndex)
+        {
+            case 0:
+                dieGroupToCreate.toHitType = DieGroup.ToHitType.Standard;
+                break;
+            case 1:
+                dieGroupToCreate.toHitType = DieGroup.ToHitType.Advantage;
+                break;
+            case 2:
+                dieGroupToCreate.toHitType = DieGroup.ToHitType.Disadvantage;
+                break;
+        }
+
+    }
+    public void SetModifier(bool _toHit)
+    {
+        if (_toHit)
+        {
+
+        }
+        else
+        {
+
+        }
     }
 }
