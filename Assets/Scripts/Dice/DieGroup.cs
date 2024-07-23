@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static DieGroup;
 
 public class DieGroup
 {
@@ -17,7 +18,7 @@ public class DieGroup
     
     //results type
     public enum ToHitType { Standard, Advantage, Disadvantage, None };
-    public ToHitType toHitType = ToHitType.None;
+    public ToHitType toHitType = ToHitType.Standard;
 
     //die color
     public int colorIndex = 0;
@@ -63,11 +64,6 @@ public class DieGroup
         colorIndex = 0;
 
         toHitType = ToHitType.Standard;
-    }
-    public void CommitDieGroup()
-    {
-        groupId = groupIdIndex;
-        ++groupIdIndex;
     }
 
     //includes to hit dice and bonus to hit dice
@@ -148,5 +144,27 @@ public class DieGroup
         {
             return dieColorLight[_colorIndexbool];
         }
+    }
+    public void CommitDieGroup()
+    {
+        groupId = groupIdIndex;
+        ++groupIdIndex;
+        PrintDieGroup();
+    }
+    public void PrintDieGroup()
+    {
+        Debug.Log("==================================");
+        Debug.Log("Group ID: " + groupId.ToString());
+        Debug.Log("Group Name: " + groupName);
+        string toHitBonusDiceString = "";
+        foreach (Die.DieType d in toHitBonusDice) { toHitBonusDiceString += (Die.DieTypeToString(d) + " "); }
+        Debug.Log("To Hit Bonus Dice: " + toHitBonusDiceString);
+        string damageDiceString = "";
+        foreach (Die.DieType d in damageDice) { damageDiceString += (Die.DieTypeToString(d) + " "); }
+        Debug.Log("Damage Dice: " + damageDiceString);
+        Debug.Log("To Hit Modifier: " + toHitModifier.ToString());
+        Debug.Log("Damage Modifier: " + damageModifier.ToString());
+        Debug.Log("To Hit Type: " + toHitType.ToString());
+        Debug.Log("Color Index: " + colorIndex.ToString());
     }
 }

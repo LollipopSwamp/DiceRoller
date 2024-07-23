@@ -136,7 +136,7 @@ public class DieBehaviour : MonoBehaviour
     }
     public void printDirections()
     {
-        Debug.Log(die.GetDieTypeString());
+        Debug.Log(die.DieTypeToString());
         foreach (Vector3 v in die.rayDirections) 
         {
             Debug.Log(v);

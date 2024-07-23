@@ -11,21 +11,27 @@ public class ResultsUI : MonoBehaviour
     public GameObject resultsPanelPrefabAttack;
     public GameObject resultsPanelPrefabStandard;
 
+    //panel objects
+    public List<GameObject> resultPanels = new List<GameObject>();
+
     //visibility
     private static bool showResultsUI = false;
 
-    void Start()
-    {
+    //main ui object
+    public GameObject mainUi;
 
-    }
-    public void ToggleVisibility()
+    public void SetVisibility(bool visible)
     {
-        showResultsUI = !showResultsUI;
-        gameObject.GetComponent<Canvas>().enabled = showResultsUI;
+        showResultsUI = visible;
+        gameObject.GetComponent<Canvas>().enabled = visible;
     }
 
     public void CreateResultsPanels(List<GameObject> dieGroups)
     {
+        //reset results panels
+        foreach(GameObject g in resultPanels) { Destroy(g); }
+
+        //create results panels
         for (int i = 0; i < dieGroups.Count; i++)
         {
             //create panel from prefab
@@ -35,26 +41,31 @@ public class ResultsUI : MonoBehaviour
                 GameObject resultPanel = Instantiate(resultsPanelPrefabStandard, Vector3.zero, Quaternion.identity, transform);
                 resultPanel.transform.localPosition = new Vector3(0, 390 - (80 * i), 0);
                 resultPanel.GetComponent<RollResultPanel>().Init(dieGroups[i]);
+                resultPanels.Add(resultPanel);
             }
             else
             {
                 GameObject resultPanel = Instantiate(resultsPanelPrefabAttack, Vector3.zero, Quaternion.identity, transform);
                 resultPanel.transform.localPosition = new Vector3(0, 390 - (80 * i), 0);
                 resultPanel.GetComponent<RollResultPanel>().Init(dieGroups[i]);
+                resultPanels.Add(resultPanel);
             }
 
 
         }
-        ResetPanel();
     }
-    public void ResetPanel()
+    public void HideButton()
     {
-        //set all text to empty
-        //groupNameText.GetComponent<TMP_Text>().text = "";
-        //diceTypesText.GetComponent<TMP_Text>().text = "";
-        //resultsText.GetComponent<TMP_Text>().text = "";
-        //separator0.SetActive(false);
-        //separator1.SetActive(false);
+        SetVisibility(false);
+    }
+    public void SetupButton()
+    {
+        SetVisibility(false);
+        mainUi.GetComponent<MainUI>().SetVisibility(true);
+    }
+    public void RollAgainButton()
+    {
+
     }
 
     public void UpdateText(string _groupText, string _diceTypeText, string _resultsText, Color _color)

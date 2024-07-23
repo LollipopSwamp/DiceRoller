@@ -9,47 +9,80 @@ public class ModifierSetup : MonoBehaviour
     public GameObject dieGroupSetup;
     public GameObject text;
 
-    public static int count = 0;
+    public static int toHitCount = 0;
+    public static int damageCount = 0;
 
-    void Start()
+    public int toHitType = 0;
+
+    public void Init()
     {
+        text.GetComponent<TMP_Text>().text = "+" + (0).ToString();
+        toHitCount = 0;
+        damageCount = 0;
         UpdateText();
     }
 
     void UpdateText()
     {
-        text.GetComponent<TMP_Text>().text = "+" + count.ToString();
-    }
-
-    public void PlusButton()
-    {
-        if (count + 1 < 25)
+        if (toHitType == 0)
         {
-            count++;
-            UpdateDieGroup();
-        }
-        UpdateText();
-    }
-
-    public void MinusButton()
-    {
-
-        if (count - 1 >= 0)
-        {
-            count--;
-            UpdateDieGroup();
-        }
-        UpdateText();
-    }
-    public void UpdateDieGroup(bool attackModifier)
-    {
-        if (!attackModifier)
-        {
-            dieGroupSetup.GetComponent<DieGroupSetup>().dieGroupToCreate.damageModifier = count;
+            string modifierText = "";
+            if (toHitCount >= 0) { modifierText += "+"; }
+            modifierText += toHitCount.ToString();
+            text.GetComponent<TMP_Text>().text = modifierText;
         }
         else
         {
-            dieGroupSetup.GetComponent<DieGroupSetup>().dieGroupToCreate.toHitModifier = count;
+            string modifierText = "";
+            if (damageCount >= 0) { modifierText += "+"; }
+            modifierText += damageCount.ToString();
+            text.GetComponent<TMP_Text>().text = modifierText;
         }
+    }
+
+    public void PlusButton(int _toHitType)
+    {
+        toHitType = _toHitType;
+        if (_toHitType == 0)
+        {
+            if (toHitCount + 1 <= 25)
+            {
+                toHitCount++;
+            }
+            dieGroupSetup.GetComponent<DieGroupSetup>().SetModifier(true, toHitCount);
+        }
+        else
+        {
+            if (damageCount + 1 <= 25)
+            {
+                damageCount++;
+            }
+            dieGroupSetup.GetComponent<DieGroupSetup>().SetModifier(false, damageCount);
+        }
+        UpdateText();
+        dieGroupSetup.GetComponent<DieGroupSetup>().SetDieTypeString();
+    }
+
+    public void MinusButton(int _toHitType)
+    {
+
+        UpdateText();
+        if (_toHitType == 0)
+        {
+            if (toHitCount - 1 >= -25)
+            {
+                toHitCount--;
+            }
+            dieGroupSetup.GetComponent<DieGroupSetup>().SetModifier(true, toHitCount);
+        }
+        else
+        {
+            if (damageCount - 1 >= -25)
+            {
+                damageCount--;
+            }
+            dieGroupSetup.GetComponent<DieGroupSetup>().SetModifier(false, damageCount);
+        }
+        dieGroupSetup.GetComponent<DieGroupSetup>().SetDieTypeString();
     }
 }

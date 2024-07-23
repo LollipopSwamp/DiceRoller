@@ -9,21 +9,23 @@ public class DieTypeSetup : MonoBehaviour
     public Die.DieType dieType;
 
     public GameObject text;
+    public GameObject dieGroupSetup;
 
     public int count = 0;
 
-    void Start()
+    public void Init()
     {
+        count = 0;
         UpdateText();
     }
 
     void UpdateText()
     {
-        Debug.Log(dieType.ToString());
+        //Debug.Log(dieType.ToString());
         text.GetComponent<TMP_Text>().text = count.ToString() + dieType.ToString().ToLower();
     }
 
-    public void PlusButton()
+    public void PlusButton(int _toHitType)
     {
         Debug.Log("Plus button hit");
         if (count + 1 < 10) 
@@ -31,9 +33,18 @@ public class DieTypeSetup : MonoBehaviour
             count++;
         }
         UpdateText();
+        if (_toHitType == 0)
+        {
+            dieGroupSetup.GetComponent<DieGroupSetup>().toHitBonusDieTypesCount[Die.DieTypeToIndex(dieType)] = count;
+        }
+        else
+        {
+            dieGroupSetup.GetComponent<DieGroupSetup>().damageDieTypesCount[Die.DieTypeToIndex(dieType)] = count;
+        }
+        dieGroupSetup.GetComponent<DieGroupSetup>().SetDieTypeString();
     }
 
-    public void MinusButton()
+    public void MinusButton(int _toHitType)
     {
 
         Debug.Log("Minus button hit");
@@ -42,5 +53,14 @@ public class DieTypeSetup : MonoBehaviour
             count--;
         }
         UpdateText();
+        if (_toHitType == 0)
+        {
+            dieGroupSetup.GetComponent<DieGroupSetup>().toHitBonusDieTypesCount[Die.DieTypeToIndex(dieType)] = count;
+        }
+        else
+        {
+            dieGroupSetup.GetComponent<DieGroupSetup>().damageDieTypesCount[Die.DieTypeToIndex(dieType)] = count;
+        }
+        dieGroupSetup.GetComponent<DieGroupSetup>().SetDieTypeString();
     }
 }

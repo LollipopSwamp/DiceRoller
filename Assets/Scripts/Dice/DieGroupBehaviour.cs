@@ -22,16 +22,13 @@ public class DieGroupBehaviour : MonoBehaviour
     public static Vector3 nextStartPosition = new Vector3(-9, 15, 6);
 
     //add dice
-    public void InstantiateDice(DieGroup _dieGroup)
+    public void InstantiateDice()
     {
-        //set DieGroup var
-        dieGroup = _dieGroup;
-
         //to hit dice if standard, 1x d20
         if (dieGroup.toHitType == DieGroup.ToHitType.Standard)
         {
             //create die gameobject
-            GameObject dieObj = Instantiate(diePrefabs[0], GetNextStartPosition(), Quaternion.identity, transform);
+            GameObject dieObj = Instantiate(diePrefabs[5], GetNextStartPosition(), Quaternion.identity, transform);
             dieObj.GetComponent<MeshRenderer>().material.color = dieGroup.GetColor(true);
             dice.Add(dieObj);
 
@@ -49,7 +46,7 @@ public class DieGroupBehaviour : MonoBehaviour
             for (int i = 0; i < 2; i++)
             {
                 //create die gameobject
-                GameObject dieObj = Instantiate(diePrefabs[0], GetNextStartPosition(), Quaternion.identity, transform);
+                GameObject dieObj = Instantiate(diePrefabs[5], GetNextStartPosition(), Quaternion.identity, transform);
                 dieObj.GetComponent<MeshRenderer>().material.color = dieGroup.GetColor(true);
                 dice.Add(dieObj);
 
@@ -78,7 +75,7 @@ public class DieGroupBehaviour : MonoBehaviour
             dieBehaviour.SetVars(die, gameObject, nextStartPosition);
 
             //set die obj name
-            dieObj.name = Die.GetDieTypeString(dieType) + " (ID: " + dieBehaviour.die.dieId.ToString() + ")";
+            dieObj.name = Die.DieTypeToString(dieType) + " (ID: " + dieBehaviour.die.dieId.ToString() + ")";
         }
 
         //create damage/standard dice
@@ -96,7 +93,7 @@ public class DieGroupBehaviour : MonoBehaviour
             dieBehaviour.SetVars(die, gameObject, nextStartPosition);
 
             //set die obj name
-            dieObj.name = Die.GetDieTypeString(dieType) + " (ID: " + dieBehaviour.die.dieId.ToString() + ")";
+            dieObj.name = Die.DieTypeToString(dieType) + " (ID: " + dieBehaviour.die.dieId.ToString() + ")";
 
         }
     }

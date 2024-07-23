@@ -6,7 +6,7 @@ using TMPro;
 
 public class ToggleSlider : MonoBehaviour
 {
-    public bool active = true;
+    public bool state = true;
 
     //objects
     public GameObject sliderText;
@@ -20,20 +20,26 @@ public class ToggleSlider : MonoBehaviour
 
     public void SliderHit()
     {
-        active = !active;
-        if (active)
+        state = !state;
+        SetState(state);
+
+    }
+    public void SetState(bool _state)
+    {
+        state=_state;
+        float y = sliderCircle.transform.localPosition.y;
+        if (state)
         {
             sliderText.GetComponent<TMP_Text>().text = "Attack Roll";
             sliderBackground.GetComponent<Image>().color = Color.green;
-            sliderCircle.transform.localPosition = new Vector3(75, -10, 0);
+            sliderCircle.transform.localPosition = new Vector3(75, y, 0);
         }
         else
         {
             sliderText.GetComponent<TMP_Text>().text = "Standard Roll";
             sliderBackground.GetComponent<Image>().color = Color.grey;
-            sliderCircle.transform.localPosition = new Vector3 (-75,-10,0);
+            sliderCircle.transform.localPosition = new Vector3(-75, y, 0);
         }
-
     }
 
 

@@ -32,11 +32,26 @@ public class DiceManager : MonoBehaviour
     }
     public void RollDice()
     {
-        CreateTestDieGroups();
+        //CreateTestDieGroups();
         PrintAllDice();
         start = DateTime.Now;
         allResultsStored = false;
+        mainUi.GetComponent<MainUI>().SetVisibility(false);
+        //DestroyDice();
+        InstantiateDieGroups();
     }
+
+    public void DestroyDice()
+    {
+        foreach (GameObject g in dieGroupObjects) 
+        { 
+            foreach(GameObject d in g.GetComponent<DieGroupBehaviour>().dice)
+            {
+                Destroy(d);
+            }
+        }
+    }
+
     void Update()
     {//!allResultsStored && 
         if (DateTime.Now > start.AddSeconds(3))
@@ -88,7 +103,7 @@ public class DiceManager : MonoBehaviour
             }
             //send results to UI
             //ui.GetComponent<UI>().ToggleMainUI();
-            resultsUi.GetComponent<ResultsUI>().ToggleVisibility();
+            resultsUi.GetComponent<ResultsUI>().SetVisibility(true);
             resultsUi.GetComponent<ResultsUI>().CreateResultsPanels(dieGroupObjects);
             //ui.GetComponent<UI>().ShowResults(dieGroups);
         }
@@ -108,7 +123,7 @@ public class DiceManager : MonoBehaviour
         GameObject dieGroupB0 = Instantiate(dieGroupBehaviourPrefab, Vector3.zero, Quaternion.identity, transform);
         dieGroupB0.name = dieGroup0.groupName;
         dieGroupObjects.Add(dieGroupB0);
-        dieGroupB0.GetComponent<DieGroupBehaviour>().InstantiateDice(dieGroup0);
+        dieGroupB0.GetComponent<DieGroupBehaviour>().InstantiateDice();
 
         //create attack die group with 1d6 bonus to hit and 3d6 for damage
         List<Die.DieType> toHitBonusDice1 = new List<Die.DieType>()
@@ -125,7 +140,7 @@ public class DiceManager : MonoBehaviour
         GameObject dieGroupB1 = Instantiate(dieGroupBehaviourPrefab, Vector3.zero, Quaternion.identity, transform);
         dieGroupB1.name = dieGroup1.groupName;
         dieGroupObjects.Add(dieGroupB1);
-        dieGroupB1.GetComponent<DieGroupBehaviour>().InstantiateDice(dieGroup1);
+        dieGroupB1.GetComponent<DieGroupBehaviour>().InstantiateDice();
 
         //create non-attack die group with 3d6 for damage
         List<Die.DieType> damageDieTypes2 = new List<Die.DieType>()
@@ -138,17 +153,26 @@ public class DiceManager : MonoBehaviour
         GameObject dieGroupB2 = Instantiate(dieGroupBehaviourPrefab, Vector3.zero, Quaternion.identity, transform);
         dieGroupB2.name = dieGroup2.groupName;
         dieGroupObjects.Add(dieGroupB2);
-        dieGroupB2.GetComponent<DieGroupBehaviour>().InstantiateDice(dieGroup2);
+        dieGroupB2.GetComponent<DieGroupBehaviour>().InstantiateDice();
     }
 
-    public void CreateDieGroup(DieGroup _dieGroup)
+    public void CreateDieGroupBehaviour(DieGroup _dieGroup)
     {
-
+        GameObject dieGroupB = Instantiate(dieGroupBehaviourPrefab, Vector3.zero, Quaternion.identity, transform);
+        dieGroupB.GetComponent<DieGroupBehaviour>().name = _dieGroup.groupName;
+        dieGroupB.GetComponent<DieGroupBehaviour>().dieGroup = _dieGroup;
+        dieGroups.Add(_dieGroup);
+        dieGroupObjects.Add(dieGroupB);
+        //dieGroupB.GetComponent<DieGroupBehaviour>().InstantiateDice(_dieGroup);
     }
 
-    void InstantiateDie(GameObject _parent, Die.DieType _dieType)
+    void InstantiateDieGroups()
     {
 
+        foreach (GameObject dieGroupB in dieGroupObjects) 
+        {
+            dieGroupB.GetComponent<DieGroupBehaviour>().InstantiateDice();
+        }
     }
     
     public void PrintAllDice()

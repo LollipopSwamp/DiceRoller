@@ -3,16 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class RollResultPanel : MonoBehaviour
+public class DieGroupPanel : MonoBehaviour
 {
     //result strings
     public int groupId;
     public string groupName;
     public DieGroup.ToHitType toHitType;
     public string toHitDieTypes;
-    public string toHitResult;
     public string damageDieTypes;
-    public string damageResult;
 
     //is roll attack or standard
     public bool attackRoll;
@@ -31,38 +29,26 @@ public class RollResultPanel : MonoBehaviour
         gameObject.name = groupName + " Panel";
         gameObject.GetComponent<CanvasRenderer>().SetColor(dieGroup.GetColor(false));
         //if roll was standard
-        if (dieGroupB.dieGroup.toHitType == DieGroup.ToHitType.None)
+        if (dieGroup.toHitType == DieGroup.ToHitType.None)
         {
-            SetVars(dieGroupB);
+            SetVars(dieGroup);
             SetTextStandard();
         }
         //if roll is attack
         else
         {
-            SetVars(dieGroupB);
+            SetVars(dieGroup);
             SetTextAttack();
         }
     }
 
-    void SetVars(DieGroupBehaviour dieGroupB)
+    void SetVars(DieGroup dieGroup)
     {
-        DieGroup dieGroup = dieGroupB.dieGroup;
         //get count of each type of die
         int[] toHitBonusDieTypesCount = new int[6];
         int[] damageDieTypesCount = new int[6];
-        foreach (GameObject dieB in dieGroupB.dice)
-        {
-            Die d = dieB.GetComponent<DieBehaviour>().die;
-            switch (d.dieSubGroup)
-            {
-                case Die.DieSubGroup.ToHitBonus:
-                    toHitBonusDieTypesCount[d.dieTypeIndex]++;
-                    break;
-                case Die.DieSubGroup.Damage:
-                    damageDieTypesCount[d.dieTypeIndex]++;
-                    break;
-            }
-        }
+        foreach (Die.DieType dieType in dieGroup.toHitBonusDice) { toHitBonusDieTypesCount[Die.DieTypeToIndex(dieType)]++; }
+        foreach (Die.DieType dieType in dieGroup.damageDice) { damageDieTypesCount[Die.DieTypeToIndex(dieType)]++; }
         //add die type names to string
         switch (dieGroup.toHitType)
         {
@@ -76,7 +62,7 @@ public class RollResultPanel : MonoBehaviour
                 toHitDieTypes += "d20 (DIS) + ";
                 break;
             case DieGroup.ToHitType.None:
-                //Debug.Log("Error with ToHitType");
+                Debug.Log("Error with ToHitType");
                 break;
         }
         for (int i = 0; i < toHitBonusDieTypesCount.Length; i++)
@@ -95,43 +81,36 @@ public class RollResultPanel : MonoBehaviour
             }
         }
         damageDieTypes += dieGroup.damageModifier.ToString();
-
-        //set result vars
-        toHitResult = "Result: " + (dieGroupB.toHitResult + dieGroup.toHitModifier).ToString();
-        damageResult = "Result: " + (dieGroupB.damageResult + dieGroup.damageModifier).ToString();
     }
-    
+
     void SetTextStandard()
     {
         Debug.Log("Setting standard text");
         standardTextPanels[0].GetComponent<TMP_Text>().text = groupName;
         standardTextPanels[1].GetComponent<TMP_Text>().text = damageDieTypes;
-        standardTextPanels[2].GetComponent<TMP_Text>().text = damageResult;
     }
     void SetTextAttack()
     {
         Debug.Log("Setting attack text");
         attackTextPanels[0].GetComponent<TMP_Text>().text = groupName;
         attackTextPanels[1].GetComponent<TMP_Text>().text = toHitDieTypes;
-        attackTextPanels[2].GetComponent<TMP_Text>().text = toHitResult;
-        attackTextPanels[3].GetComponent<TMP_Text>().text = damageDieTypes;
-        attackTextPanels[4].GetComponent<TMP_Text>().text = damageResult;
+        attackTextPanels[2].GetComponent<TMP_Text>().text = damageDieTypes;
     }
 
     public void PrintRollResult()
     {
         if (attackRoll)
         {
-            Debug.Log("Attack Roll | " + groupName + " | " + toHitDieTypes + " | " + toHitResult + " | " + damageDieTypes + " | " + damageResult);
+            Debug.Log("Attack Roll | " + groupName + " | " + toHitDieTypes + " | " + damageDieTypes);
         }
         else if (!attackRoll)
         {
-            Debug.Log("Standard Roll | " + groupName + " | " + damageDieTypes + " | " + damageResult);
+            Debug.Log("Standard Roll | " + groupName + " | " + damageDieTypes);
         }
         else
         {
             Debug.Log("Error printing RollResult");
         }
-        
+
     }
 }

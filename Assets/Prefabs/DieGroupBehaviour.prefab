@@ -45,12 +45,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   diePrefabs:
-  - {fileID: 4310915285212483979, guid: 087e9b3822809e94b81f595beedf9f07, type: 3}
-  - {fileID: 0}
-  - {fileID: 0}
   - {fileID: 0}
   - {fileID: 3022694146834697503, guid: eed346ff2dc8e6d4088f639ccd0aa81d, type: 3}
   - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 4310915285212483979, guid: 087e9b3822809e94b81f595beedf9f07, type: 3}
   dice: []
   toHitResult: 0
   damageResult: 0

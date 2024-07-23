@@ -7,8 +7,9 @@ public class ToHitTypeUI : MonoBehaviour
 {
     public List<GameObject> toHitTypeButtons = new List<GameObject>();
     public DieGroup.ToHitType toHitType = 0;
+    public GameObject dieGroupSetup;
 
-    void Start()
+    public void Init()
     {
         UpdateButtons(0);
     }
@@ -33,5 +34,8 @@ public class ToHitTypeUI : MonoBehaviour
                 break;
         }
         toHitTypeButtons[_toHitTypeIndex].GetComponent<Outline>().enabled = true;
+        
+        dieGroupSetup.GetComponent<DieGroupSetup>().SetToHitType(_toHitTypeIndex);
+        dieGroupSetup.GetComponent<DieGroupSetup>().SetDieTypeString();
     }
 }

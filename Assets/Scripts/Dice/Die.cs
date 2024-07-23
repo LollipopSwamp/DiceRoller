@@ -95,11 +95,11 @@ public class Die
     {
         groupId = _groupId;
     }
-    public string GetDieTypeString()
+    public string DieTypeToString()
     {
-        return GetDieTypeString(dieTypeIndex);
+        return DieTypeToString(dieTypeIndex);
     }
-    public static string GetDieTypeString(int _dieTypeIndex)
+    public static string DieTypeToString(int _dieTypeIndex)
     {
         switch (_dieTypeIndex)
         {
@@ -119,7 +119,7 @@ public class Die
                 return "DieTypeError";
         }
     }
-    public static string GetDieTypeString(DieType _dieType)
+    public static string DieTypeToString(DieType _dieType)
     {
         switch (_dieType)
         {
@@ -148,17 +148,17 @@ public class Die
     {
         switch (_dieType)
         {
-            case DieType.d20:
-                return 0;
-            case DieType.d12:
-                return 1;
-            case DieType.d10:
-                return 2;
-            case DieType.d8:
-                return 3;
-            case DieType.d6:
-                return 4;
             case DieType.d4:
+                return 0;
+            case DieType.d6:
+                return 1;
+            case DieType.d8:
+                return 2;
+            case DieType.d10:
+                return 3;
+            case DieType.d12:
+                return 4;
+            case DieType.d20:
                 return 5;
             default:
                 Debug.Log("Error in IndexToDieType, returning d20 index (0)");
@@ -170,17 +170,17 @@ public class Die
         switch (_index)
         {
             case 0:
-                return DieType.d20;
-            case 1:
-                return DieType.d12;
-            case 2:
-                return DieType.d10;
-            case 3:
-                return DieType.d8;
-            case 4:
-                return DieType.d6;
-            case 5:
                 return DieType.d4;
+            case 1:
+                return DieType.d6;
+            case 2:
+                return DieType.d8;
+            case 3:
+                return DieType.d10;
+            case 4:
+                return DieType.d12;
+            case 5:
+                return DieType.d20;
             default:
                 Debug.Log("Error in IndexToDieType, returning d20");
                 return DieType.d20;
