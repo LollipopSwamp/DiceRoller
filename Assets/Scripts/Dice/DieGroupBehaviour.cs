@@ -19,7 +19,7 @@ public class DieGroupBehaviour : MonoBehaviour
 
 
     //instantiation position
-    public static Vector3 nextStartPosition = new Vector3(-9, 15, 6);
+    public static Vector3 nextStartPosition = new Vector3(-12, 15, 6);
 
     //add dice
     public void InstantiateDice()
@@ -174,6 +174,10 @@ public class DieGroupBehaviour : MonoBehaviour
             //tell DiceManager to check final results
             transform.parent.gameObject.GetComponent<DiceManager>().CheckFinalResults();
         }
+    }
+    public static void ResetStartPosition()
+    {
+        nextStartPosition = new Vector3(-12, 15, 6);
     }
     public static Vector3 GetNextStartPosition()
     { //initial is (-9, 15, 6);

@@ -28,7 +28,7 @@ public class DieGroup
         new Color(1,0,0,1), //red 1
         new Color(1,0.40f,0,1), //orange 2
         new Color(1,1,0,1), //yellow 3
-        new Color(0,0,1,1), //green 4
+        new Color(0,1,0,1), //green 4
         new Color(0,0.4f,1,1), //blue 5
         new Color(1,0,1,1), //pink 6
         new Color(0.5f,0,0.5f,1), //purple 7
@@ -145,11 +145,42 @@ public class DieGroup
             return dieColorLight[_colorIndexbool];
         }
     }
+    public int[] GetToHitBonusDieTypeInts()
+    {
+        int[] toHitBonusDieTypesCount = new int[6];
+        foreach (Die.DieType d in toHitBonusDice)
+        {
+            toHitBonusDieTypesCount[Die.DieTypeToIndex(d)]++;
+        }
+        return toHitBonusDieTypesCount;
+    }
+    public int[] GetDamageDieTypeInts()
+    {
+        int[] damageDieTypesCount = new int[6];
+        foreach (Die.DieType d in damageDice)
+        {
+            damageDieTypesCount[Die.DieTypeToIndex(d)]++;
+        }
+        return damageDieTypesCount;
+    }
     public void CommitDieGroup()
     {
         groupId = groupIdIndex;
         ++groupIdIndex;
         PrintDieGroup();
+    }
+
+    public static DieGroup DuplicateDieGroup(DieGroup _dieGroup)
+    {
+        DieGroup newDieGroup = new DieGroup();
+        newDieGroup.groupName = _dieGroup.groupName;
+        newDieGroup.toHitBonusDice = _dieGroup.toHitBonusDice;
+        newDieGroup.damageDice = _dieGroup.damageDice;
+        newDieGroup.toHitModifier = _dieGroup.toHitModifier;
+        newDieGroup.damageModifier = _dieGroup.damageModifier;
+        newDieGroup.toHitType = _dieGroup.toHitType;
+        newDieGroup.colorIndex = _dieGroup.colorIndex;
+        return newDieGroup;
     }
     public void PrintDieGroup()
     {

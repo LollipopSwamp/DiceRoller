@@ -31,6 +31,7 @@ public class DieBehaviour : MonoBehaviour
     {
         //init variables
         rb = GetComponent<Rigidbody>();
+        mr = GetComponent<MeshRenderer>();
         start = DateTime.Now;
         GameObject parent = transform.parent.gameObject;
         dieGroupBehaviour = parent.GetComponent<DieGroupBehaviour>();
@@ -123,7 +124,15 @@ public class DieBehaviour : MonoBehaviour
             Physics.IgnoreCollision(gameObject.GetComponent<Collider>(), GetComponent<Collider>(), false);
         }
     }
-
+    public void DisplayDie()
+    {
+        transform.position = initialPosition;
+        gameObject.GetComponent<Rigidbody>().isKinematic = true;
+        SetCollision(false);
+        Color currColor = mr.material.color;
+        Color newColor = new Color(currColor.r, currColor.g, currColor.b, 1);
+        mr.material.color = newColor;
+    }
     public void ResetDie()
     {
         Debug.Log("Resetting die");

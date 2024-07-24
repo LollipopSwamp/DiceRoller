@@ -18,6 +18,11 @@ public class DieTypeSetup : MonoBehaviour
         count = 0;
         UpdateText();
     }
+    public void Init(int _count)
+    {
+        count = _count;
+        UpdateText();
+    }
 
     void UpdateText()
     {

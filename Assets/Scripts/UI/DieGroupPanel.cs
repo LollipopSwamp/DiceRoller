@@ -20,10 +20,9 @@ public class DieGroupPanel : MonoBehaviour
     public List<GameObject> attackTextPanels;
 
 
-    public void Init(GameObject dieGroupObj)
+
+    public void Init(DieGroup dieGroup)
     {
-        DieGroupBehaviour dieGroupB = dieGroupObj.GetComponent<DieGroupBehaviour>();
-        DieGroup dieGroup = dieGroupB.dieGroup;
         groupId = dieGroup.groupId;
         groupName = dieGroup.groupName;
         gameObject.name = groupName + " Panel";
@@ -41,7 +40,20 @@ public class DieGroupPanel : MonoBehaviour
             SetTextAttack();
         }
     }
+    public void DuplicateBtn()
+    {
+        gameObject.GetComponentInParent<MainUI>().DuplicateDieGroup(groupId);
+    }
+    public void EditBtn()
+    {
+        gameObject.GetComponentInParent<MainUI>().EditDieGroup(groupId);
+    }
 
+    public void DeleteBtn()
+    {
+        gameObject.GetComponentInParent<MainUI>().DeleteDieGroup(groupId);
+        Destroy(gameObject);
+    }
     void SetVars(DieGroup dieGroup)
     {
         //get count of each type of die

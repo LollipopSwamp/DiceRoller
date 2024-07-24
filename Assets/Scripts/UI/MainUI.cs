@@ -23,6 +23,9 @@ public class MainUI : MonoBehaviour
     public GameObject dieGroupBasicSetup;
     public GameObject dieGroupToHitSetup;
     public GameObject dieGroupDamageSetup;
+    public GameObject rollingDiceUI;
+
+    public GameObject resultsUI;
 
     //current menu showing
     private static int nextSetupMenu = 0;
@@ -44,7 +47,17 @@ public class MainUI : MonoBehaviour
         showMainUI = visible;
         gameObject.GetComponent<Canvas>().enabled = visible;
         mainSetup.GetComponent<Canvas>().enabled = visible;
+        if (visible) { InitDieGroupPanels(); }
     }
+
+    public void SetRollingDiceUIVisibility(bool visible)
+    {
+        if (visible) { gameObject.GetComponent<Canvas>().enabled = false; } 
+        else { resultsUI.GetComponent<Canvas>().enabled = true; }
+        
+        rollingDiceUI.GetComponent<Canvas>().enabled = visible;
+    }
+    
 
     private void HideAll()
     {
@@ -53,6 +66,7 @@ public class MainUI : MonoBehaviour
         dieGroupBasicSetup.GetComponent<Canvas>().enabled = false;
         dieGroupToHitSetup.GetComponent<Canvas>().enabled = false;
         dieGroupDamageSetup.GetComponent<Canvas>().enabled = false;
+        rollingDiceUI.GetComponent<Canvas>().enabled = false;
     }
 
     public void CreateDiegroupBtn()
@@ -111,9 +125,31 @@ public class MainUI : MonoBehaviour
         }
         nextSetupMenu++;
     }
+    public void DuplicateDieGroup(int _groupId)
+    {
+        diceManager.GetComponent<DiceManager>().DuplicateDieGroup(_groupId);
+        InitDieGroupPanels();
+    }
+    public void EditDieGroup(int _groupId)
+    {
+        foreach(DieGroup _dieGroup in diceManager.GetComponent<DiceManager>().dieGroups)
+        {
+            if (_dieGroup.groupId == _groupId)
+            {
+                nextSetupMenu = 0;
+                dieGroupSetup.GetComponent<DieGroupSetup>().Init(_dieGroup);
+                NextDieGroupPanel();
+                return;
+            }
+        }
+    }
+    public void DeleteDieGroup(int _groupId)
+    {
+        diceManager.GetComponent<DiceManager>().DeleteDieGroup(_groupId);
+        InitDieGroupPanels();
+    }
     public void InitDieGroupPanels()
     {
-        List<GameObject> dieGroups = diceManager.GetComponent<DiceManager>().dieGroupObjects;
         //reset panels
         foreach (GameObject panel in dieGroupPanels)
         {
@@ -121,22 +157,21 @@ public class MainUI : MonoBehaviour
         }
 
         //create panels
-        for (int i = 0; i < dieGroups.Count; i++)
+        for (int i = 0; i < diceManager.GetComponent<DiceManager>().dieGroups.Count; i++)
         {
             //create panel from prefab
-            DieGroupBehaviour dieGroupB = dieGroups[i].GetComponent<DieGroupBehaviour>();
-            if (dieGroupB.dieGroup.toHitType == DieGroup.ToHitType.None)
+            if (diceManager.GetComponent<DiceManager>().dieGroups[i].toHitType == DieGroup.ToHitType.None)
             {
                 GameObject dieGroupPanel = Instantiate(dieGroupPanelPrefabStandard, Vector3.zero, Quaternion.identity, mainSetup.transform);
                 dieGroupPanel.transform.localPosition = new Vector3(0, 390 - (80 * i), 0);
-                dieGroupPanel.GetComponent<DieGroupPanel>().Init(dieGroups[i]);
+                dieGroupPanel.GetComponent<DieGroupPanel>().Init(diceManager.GetComponent<DiceManager>().dieGroups[i]);
                 dieGroupPanels.Add(dieGroupPanel);
             }
             else
             {
                 GameObject dieGroupPanel = Instantiate(dieGroupPanelPrefabAttack, Vector3.zero, Quaternion.identity, mainSetup.transform);
                 dieGroupPanel.transform.localPosition = new Vector3(0, 390 - (80 * i), 0);
-                dieGroupPanel.GetComponent<DieGroupPanel>().Init(dieGroups[i]);
+                dieGroupPanel.GetComponent<DieGroupPanel>().Init(diceManager.GetComponent<DiceManager>().dieGroups[i]);
                 dieGroupPanels.Add(dieGroupPanel);
             }
         }

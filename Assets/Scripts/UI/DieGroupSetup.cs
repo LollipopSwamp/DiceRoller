@@ -5,7 +5,7 @@ using TMPro;
 
 public class DieGroupSetup : MonoBehaviour
 {
-    public DieGroup dieGroupToCreate = new DieGroup();
+    public DieGroup dieGroup = new DieGroup();
     public bool attackRoll;
     public int[] toHitBonusDieTypesCount = new int[6];
     public int[] damageDieTypesCount = new int[6];
@@ -25,10 +25,15 @@ public class DieGroupSetup : MonoBehaviour
     public GameObject colorPicker;
     public GameObject attackRollSlider;
 
+    //edit mode bool
+    public bool editMode = false;
+
     public void Init()
     {
+        //edit mode false
+        editMode = false;
         //reset die group variables
-        dieGroupToCreate = new DieGroup();
+        dieGroup = new DieGroup();
         attackRoll = true;
         toHitBonusDieTypesCount = new int[6];
         damageDieTypesCount = new int[6];
@@ -46,18 +51,56 @@ public class DieGroupSetup : MonoBehaviour
         SetDieTypeString();
     }
 
+    public void Init(DieGroup _dieGroup)
+    {
+        //edit mode true
+        editMode = true;
+
+        //set die group variables
+        if (_dieGroup.toHitType == DieGroup.ToHitType.None){
+            attackRoll = false;
+            attackRollSlider.GetComponent<ToggleSlider>().SetState(false);
+            toHitTypeSetup.GetComponent<ToHitTypeUI>().Init();
+        }
+        else{
+            attackRoll = true;
+            attackRollSlider.GetComponent<ToggleSlider>().SetState(true);
+            toHitTypeSetup.GetComponent<ToHitTypeUI>().Init(_dieGroup.toHitType);
+        }
+
+        toHitBonusDieTypesCount = _dieGroup.GetToHitBonusDieTypeInts();
+        damageDieTypesCount = _dieGroup.GetDamageDieTypeInts();
+
+        //set ui variables
+        groupNameInput.text = _dieGroup.groupName;
+        colorPicker.GetComponent<ColorPicker>().UpdateButtons(_dieGroup.colorIndex);
+
+        for (int i = 0; i < damageDieTypesCount.Length; i++)
+        {
+            toHitDieTypes[i].GetComponent<DieTypeSetup>().Init(toHitBonusDieTypesCount[i]);
+        }
+        toHitModifier.GetComponent<ModifierSetup>().Init(1,_dieGroup.toHitModifier);
+
+        for (int i = 0; i < damageDieTypesCount.Length; i++)
+        {
+            damageDieTypes[i].GetComponent<DieTypeSetup>().Init(damageDieTypesCount[i]);
+        }
+        damageModifier.GetComponent<ModifierSetup>().Init(0, _dieGroup.damageModifier);
+        SetDieTypeString();
+    }
+
     public void SetToHitType(int _toHitTypeIndex)
     {
         switch (_toHitTypeIndex)
         {
             case 0:
-                dieGroupToCreate.toHitType = DieGroup.ToHitType.Standard;
+                dieGroup.toHitType = DieGroup.ToHitType.Standard;
                 break;
             case 1:
-                dieGroupToCreate.toHitType = DieGroup.ToHitType.Advantage;
+                dieGroup.toHitType = DieGroup.ToHitType.Advantage;
                 break;
             case 2:
-                dieGroupToCreate.toHitType = DieGroup.ToHitType.Disadvantage;
+                dieGroup.toHitType = DieGroup.ToHitType.Disadvantage;
                 break;
         }
 
@@ -66,18 +109,18 @@ public class DieGroupSetup : MonoBehaviour
     {
         if (_toHit)
         {
-            dieGroupToCreate.toHitModifier = _modifier;
+            dieGroup.toHitModifier = _modifier;
         }
         else
         {
-            dieGroupToCreate.damageModifier = _modifier;
+            dieGroup.damageModifier = _modifier;
         }
     }
     public void SetDieTypeString()
     {
         //to hit die type string
         string dieTypeString = "";
-        switch (dieGroupToCreate.toHitType)
+        switch (dieGroup.toHitType)
         {
             case DieGroup.ToHitType.Standard:
                 dieTypeString += "d20";
@@ -99,10 +142,10 @@ public class DieGroupSetup : MonoBehaviour
                 dieTypeString += " + " + toHitBonusDieTypesCount[i].ToString() + Die.DieTypeToString(i);
             }
         }
-        if (dieGroupToCreate.toHitModifier < 0)
+        if (dieGroup.toHitModifier < 0)
         {dieTypeString += " - ";}
         else { dieTypeString += " + "; }
-        dieTypeString += Mathf.Abs(dieGroupToCreate.toHitModifier).ToString();
+        dieTypeString += Mathf.Abs(dieGroup.toHitModifier).ToString();
         toHitBonusDieTypesString.GetComponent<TMP_Text>().text = dieTypeString;
 
         //damage die type string
@@ -115,9 +158,9 @@ public class DieGroupSetup : MonoBehaviour
             }
         }
         if (dieTypeString.Length > 2) { dieTypeString = dieTypeString.Substring(3); }
-        if (dieGroupToCreate.damageModifier < 0){ dieTypeString += " - "; }
+        if (dieGroup.damageModifier < 0){ dieTypeString += " - "; }
         else { dieTypeString += " + "; }
-        dieTypeString += Mathf.Abs(dieGroupToCreate.damageModifier).ToString();
+        dieTypeString += Mathf.Abs(dieGroup.damageModifier).ToString();
         damageDieTypesString.GetComponent<TMP_Text>().text = dieTypeString;
     }
 
@@ -131,31 +174,43 @@ public class DieGroupSetup : MonoBehaviour
         switch (_currMenu)
         {
             case 0:
-                dieGroupToCreate.groupName = groupNameInput.text;
-                dieGroupToCreate.colorIndex = colorPicker.GetComponent<ColorPicker>().selectedColorIndex;
+                dieGroup.groupName = groupNameInput.text;
+                dieGroup.colorIndex = colorPicker.GetComponent<ColorPicker>().selectedColorIndex;
                 attackRoll = attackRollSlider.GetComponent<ToggleSlider>().state;
                 if (!attackRoll) 
                 { 
-                    dieGroupToCreate.toHitType = DieGroup.ToHitType.None;
+                    dieGroup.toHitType = DieGroup.ToHitType.None;
                     mainUI.GetComponent<MainUI>().NextDieGroupPanel();
                 }
                 mainUI.GetComponent<MainUI>().NextDieGroupPanel();
-                dieGroupToCreate.PrintDieGroup();
+                dieGroup.PrintDieGroup();
                 break;
             case 1:
                 List<Die.DieType> _toHitBonusDice = DieTypeCountToDieList(toHitBonusDieTypesCount);
-                dieGroupToCreate.toHitBonusDice = _toHitBonusDice;
+                dieGroup.toHitBonusDice = _toHitBonusDice;
                 mainUI.GetComponent<MainUI>().NextDieGroupPanel();
-                dieGroupToCreate.PrintDieGroup();
+                dieGroup.PrintDieGroup();
                 break;
         }
     }
     public void SaveDieGroup()
     {
         List<Die.DieType> _damageDice = DieTypeCountToDieList(damageDieTypesCount);
-        dieGroupToCreate.damageDice = _damageDice;
-        dieGroupToCreate.CommitDieGroup();
-        diceManager.GetComponent<DiceManager>().CreateDieGroupBehaviour(dieGroupToCreate);
+        dieGroup.damageDice = _damageDice;
+        if (editMode)
+        {
+            if (!attackRoll)
+            {
+                dieGroup.toHitBonusDice = new List<Die.DieType>();
+                dieGroup.toHitModifier = 0;
+            }
+            diceManager.GetComponent<DiceManager>().UpdateDieGroup(dieGroup);
+        }
+        else
+        {
+            dieGroup.CommitDieGroup();
+            diceManager.GetComponent<DiceManager>().dieGroups.Add(dieGroup);
+        }
         mainUI.GetComponent<MainUI>().NextDieGroupPanel();
     }
 
@@ -164,11 +219,11 @@ public class DieGroupSetup : MonoBehaviour
         List<Die.DieType> _diceList = new List<Die.DieType>();
         for (int i = 0; i < dieTypesCount.Length; i++)
         {
-            Debug.Log(i);
-            Debug.Log(dieTypesCount[i]);
+            //Debug.Log(i);
+            //Debug.Log(dieTypesCount[i]);
             for (int j = 0; j < dieTypesCount[i]; ++j)
             {
-                Debug.Log("Adding " + Die.DieTypeToString(i));
+                //Debug.Log("Adding " + Die.DieTypeToString(i));
                 _diceList.Add(Die.IndexToDieType(i));
             }
         }

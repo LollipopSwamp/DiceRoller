@@ -19,6 +19,7 @@ public class DiceManager : MonoBehaviour
 
     //public int resultsSaved = 0;
     public List<DieGroup> dieGroups = new List<DieGroup>();
+    public int dieGroupsCount = 0;
     public List<GameObject> dieGroupObjects = new List<GameObject>();
 
     //cocked die vars
@@ -32,12 +33,13 @@ public class DiceManager : MonoBehaviour
     }
     public void RollDice()
     {
+        Debug.Log("dieGroups.Count: " + dieGroups.Count.ToString());
         //CreateTestDieGroups();
         PrintAllDice();
         start = DateTime.Now;
         allResultsStored = false;
         mainUi.GetComponent<MainUI>().SetVisibility(false);
-        //DestroyDice();
+        DestroyDice();
         InstantiateDieGroups();
     }
 
@@ -49,12 +51,71 @@ public class DiceManager : MonoBehaviour
             {
                 Destroy(d);
             }
+            g.GetComponent<DieGroupBehaviour>().dice = new List<GameObject>();
+        }
+        dieGroupObjects = new List<GameObject>();
+    }
+    public void DuplicateDieGroup(int _groupId)
+    {
+        foreach (DieGroup dieGroup in dieGroups)
+        {
+            if (dieGroup.groupId == _groupId)
+            {
+                //create die group
+                DieGroup newDieGroup = DieGroup.DuplicateDieGroup(dieGroup);
+                dieGroups.Add(newDieGroup);
+                //create die group behaviour
+                GameObject dieGroupB = Instantiate(dieGroupBehaviourPrefab, Vector3.zero, Quaternion.identity, transform);
+                dieGroupB.GetComponent<DieGroupBehaviour>().name = dieGroup.groupName;
+                dieGroupB.GetComponent<DieGroupBehaviour>().dieGroup = dieGroup;
+                dieGroupObjects.Add(dieGroupB);
+                break;
+            }
+        }
+    }
+    public void UpdateDieGroup(DieGroup _dieGroup)
+    {
+        for (int i = 0; i < dieGroups.Count; i++)
+        {
+            if (_dieGroup.groupId == dieGroups[i].groupId)
+            {
+                dieGroups[i] = _dieGroup;
+                break;
+            }
+        }
+        for (int i = 0; i < dieGroupObjects.Count; i++)
+        {
+            if (_dieGroup.groupId == dieGroupObjects[i].GetComponent<DieGroupBehaviour>().dieGroup.groupId)
+            {
+                dieGroupObjects[i].GetComponent<DieGroupBehaviour>().dieGroup = _dieGroup;
+                break;
+            }
+        }
+    }
+    public void DeleteDieGroup(int _groupId)
+    {
+        foreach (GameObject g in dieGroupObjects)
+        {
+            DieGroupBehaviour dieGroupB = g.GetComponent<DieGroupBehaviour>();
+            if (dieGroupB.dieGroup.groupId == _groupId)
+            {
+                Destroy(g);
+            }
+        }
+        foreach (DieGroup dieGroup in dieGroups)
+        {
+            if (dieGroup.groupId == _groupId)
+            {
+                dieGroups.Remove(dieGroup);
+                break;
+            }
         }
     }
 
     void Update()
-    {//!allResultsStored && 
-        if (DateTime.Now > start.AddSeconds(3))
+    {//
+        dieGroupsCount = dieGroups.Count;
+        if (!allResultsStored && DateTime.Now > start.AddSeconds(3))
         {
             start = DateTime.Now;
             foreach(GameObject _dieGroupObject in dieGroupObjects)
@@ -95,17 +156,9 @@ public class DiceManager : MonoBehaviour
         //if dice0 done rolling, print results and show results ui
         if (allResultsStored)
         {
-            //update DieGroups list
-            dieGroups.Clear();
-            foreach (GameObject dg in dieGroupObjects)
-            {
-                //Debug.Log(string.Concat("Group: ", g.GetComponent<DieGroup>().groupId, " || DieBehaviour Result: ", g.GetComponent<DieGroup>().toHitResult, " || Modifer: ", g.GetComponent<DieGroup>().toHitModifier, " || Total Result: ", g.GetComponent<DieGroup>().toHitResult + g.GetComponent<DieGroup>().toHitModifier));
-            }
-            //send results to UI
-            //ui.GetComponent<UI>().ToggleMainUI();
             resultsUi.GetComponent<ResultsUI>().SetVisibility(true);
             resultsUi.GetComponent<ResultsUI>().CreateResultsPanels(dieGroupObjects);
-            //ui.GetComponent<UI>().ShowResults(dieGroups);
+            DisplayDice();
         }
 
     }
@@ -158,20 +211,38 @@ public class DiceManager : MonoBehaviour
 
     public void CreateDieGroupBehaviour(DieGroup _dieGroup)
     {
-        GameObject dieGroupB = Instantiate(dieGroupBehaviourPrefab, Vector3.zero, Quaternion.identity, transform);
-        dieGroupB.GetComponent<DieGroupBehaviour>().name = _dieGroup.groupName;
-        dieGroupB.GetComponent<DieGroupBehaviour>().dieGroup = _dieGroup;
-        dieGroups.Add(_dieGroup);
-        dieGroupObjects.Add(dieGroupB);
-        //dieGroupB.GetComponent<DieGroupBehaviour>().InstantiateDice(_dieGroup);
     }
 
     void InstantiateDieGroups()
     {
-
-        foreach (GameObject dieGroupB in dieGroupObjects) 
+        while (transform.childCount > 0)
+        {
+            DestroyImmediate(transform.GetChild(0).gameObject);
+        }
+        dieGroupObjects.Clear();
+        DieGroupBehaviour.ResetStartPosition();
+        foreach (DieGroup dieGroup in dieGroups)
+        {
+            GameObject dieGroupB = Instantiate(dieGroupBehaviourPrefab, Vector3.zero, Quaternion.identity, transform);
+            dieGroupB.GetComponent<DieGroupBehaviour>().name = dieGroup.groupName;
+            dieGroupB.GetComponent<DieGroupBehaviour>().dieGroup = dieGroup;
+            dieGroupObjects.Add(dieGroupB);
+        }
+        foreach (GameObject dieGroupB in dieGroupObjects)
         {
             dieGroupB.GetComponent<DieGroupBehaviour>().InstantiateDice();
+        }
+    }
+    void DisplayDice()
+    {
+        foreach(GameObject g in dieGroupObjects)
+        {
+            DieGroupBehaviour dieGroupB = g.GetComponent<DieGroupBehaviour>();
+            foreach (GameObject dieObj in dieGroupB.dice)
+            {
+                DieBehaviour dieB = dieObj.GetComponent<DieBehaviour>();
+                dieB.DisplayDie();
+            }
         }
     }
     

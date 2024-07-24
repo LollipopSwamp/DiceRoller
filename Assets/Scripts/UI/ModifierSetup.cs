@@ -16,14 +16,22 @@ public class ModifierSetup : MonoBehaviour
 
     public void Init()
     {
-        text.GetComponent<TMP_Text>().text = "+" + (0).ToString();
+        //text.GetComponent<TMP_Text>().text = "+" + (0).ToString();
         toHitCount = 0;
         damageCount = 0;
+        UpdateText();
+    }
+    public void Init(int toHitType, int _count)
+    {
+        toHitType = toHitType;
+        toHitCount = _count;
+        damageCount = _count;
         UpdateText();
     }
 
     void UpdateText()
     {
+        //attack
         if (toHitType == 0)
         {
             string modifierText = "";
@@ -31,6 +39,7 @@ public class ModifierSetup : MonoBehaviour
             modifierText += toHitCount.ToString();
             text.GetComponent<TMP_Text>().text = modifierText;
         }
+        //standard
         else
         {
             string modifierText = "";

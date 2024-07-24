@@ -54,6 +54,12 @@ public class ResultsUI : MonoBehaviour
 
         }
     }
+
+
+    public void ShowButton()
+    {
+        SetVisibility(true);
+    }
     public void HideButton()
     {
         SetVisibility(false);

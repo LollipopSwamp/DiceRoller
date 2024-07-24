@@ -13,6 +13,24 @@ public class ToHitTypeUI : MonoBehaviour
     {
         UpdateButtons(0);
     }
+    public void Init(DieGroup.ToHitType _toHitType)
+    {
+        switch (_toHitType)
+        {
+            case DieGroup.ToHitType.Standard:
+                UpdateButtons(0);
+                break;
+            case DieGroup.ToHitType.Advantage:
+                UpdateButtons(1);
+                break;
+            case DieGroup.ToHitType.Disadvantage:
+                UpdateButtons(2);
+                break;
+            case DieGroup.ToHitType.None:
+                UpdateButtons(0);
+                break;
+        }
+    }
 
     public void UpdateButtons(int _toHitTypeIndex)
     {
