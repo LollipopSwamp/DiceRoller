@@ -123,6 +123,12 @@ public class DieGroup
         toHitType = ToHitType.None;
     }
 
+    public void SetNewGroupID()
+    {
+        groupId = groupIdIndex;
+        groupIdIndex++;
+    }
+
     public Color GetColor(bool _darkColor)
     {
         if (_darkColor)

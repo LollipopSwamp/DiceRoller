@@ -30,6 +30,9 @@ public class MainUI : MonoBehaviour
     //current menu showing
     private static int nextSetupMenu = 0;
 
+    //presets
+    //public Presets presets = new Presets();
+
     void Start()
     {
         mainSetup.GetComponent<Canvas>().enabled = true;
@@ -37,6 +40,7 @@ public class MainUI : MonoBehaviour
         dieGroupBasicSetup.GetComponent<Canvas>().enabled = false;
         dieGroupToHitSetup.GetComponent<Canvas>().enabled = false;
         dieGroupDamageSetup.GetComponent<Canvas>().enabled = false;
+
 
         //NextDieGroupPanel();
     }
@@ -147,6 +151,13 @@ public class MainUI : MonoBehaviour
     {
         diceManager.GetComponent<DiceManager>().DeleteDieGroup(_groupId);
         InitDieGroupPanels();
+    }
+    public void SaveDieGroupPreset(DieGroup _dieGroup)
+    {
+        Presets.AddPreset(_dieGroup);
+    }
+    public void LoadDieGroupPresetBtn()
+    {
     }
     public void InitDieGroupPanels()
     {

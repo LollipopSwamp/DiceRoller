@@ -213,6 +213,11 @@ public class DieGroupSetup : MonoBehaviour
         }
         mainUI.GetComponent<MainUI>().NextDieGroupPanel();
     }
+    public void SaveDieGroupPreset()
+    {
+        SaveDieGroup();
+        mainUI.GetComponent<MainUI>().SaveDieGroupPreset(dieGroup);
+    }
 
     List<Die.DieType> DieTypeCountToDieList(int[] dieTypesCount)
     {
