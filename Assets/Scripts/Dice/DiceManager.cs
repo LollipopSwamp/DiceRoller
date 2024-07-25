@@ -27,6 +27,10 @@ public class DiceManager : MonoBehaviour
     private bool allResultsStored;
     public GameObject walls;
 
+    //die scaling
+    public int totalNumOfDice = 0;
+    public static float diceScale = 1f;//0.5f;
+
 
     void Start()
     {
@@ -163,69 +167,42 @@ public class DiceManager : MonoBehaviour
 
     }
 
-    void CreateTestDieGroups()
-    {
-        //create attack die group (advantage) with 3d6 for damage
-        List<Die.DieType> damageDieTypes0 = new List<Die.DieType>()
-        {
-            Die.DieType.d6,
-            Die.DieType.d6,
-            Die.DieType.d6
-        };
-        DieGroup dieGroup0 = new DieGroup("Claw Attack", DieGroup.ToHitType.Advantage, 5, damageDieTypes0, 3, 2);
-        GameObject dieGroupB0 = Instantiate(dieGroupBehaviourPrefab, Vector3.zero, Quaternion.identity, transform);
-        dieGroupB0.name = dieGroup0.groupName;
-        dieGroupObjects.Add(dieGroupB0);
-        dieGroupB0.GetComponent<DieGroupBehaviour>().InstantiateDice();
-
-        //create attack die group with 1d6 bonus to hit and 3d6 for damage
-        List<Die.DieType> toHitBonusDice1 = new List<Die.DieType>()
-        {
-            Die.DieType.d6
-        };
-        List<Die.DieType> damageDieTypes1 = new List<Die.DieType>()
-        {
-            Die.DieType.d6,
-            Die.DieType.d6,
-            Die.DieType.d6
-        };
-        DieGroup dieGroup1 = new DieGroup("Bite Attack", toHitBonusDice1, DieGroup.ToHitType.Disadvantage, 7, damageDieTypes1, 5, 8);
-        GameObject dieGroupB1 = Instantiate(dieGroupBehaviourPrefab, Vector3.zero, Quaternion.identity, transform);
-        dieGroupB1.name = dieGroup1.groupName;
-        dieGroupObjects.Add(dieGroupB1);
-        dieGroupB1.GetComponent<DieGroupBehaviour>().InstantiateDice();
-
-        //create non-attack die group with 3d6 for damage
-        List<Die.DieType> damageDieTypes2 = new List<Die.DieType>()
-        {
-            Die.DieType.d6,
-            Die.DieType.d6,
-            Die.DieType.d6
-        };
-        DieGroup dieGroup2 = new DieGroup("Just Damage", damageDieTypes2, 5, 1);
-        GameObject dieGroupB2 = Instantiate(dieGroupBehaviourPrefab, Vector3.zero, Quaternion.identity, transform);
-        dieGroupB2.name = dieGroup2.groupName;
-        dieGroupObjects.Add(dieGroupB2);
-        dieGroupB2.GetComponent<DieGroupBehaviour>().InstantiateDice();
-    }
-
-    public void CreateDieGroupBehaviour(DieGroup _dieGroup)
-    {
-    }
-
     void InstantiateDieGroups()
     {
+        //get die scaling
+        totalNumOfDice = CountAllDice();
+        if (totalNumOfDice > 115)
+        {
+            diceScale = 0.5f;
+            DieGroupBehaviour.diceScale = 0.5f;
+        }
+        else if (totalNumOfDice > 55)
+        {
+            diceScale = 0.67f;
+            DieGroupBehaviour.diceScale = 0.67f;
+        }
+        else if (totalNumOfDice <= 55f)
+        {
+            diceScale = 1f;
+            DieGroupBehaviour.diceScale = 1f;
+        }
+
+        //destroy diegroup behaviour objects
         while (transform.childCount > 0)
         {
             DestroyImmediate(transform.GetChild(0).gameObject);
         }
         dieGroupObjects.Clear();
+
+        //instantiate die group behaviours
         DieGroupBehaviour.ResetStartPosition();
         foreach (DieGroup dieGroup in dieGroups)
         {
             GameObject dieGroupB = Instantiate(dieGroupBehaviourPrefab, Vector3.zero, Quaternion.identity, transform);
             dieGroupB.GetComponent<DieGroupBehaviour>().name = dieGroup.groupName;
             dieGroupB.GetComponent<DieGroupBehaviour>().dieGroup = dieGroup;
+            dieGroupB.transform.localScale = new Vector3(diceScale, diceScale, diceScale);
+            Debug.Log(diceScale);
             dieGroupObjects.Add(dieGroupB);
         }
         foreach (GameObject dieGroupB in dieGroupObjects)
@@ -245,7 +222,29 @@ public class DiceManager : MonoBehaviour
             }
         }
     }
-    
+    public int CountAllDice()
+    {
+        int count = 0;
+        foreach (DieGroup diegroup in dieGroups)
+        {
+            count += diegroup.toHitBonusDice.Count;
+            count += diegroup.damageDice.Count;
+            switch (diegroup.toHitType)
+            {
+                case DieGroup.ToHitType.Standard:
+                    count++;
+                    break;
+                case DieGroup.ToHitType.Advantage:
+                case DieGroup.ToHitType.Disadvantage:
+                    count += 2;
+                    break;
+                case DieGroup.ToHitType.None:
+                    break;
+            }
+        }
+        return count;
+    }
+
     public void PrintAllDice()
     {
         foreach (GameObject g in dieGroupObjects)

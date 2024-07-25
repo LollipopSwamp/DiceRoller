@@ -26,6 +26,7 @@ public class DieBehaviour : MonoBehaviour
 
     //rays and directions
     private List<Ray> rays = new List<Ray>();
+    public float rayScale = 1f;
 
     void Start()
     {
@@ -59,12 +60,12 @@ public class DieBehaviour : MonoBehaviour
             for (int i = 0; i < die.rayDirections.Length; ++i)
             {
                 //create + draw ray
-                Ray ray = new Ray(transform.position, transform.rotation * die.rayDirections[i]);
+                Ray ray = new Ray(transform.position, transform.rotation * die.rayDirections[i] * rayScale);
                 Debug.DrawRay(transform.position, ray.direction, Color.red, 1f, true);
                 //Debug.Log(ray);
 
                 //if ray is hitting floor, lock rotation and store globalVariables
-                if (Physics.Raycast(ray, out RaycastHit hit, die.rayLength, layersToHit) && die.result == -1)
+                if (Physics.Raycast(ray, out RaycastHit hit, rayScale, layersToHit) && die.result == -1)
                 {
                     die.result = i + 1;
                     dieResult = die.result;
@@ -84,11 +85,12 @@ public class DieBehaviour : MonoBehaviour
         }
     }
 
-    public void SetVars(Die _die, GameObject _dmObj, Vector3 _initialPosition)
+    public void SetVars(Die _die, GameObject _dmObj, Vector3 _initialPosition, float _rayScale)
     {
         die = _die;
         dmObj = _dmObj;
         initialPosition = _initialPosition;
+        rayScale = _rayScale * 1.25f;
     }
 
     bool DieIsStopped()

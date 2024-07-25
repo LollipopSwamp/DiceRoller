@@ -17,9 +17,11 @@ public class DieGroupBehaviour : MonoBehaviour
 
     public bool diceStillRolling = true;
 
+    public static float diceScale = 1f;
+
 
     //instantiation position
-    public static Vector3 nextStartPosition = new Vector3(-12, 15, 6);
+    public static Vector3 nextStartPosition = new Vector3(-15, 15, 6);
 
     //add dice
     public void InstantiateDice()
@@ -28,17 +30,18 @@ public class DieGroupBehaviour : MonoBehaviour
         if (dieGroup.toHitType == DieGroup.ToHitType.Standard)
         {
             //create die gameobject
-            GameObject dieObj = Instantiate(diePrefabs[5], GetNextStartPosition(), Quaternion.identity, transform);
+            GameObject dieObj = Instantiate(diePrefabs[5], nextStartPosition, Quaternion.identity, transform);
             dieObj.GetComponent<MeshRenderer>().material.color = dieGroup.GetColor(true);
             dice.Add(dieObj);
 
             //set DieBehaviour variables
             Die d20 = new Die(Die.DieType.d20, dieGroup.groupId, Die.DieSubGroup.ToHit);
             DieBehaviour dieBehaviour = dieObj.GetComponent<DieBehaviour>();
-            dieBehaviour.SetVars(d20, gameObject, nextStartPosition);
+            dieBehaviour.SetVars(d20, gameObject, nextStartPosition, diceScale);
 
             //set die obj name
             dieObj.name = "d20 (ID: " + dieBehaviour.die.dieId.ToString() + ")";
+            IterateStartPosition();
         }
         //to hit dice if advantage or disadvantage, 2x d20
         else if (dieGroup.toHitType == DieGroup.ToHitType.Advantage || dieGroup.toHitType == DieGroup.ToHitType.Disadvantage)
@@ -46,17 +49,18 @@ public class DieGroupBehaviour : MonoBehaviour
             for (int i = 0; i < 2; i++)
             {
                 //create die gameobject
-                GameObject dieObj = Instantiate(diePrefabs[5], GetNextStartPosition(), Quaternion.identity, transform);
+                GameObject dieObj = Instantiate(diePrefabs[5], nextStartPosition, Quaternion.identity, transform);
                 dieObj.GetComponent<MeshRenderer>().material.color = dieGroup.GetColor(true);
                 dice.Add(dieObj);
 
                 //set DieBehaviour variables
                 Die d20 = new Die(Die.DieType.d20, dieGroup.groupId, Die.DieSubGroup.ToHit);
                 DieBehaviour dieBehaviour = dieObj.GetComponent<DieBehaviour>();
-                dieBehaviour.SetVars(d20, gameObject, nextStartPosition);
+                dieBehaviour.SetVars(d20, gameObject, nextStartPosition, diceScale);
 
                 //set die obj name
                 dieObj.name = "d20 (ID: " + dieBehaviour.die.dieId.ToString() + ")";
+                IterateStartPosition();
             }
         }
 
@@ -65,17 +69,18 @@ public class DieGroupBehaviour : MonoBehaviour
         {
             //create die gameobject
             int dieTypeIndex = Die.DieTypeToIndex(dieType);
-            GameObject dieObj = Instantiate(diePrefabs[dieTypeIndex], GetNextStartPosition(), Quaternion.identity, transform);
+            GameObject dieObj = Instantiate(diePrefabs[dieTypeIndex], nextStartPosition, Quaternion.identity, transform);
             dieObj.GetComponent<MeshRenderer>().material.color = dieGroup.GetColor(true);
             dice.Add(dieObj);
 
             //set DieBehaviour variables
             Die die = new Die(dieType, dieGroup.groupId, Die.DieSubGroup.ToHitBonus);
             DieBehaviour dieBehaviour = dieObj.GetComponent<DieBehaviour>();
-            dieBehaviour.SetVars(die, gameObject, nextStartPosition);
+            dieBehaviour.SetVars(die, gameObject, nextStartPosition, diceScale);
 
             //set die obj name
             dieObj.name = Die.DieTypeToString(dieType) + " (ID: " + dieBehaviour.die.dieId.ToString() + ")";
+            IterateStartPosition();
         }
 
         //create damage/standard dice
@@ -83,17 +88,18 @@ public class DieGroupBehaviour : MonoBehaviour
         {
             //create die gameobject
             int dieTypeIndex = Die.DieTypeToIndex(dieType);
-            GameObject dieObj = Instantiate(diePrefabs[dieTypeIndex], GetNextStartPosition(), Quaternion.identity, transform);
+            GameObject dieObj = Instantiate(diePrefabs[dieTypeIndex], nextStartPosition, Quaternion.identity, transform);
             dieObj.GetComponent<MeshRenderer>().material.color = dieGroup.GetColor(false);
             dice.Add(dieObj);
 
             //set DieBehaviour variables
             Die die = new Die(dieType, dieGroup.groupId, Die.DieSubGroup.Damage);
             DieBehaviour dieBehaviour = dieObj.GetComponent<DieBehaviour>();
-            dieBehaviour.SetVars(die, gameObject, nextStartPosition);
+            dieBehaviour.SetVars(die, gameObject, nextStartPosition, diceScale);
 
             //set die obj name
             dieObj.name = Die.DieTypeToString(dieType) + " (ID: " + dieBehaviour.die.dieId.ToString() + ")";
+            IterateStartPosition();
 
         }
     }
@@ -177,20 +183,18 @@ public class DieGroupBehaviour : MonoBehaviour
     }
     public static void ResetStartPosition()
     {
-        nextStartPosition = new Vector3(-12, 15, 6);
+        //initial location
+        nextStartPosition = new Vector3(-15, 15, 6);
     }
-    public static Vector3 GetNextStartPosition()
-    { //initial is (-9, 15, 6);
-        Vector3 returnPosition = nextStartPosition;
-
+    public static void IterateStartPosition()
+    {
         //iterate vector3
-        nextStartPosition.x += 3;
-        if (nextStartPosition.x > 9)
+        nextStartPosition.x += 3* diceScale;
+        if (nextStartPosition.x > 15)
         {
-            nextStartPosition.x = -9;
-            nextStartPosition.z -= 3;
+            nextStartPosition.x = -15;
+            nextStartPosition.z -= 3* diceScale;
         }
-        return returnPosition;
     }
 
     public void PrintDieGroup()
