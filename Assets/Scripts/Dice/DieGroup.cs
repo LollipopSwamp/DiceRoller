@@ -131,6 +131,7 @@ public class DieGroup
 
     public Color GetColor(bool _darkColor)
     {
+        Debug.Log("colorIndex: " + colorIndex.ToString());
         if (_darkColor)
         {
             return dieColorDark[colorIndex];
@@ -140,8 +141,39 @@ public class DieGroup
             return dieColorLight[colorIndex];
         }
     }
+    public static void SetColorLists()
+    {
+        List<Color> dieColorDark = new List<Color>()
+    {
+        new Color(0.9f,0.9f,0.9f,1), //white grey 0 
+        new Color(1,0,0,1), //red 1
+        new Color(1,0.40f,0,1), //orange 2
+        new Color(1,1,0,1), //yellow 3
+        new Color(0,1,0,1), //green 4
+        new Color(0,0.4f,1,1), //blue 5
+        new Color(1,0,1,1), //pink 6
+        new Color(0.5f,0,0.5f,1), //purple 7
+        new Color(0.4f,0.25f,0,1), //brown 8
+        new Color(0.4f,0.4f,0.4f,1) //grey 9
+    };
+        List<Color> dieColorLight = new List<Color>()
+    {
+        Color.white, //white 0
+        new Color(1, 0.3f, 0.3f,1), //red 1
+        new Color(1,0.60f,0.3f,1), //orange 2
+        new Color(1,1,.60f,1), //yellow 3
+        new Color(0.4f,1,0.4f,1), //green 4
+        new Color(0.4f,0.65f,1,1), //blue 5
+        new Color(1,0.5f,1,1), //pink 6
+        new Color(0.6f,0,0.4f,1), //purple 7
+        new Color(0.6f,0.4f,0,1), //brown 8
+        new Color(0.5f,0.5f,0.5f,1) //grey 9
+    };
+
+    }
     public static Color GetColor(int _colorIndexbool, bool _darkColor)
     {
+        //SetColorLists();
         if (_darkColor)
         {
             return dieColorDark[_colorIndexbool];
@@ -174,6 +206,54 @@ public class DieGroup
         groupId = groupIdIndex;
         ++groupIdIndex;
         PrintDieGroup();
+    }
+
+    public string GetDamageDiceTypesString()
+    {
+        string damageDieTypes = "";
+        int[] damageDieTypesCount = new int[6];
+        foreach (Die.DieType dieType in damageDice) { damageDieTypesCount[Die.DieTypeToIndex(dieType)]++; }
+        for (int i = 0; i < damageDieTypesCount.Length; i++)
+        {
+            if (damageDieTypesCount[i] != 0)
+            {
+                damageDieTypes += damageDieTypesCount[i].ToString() + Die.DieTypeToString(i) + " + ";
+            }
+        }
+        damageDieTypes += damageModifier.ToString();
+        return damageDieTypes;
+    }
+    public string GetToHitDiceTypesString()
+    {
+        string toHitDieTypes = "";
+        //get count of each type of die
+        int[] toHitBonusDieTypesCount = new int[6];
+        foreach (Die.DieType dieType in toHitBonusDice) { toHitBonusDieTypesCount[Die.DieTypeToIndex(dieType)]++; }
+        //add die type names to string
+        switch (toHitType)
+        {
+            case ToHitType.Standard:
+                toHitDieTypes += "d20 + ";
+                break;
+            case ToHitType.Advantage:
+                toHitDieTypes += "d20 (ADV) + ";
+                break;
+            case ToHitType.Disadvantage:
+                toHitDieTypes += "d20 (DIS) + ";
+                break;
+            case ToHitType.None:
+                Debug.Log("Error with ToHitType");
+                break;
+        }
+        for (int i = 0; i < toHitBonusDieTypesCount.Length; i++)
+        {
+            if (toHitBonusDieTypesCount[i] != 0)
+            {
+                toHitDieTypes += toHitBonusDieTypesCount[i].ToString() + Die.DieTypeToString(i) + " + ";
+            }
+        }
+        toHitDieTypes += toHitModifier.ToString();
+        return toHitDieTypes;
     }
 
     public static DieGroup DuplicateDieGroup(DieGroup _dieGroup)

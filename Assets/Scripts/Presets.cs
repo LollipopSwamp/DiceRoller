@@ -15,8 +15,6 @@ public static class Presets
         Debug.Log(filePath);
         string presetsData = JsonUtility.ToJson(presetsString);
         System.IO.File.WriteAllText(filePath, presetsData);
-
-        LoadFromJSON();
     }
 
     public static void LoadFromJSON()
@@ -34,6 +32,7 @@ public static class Presets
 
     public static void AddPreset(DieGroup _dieGroup)
     {
+        LoadFromJSON();
         _dieGroup.groupId = -1;
         dieGroups.Add(_dieGroup);
         SaveToJSON();

@@ -43,6 +43,15 @@ public class Die
 
         switch (dieType)
         {
+            case DieType.d4:
+                rayDirections = new Vector3[] {
+                        new Vector3(0,0,-1), //1
+                        new Vector3(0, -0.94f, 0.33f), //2
+                        new Vector3(0.82f, 0.47f, 0.33f), //3
+                        new Vector3(-0.81f, 0.48f, 0.34f) //4
+                };
+                dieTypeIndex = 0;
+                break;
             case DieType.d6:
                 rayDirections = new Vector3[] {
                         new Vector3(0,0,-1), //1
@@ -51,6 +60,21 @@ public class Die
                         new Vector3(0,1,0), //4
                         new Vector3(-1,0,0), //5
                         new Vector3(0,0,1) //6
+                };
+                dieTypeIndex = 1;
+                break;
+            case DieType.d10:
+                rayDirections = new Vector3[] {
+                        new Vector3(0f,-0.74f,-0.67f), //1
+                        new Vector3(0.71f,0.23f,0.67f), //2
+                        new Vector3(-0.44f,0.6f,-0.67f), //3
+                        new Vector3(-0.44f,-0.6f,0.67f), //4
+                        new Vector3(0.44f,0.6f,-0.67f), //5
+                        new Vector3(0.44f,-0.6f,0.67f), //6
+                        new Vector3(-0.71f,-0.23f,-0.67f), //7
+                        new Vector3(0f,0.75f,0.67f), //8
+                        new Vector3(0.71f,-0.23f,-0.67f), //9
+                        new Vector3(-0.71f,0.23f,0.67f) //10
                 };
                 dieTypeIndex = 1;
                 break;

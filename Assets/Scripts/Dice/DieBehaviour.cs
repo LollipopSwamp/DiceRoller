@@ -6,7 +6,7 @@ using UnityEngine;
 public class DieBehaviour : MonoBehaviour
 {
     public LayerMask layersToHit;
-    public bool randomVelocityRotation;
+    public bool randomVelocityRotation = true;
     public GameObject dmObj;
     public bool dieIsMoving;
     public Vector3 velocity;
@@ -28,6 +28,8 @@ public class DieBehaviour : MonoBehaviour
     private List<Ray> rays = new List<Ray>();
     public float rayScale = 1f;
 
+    public GameObject raycasting; 
+
     void Start()
     {
         //init variables
@@ -36,6 +38,7 @@ public class DieBehaviour : MonoBehaviour
         start = DateTime.Now;
         GameObject parent = transform.parent.gameObject;
         dieGroupBehaviour = parent.GetComponent<DieGroupBehaviour>();
+        raycasting = gameObject.transform.GetChild(0).gameObject;
         Debug.Log(dieGroupBehaviour);
 
 
@@ -50,50 +53,14 @@ public class DieBehaviour : MonoBehaviour
         }
     }
 
-    void Update()
-    {
-        //Raycast hit and draw rays
-        if (DieIsStopped())
-        {
-            //check all directions for rays
-            //Debug.Log(die.rayDirections.Length);
-            for (int i = 0; i < die.rayDirections.Length; ++i)
-            {
-                //create + draw ray
-                Ray ray = new Ray(transform.position, transform.rotation * die.rayDirections[i] * rayScale);
-                Debug.DrawRay(transform.position, ray.direction, Color.red, 1f, true);
-                //Debug.Log(ray);
-
-                //if ray is hitting floor, lock rotation and store globalVariables
-                if (Physics.Raycast(ray, out RaycastHit hit, rayScale, layersToHit) && die.result == -1)
-                {
-                    die.result = i + 1;
-                    dieResult = die.result;
-                    Debug.Log(string.Concat(die.dieType, " (ID ", die.dieId, ") rolled ", die.result));
-                    dieGroupBehaviour.UpdateDie(die);
-
-                    lockMovement = true;
-                };
-
-            }
-        }
-
-        //disable rotation from physics
-        if (lockMovement && die.result != -1)
-        {
-            gameObject.GetComponent<Rigidbody>().isKinematic = true;
-        }
-    }
-
     public void SetVars(Die _die, GameObject _dmObj, Vector3 _initialPosition, float _rayScale)
     {
         die = _die;
         dmObj = _dmObj;
         initialPosition = _initialPosition;
-        rayScale = _rayScale * 1.25f;
     }
 
-    bool DieIsStopped()
+    public bool DieIsStopped()
     {
         if (Mathf.Abs(rb.velocity.x) < 0.005f && Mathf.Abs(rb.velocity.y) < 0.005f && Mathf.Abs(rb.velocity.z) < 0.005f)
         {
@@ -107,11 +74,22 @@ public class DieBehaviour : MonoBehaviour
             return false;
         }
     }
+    public void SetKinematic(bool _kinematic)
+    {
+        gameObject.GetComponent<Rigidbody>().isKinematic = _kinematic;
+    }
 
     public void SetCollision(bool _collisionOn)
     {
         collisionOn = _collisionOn;
         gameObject.GetComponent<Collider>().enabled = collisionOn;
+    }
+
+    public void SetResult(int _result)
+    {
+        die.result = _result;
+        dieGroupBehaviour.UpdateDie(die);
+        SetKinematic(true);
     }
 
     public void ToggleCollision()
@@ -126,9 +104,12 @@ public class DieBehaviour : MonoBehaviour
             Physics.IgnoreCollision(gameObject.GetComponent<Collider>(), GetComponent<Collider>(), false);
         }
     }
+
     public void DisplayDie()
     {
-        transform.position = initialPosition;
+        Vector3 offset = transform.rotation * raycasting.transform.localPosition * transform.localScale.x;
+        transform.position = initialPosition - offset;
+
         gameObject.GetComponent<Rigidbody>().isKinematic = true;
         SetCollision(false);
         Color currColor = mr.material.color;
@@ -137,7 +118,7 @@ public class DieBehaviour : MonoBehaviour
     }
     public void ResetDie()
     {
-        Debug.Log("Resetting die");
+        //Debug.Log("Resetting die");
         transform.rotation = Random.rotation;
         System.Random r = new System.Random();
         float velocityX = (float)(r.NextDouble() - 0.5) * 50;
@@ -145,13 +126,4 @@ public class DieBehaviour : MonoBehaviour
         rb.velocity = new Vector3(velocityX, 3, velocityZ);
         transform.position = initialPosition;
     }
-    public void printDirections()
-    {
-        Debug.Log(die.DieTypeToString());
-        foreach (Vector3 v in die.rayDirections) 
-        {
-            Debug.Log(v);
-        }
-    }
-
 }

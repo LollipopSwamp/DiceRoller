@@ -7571,6 +7571,7 @@ GameObject:
   - component: {fileID: 559110129}
   - component: {fileID: 559110128}
   - component: {fileID: 559110127}
+  - component: {fileID: 559110131}
   m_Layer: 5
   m_Name: PresetsMenu
   m_TagString: Untagged
@@ -7669,6 +7670,26 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!114 &559110131
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 559110125}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca5958ba156b0754caa78f8b1c83d791, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainUI: {fileID: 1477753772}
+  diceManager: {fileID: 1406613666}
+  loadBtn: {fileID: 1859653631}
+  attackPresetPanelPrefab: {fileID: 4964548079426282400, guid: ae9d3e1559a103545bec9b209b42a9f1,
+    type: 3}
+  damagePresetPanelPrefab: {fileID: 4964548079426282400, guid: 78c534bd670850b48809605df56ac286,
+    type: 3}
+  presetPanels: []
 --- !u!1 &561734181
 GameObject:
   m_ObjectHideFlags: 0
@@ -8701,7 +8722,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1477753777}
         m_TargetAssemblyTypeName: MainUI, Assembly-CSharp
-        m_MethodName: CreateDiegroupBtn
+        m_MethodName: LoadDieGroupPresetBtn
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -20481,12 +20502,13 @@ MonoBehaviour:
     type: 3}
   dieGroupPanels: []
   diceManager: {fileID: 1406613666}
-  dieGroupSetup: {fileID: 1603060849}
   mainSetup: {fileID: 944684118}
+  dieGroupSetup: {fileID: 1603060849}
   dieGroupSetupTitle: {fileID: 296320988}
   dieGroupBasicSetup: {fileID: 369150765}
   dieGroupToHitSetup: {fileID: 1304587828}
   dieGroupDamageSetup: {fileID: 1202502376}
+  presetsMenu: {fileID: 559110125}
   rollingDiceUI: {fileID: 1933193178}
   resultsUI: {fileID: 1304028430}
 --- !u!114 &1477753778
@@ -24247,7 +24269,7 @@ GameObject:
   - component: {fileID: 1859653634}
   - component: {fileID: 1859653633}
   m_Layer: 5
-  m_Name: RollBtn
+  m_Name: LoadBtn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -24298,7 +24320,7 @@ MonoBehaviour:
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
@@ -24312,11 +24334,23 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 1859653634}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 559110131}
+        m_TargetAssemblyTypeName: PresetsMenu, Assembly-CSharp
+        m_MethodName: LoadBtn
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1859653634
 MonoBehaviour:
   m_ObjectHideFlags: 0
