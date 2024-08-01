@@ -41,6 +41,9 @@ public class DieGroupBehaviour : MonoBehaviour
 
             //set die obj name
             dieObj.name = "d20 (ID: " + dieBehaviour.die.dieId.ToString() + ")";
+
+            //fix position offset
+            dieObj.transform.position = dieBehaviour.OffsetPosition(nextStartPosition);
             IterateStartPosition();
         }
         //to hit dice if advantage or disadvantage, 2x d20
@@ -60,6 +63,9 @@ public class DieGroupBehaviour : MonoBehaviour
 
                 //set die obj name
                 dieObj.name = "d20 (ID: " + dieBehaviour.die.dieId.ToString() + ")";
+
+                //fix position offset
+                dieObj.transform.position = dieBehaviour.OffsetPosition(nextStartPosition);
                 IterateStartPosition();
             }
         }
@@ -80,6 +86,9 @@ public class DieGroupBehaviour : MonoBehaviour
 
             //set die obj name
             dieObj.name = Die.DieTypeToString(dieType) + " (ID: " + dieBehaviour.die.dieId.ToString() + ")";
+
+            //fix position offset
+            dieObj.transform.position = dieBehaviour.OffsetPosition(nextStartPosition);
             IterateStartPosition();
         }
 
@@ -99,6 +108,12 @@ public class DieGroupBehaviour : MonoBehaviour
 
             //set die obj name
             dieObj.name = Die.DieTypeToString(dieType) + " (ID: " + dieBehaviour.die.dieId.ToString() + ")";
+
+            //fix position offset
+            //Debug.Log(dieObj.transform.position);
+            //dieObj.transform.position = dieBehaviour.OffsetPosition(nextStartPosition);
+            //Debug.Log(dieObj.transform.position);
+            //dieBehaviour.SetKinematic(true);
             IterateStartPosition();
 
         }
@@ -174,8 +189,8 @@ public class DieGroupBehaviour : MonoBehaviour
                         break;
                 }
             }
-            toHitResult += dieGroup.toHitModifier;
-            damageResult += dieGroup.damageModifier;
+            //toHitResult += dieGroup.toHitModifier;
+            //damageResult += dieGroup.damageModifier;
 
             //tell DiceManager to check final results
             transform.parent.gameObject.GetComponent<DiceManager>().CheckFinalResults();

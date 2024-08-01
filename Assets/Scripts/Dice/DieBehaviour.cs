@@ -38,7 +38,7 @@ public class DieBehaviour : MonoBehaviour
         start = DateTime.Now;
         GameObject parent = transform.parent.gameObject;
         dieGroupBehaviour = parent.GetComponent<DieGroupBehaviour>();
-        raycasting = gameObject.transform.GetChild(0).gameObject;
+        //raycasting = gameObject.transform.GetChild(0).gameObject;
         Debug.Log(dieGroupBehaviour);
 
 
@@ -115,6 +115,11 @@ public class DieBehaviour : MonoBehaviour
         Color currColor = mr.material.color;
         Color newColor = new Color(currColor.r, currColor.g, currColor.b, 1);
         mr.material.color = newColor;
+    }
+    public Vector3 OffsetPosition(Vector3 _initialPosition)
+    {
+        Vector3 offset = transform.rotation * raycasting.transform.localPosition * transform.localScale.x;
+        return _initialPosition - offset;
     }
     public void ResetDie()
     {

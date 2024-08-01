@@ -63,6 +63,19 @@ public class Die
                 };
                 dieTypeIndex = 1;
                 break;
+            case DieType.d8:
+                rayDirections = new Vector3[] {
+                        new Vector3(0.54f,0.54f,-0.65f), //1
+                        new Vector3(-0.54f,0.54f,0.65f), //2
+                        new Vector3(-0.54f,0.54f,-0.65f), //3
+                        new Vector3(0.54f,0.54f,0.65f), //4
+                        new Vector3(-0.54f,-0.54f,-0.65f), //5
+                        new Vector3(0.54f,-0.54f,0.65f), //6
+                        new Vector3(0.54f,-0.54f,-0.65f), //7
+                        new Vector3(-0.54f,-0.54f,0.65f) //8
+                };
+                dieTypeIndex = 2;
+                break;
             case DieType.d10:
                 rayDirections = new Vector3[] {
                         new Vector3(0f,-0.74f,-0.67f), //1
@@ -76,7 +89,24 @@ public class Die
                         new Vector3(0.71f,-0.23f,-0.67f), //9
                         new Vector3(-0.71f,0.23f,0.67f) //10
                 };
-                dieTypeIndex = 1;
+                dieTypeIndex = 3;
+                break;
+            case DieType.d12:
+                rayDirections = new Vector3[] {
+                        new Vector3(0f,0f,-1f), //1
+                        new Vector3(0f,-0.89f,-0.45f), //2
+                        new Vector3(-0.85f,-0.28f,-0.45f), //3
+                        new Vector3(0.85f,-0.28f,-0.45f), //4
+                        new Vector3(-0.53f,0.72f,-0.45f), //5
+                        new Vector3(0.53f,0.72f,-0.45f), //6
+                        new Vector3(-0.53f,-0.72f,0.45f), //7
+                        new Vector3(0.53f,-0.72f,0.45f), //8
+                        new Vector3(-0.85f,0.28f,0.45f), //9
+                        new Vector3(0.85f,0.28f,0.45f), //10
+                        new Vector3(0f,0.89f,0.45f), //11
+                        new Vector3(0f,0f,1f) //12
+                };
+                dieTypeIndex = 4;
                 break;
             case DieType.d20:
                 rayDirections = new Vector3[] {
@@ -185,7 +215,7 @@ public class Die
                 return 5;
             default:
                 Debug.Log("Error in IndexToDieType, returning d20 index (0)");
-                return 0;
+                return -1;
         }
     }
     public static DieType IndexToDieType(int _index)

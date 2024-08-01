@@ -94,7 +94,7 @@ MeshCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 870838527823196199}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 0c52675552ea1ee4b87d9b2360aa108e, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -159,7 +159,7 @@ MonoBehaviour:
   initialPosition: {x: 0, y: 0, z: 0}
   collisionOn: 1
   rayScale: 1
-  raycasting: {fileID: 0}
+  raycasting: {fileID: 1296307499608921559}
 --- !u!1 &1296307499608921559
 GameObject:
   m_ObjectHideFlags: 0
