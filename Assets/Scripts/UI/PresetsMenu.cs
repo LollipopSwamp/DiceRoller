@@ -32,7 +32,6 @@ public class PresetsMenu : MonoBehaviour
         presetPanels.Clear();
 
         //create panels
-        Debug.Log(Presets.dieGroups.Count);
         for (int i = 0; i < Presets.dieGroups.Count; i++)
         {
             //create panel from prefab
@@ -71,8 +70,10 @@ public class PresetsMenu : MonoBehaviour
     }
     public void LoadBtn()
     {
+        selectedPreset.GetNewGroupID();
         diceManager.GetComponent<DiceManager>().dieGroups.Add(selectedPreset);
         mainUI.GetComponent<MainUI>().SetVisibility(true);
+        Debug.Log("Loaded preset with new groupId: " + selectedPreset.groupId.ToString());
     }
     public void BackBtn()
     {

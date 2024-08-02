@@ -69,8 +69,7 @@ public class DieGroup
     //includes to hit dice and bonus to hit dice
     public DieGroup(string _groupName, List<Die.DieType> _toHitBonusDice, ToHitType _toHitType, int _toHitModifier, List<Die.DieType> _damageDice, int _damageModifier, int _colorIndex)
     {
-        groupId = groupIdIndex;
-        groupIdIndex++;
+        GetNewGroupID();
 
         groupName = _groupName;
 
@@ -88,8 +87,7 @@ public class DieGroup
     //includes to hit dice and no bonus to hit dice
     public DieGroup(string _groupName, ToHitType _toHitType, int _toHitModifier, List<Die.DieType> _damageDice, int _damageModifier, int _colorIndex)
     {
-        groupId = groupIdIndex;
-        groupIdIndex++;
+        GetNewGroupID();
 
         groupName = _groupName;
 
@@ -107,8 +105,7 @@ public class DieGroup
     //standard roll
     public DieGroup(string _groupName,  List<Die.DieType> _damageDice, int _damageModifier, int _colorIndex)
     {
-        groupId = groupIdIndex;
-        groupIdIndex++;
+        GetNewGroupID();
 
         groupName = _groupName;
 
@@ -131,7 +128,6 @@ public class DieGroup
 
     public Color GetColor(bool _darkColor)
     {
-        Debug.Log("colorIndex: " + colorIndex.ToString());
         if (_darkColor)
         {
             return dieColorDark[colorIndex];
@@ -205,7 +201,6 @@ public class DieGroup
     {
         groupId = groupIdIndex;
         ++groupIdIndex;
-        PrintDieGroup();
     }
 
     public string GetDamageDiceTypesString()
@@ -242,7 +237,7 @@ public class DieGroup
                 toHitDieTypes += "d20 (DIS) + ";
                 break;
             case ToHitType.None:
-                Debug.Log("Error with ToHitType");
+                toHitDieTypes += "";
                 break;
         }
         for (int i = 0; i < toHitBonusDieTypesCount.Length; i++)
@@ -266,7 +261,13 @@ public class DieGroup
         newDieGroup.damageModifier = _dieGroup.damageModifier;
         newDieGroup.toHitType = _dieGroup.toHitType;
         newDieGroup.colorIndex = _dieGroup.colorIndex;
+        newDieGroup.GetNewGroupID();
         return newDieGroup;
+    }
+    public void GetNewGroupID()
+    {
+        groupId = groupIdIndex;
+        groupIdIndex++;
     }
     public void PrintDieGroup()
     {

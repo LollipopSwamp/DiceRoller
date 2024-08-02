@@ -30,6 +30,7 @@ public class DieGroupSetup : MonoBehaviour
 
     public void Init()
     {
+        Debug.Log("Creating new DieGroup");
         //edit mode false
         editMode = false;
         //reset die group variables
@@ -53,23 +54,12 @@ public class DieGroupSetup : MonoBehaviour
 
     public void Init(DieGroup _dieGroup)
     {
+        Debug.Log("Editing DieGroup with groupID: " + _dieGroup.groupId.ToString());
         //edit mode true
         editMode = true;
 
         //set die group variables
-        if (_dieGroup.toHitType == DieGroup.ToHitType.None){
-            attackRoll = false;
-            attackRollSlider.GetComponent<ToggleSlider>().SetState(false);
-            toHitTypeSetup.GetComponent<ToHitTypeUI>().Init();
-        }
-        else{
-            attackRoll = true;
-            attackRollSlider.GetComponent<ToggleSlider>().SetState(true);
-            toHitTypeSetup.GetComponent<ToHitTypeUI>().Init(_dieGroup.toHitType);
-        }
-
-        toHitBonusDieTypesCount = _dieGroup.GetToHitBonusDieTypeInts();
-        damageDieTypesCount = _dieGroup.GetDamageDieTypeInts();
+        dieGroup = _dieGroup;
 
         //set ui variables
         groupNameInput.text = _dieGroup.groupName;
@@ -183,13 +173,11 @@ public class DieGroupSetup : MonoBehaviour
                     mainUI.GetComponent<MainUI>().NextDieGroupPanel();
                 }
                 mainUI.GetComponent<MainUI>().NextDieGroupPanel();
-                dieGroup.PrintDieGroup();
                 break;
             case 1:
                 List<Die.DieType> _toHitBonusDice = DieTypeCountToDieList(toHitBonusDieTypesCount);
                 dieGroup.toHitBonusDice = _toHitBonusDice;
                 mainUI.GetComponent<MainUI>().NextDieGroupPanel();
-                dieGroup.PrintDieGroup();
                 break;
         }
     }
@@ -209,7 +197,7 @@ public class DieGroupSetup : MonoBehaviour
         else
         {
             dieGroup.CommitDieGroup();
-            diceManager.GetComponent<DiceManager>().dieGroups.Add(dieGroup);
+            diceManager.GetComponent<DiceManager>().AddDieGroup(dieGroup);
         }
         mainUI.GetComponent<MainUI>().NextDieGroupPanel();
     }

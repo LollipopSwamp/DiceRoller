@@ -19,6 +19,7 @@ public class DiceManager : MonoBehaviour
 
     //public int resultsSaved = 0;
     public List<DieGroup> dieGroups = new List<DieGroup>();
+    public List<int> groupIds = new List<int>();
     public int dieGroupsCount = 0;
     public List<GameObject> dieGroupObjects = new List<GameObject>();
 
@@ -32,33 +33,24 @@ public class DiceManager : MonoBehaviour
     public static float diceScale = 1f;//0.5f;
 
 
-    void Start()
-    {
-    }
     public void RollDice()
     {
-        Debug.Log("dieGroups.Count: " + dieGroups.Count.ToString());
-        //CreateTestDieGroups();
-        PrintAllDice();
         start = DateTime.Now;
         allResultsStored = false;
         mainUi.GetComponent<MainUI>().SetVisibility(false);
-        DestroyDice();
         InstantiateDieGroups();
+        Debug.Log("Rolling " + dieGroups.Count.ToString() + " DieGroup(s) with " + CountAllDice().ToString() + " total dice");
     }
 
-    public void DestroyDice()
+    public void DestroyDieGroups()
     {
-        foreach (GameObject g in dieGroupObjects) 
-        { 
-            foreach(GameObject d in g.GetComponent<DieGroupBehaviour>().dice)
-            {
-                Destroy(d);
-            }
-            g.GetComponent<DieGroupBehaviour>().dice = new List<GameObject>();
+        foreach (GameObject g in dieGroupObjects)
+        {
+            Destroy(g);
         }
-        dieGroupObjects = new List<GameObject>();
+        dieGroupObjects.Clear();
     }
+
     public void DuplicateDieGroup(int _groupId)
     {
         foreach (DieGroup dieGroup in dieGroups)
@@ -73,6 +65,7 @@ public class DiceManager : MonoBehaviour
                 dieGroupB.GetComponent<DieGroupBehaviour>().name = dieGroup.groupName;
                 dieGroupB.GetComponent<DieGroupBehaviour>().dieGroup = dieGroup;
                 dieGroupObjects.Add(dieGroupB);
+                Debug.Log("Duplicated DieGroup with groupId: " + _groupId.ToString() + " || New groupId: " + newDieGroup.groupId.ToString());
                 break;
             }
         }
@@ -84,41 +77,37 @@ public class DiceManager : MonoBehaviour
             if (_dieGroup.groupId == dieGroups[i].groupId)
             {
                 dieGroups[i] = _dieGroup;
-                break;
-            }
-        }
-        for (int i = 0; i < dieGroupObjects.Count; i++)
-        {
-            if (_dieGroup.groupId == dieGroupObjects[i].GetComponent<DieGroupBehaviour>().dieGroup.groupId)
-            {
-                dieGroupObjects[i].GetComponent<DieGroupBehaviour>().dieGroup = _dieGroup;
+                Debug.Log("Updated DieGroup with groupId: " + _dieGroup.groupId.ToString());
                 break;
             }
         }
     }
     public void DeleteDieGroup(int _groupId)
     {
-        foreach (GameObject g in dieGroupObjects)
-        {
-            DieGroupBehaviour dieGroupB = g.GetComponent<DieGroupBehaviour>();
-            if (dieGroupB.dieGroup.groupId == _groupId)
-            {
-                Destroy(g);
-            }
-        }
         foreach (DieGroup dieGroup in dieGroups)
         {
             if (dieGroup.groupId == _groupId)
             {
                 dieGroups.Remove(dieGroup);
+                Debug.Log("Deleted DieGroup with groupId: " + _groupId.ToString());
                 break;
             }
         }
+    }
+    public void AddDieGroup(DieGroup _dieGroup)
+    {
+        dieGroups.Add(_dieGroup);
+        Debug.Log("Added new DieGroup with groupId: " + _dieGroup.groupId.ToString());
     }
 
     void Update()
     {//
         dieGroupsCount = dieGroups.Count;
+        groupIds.Clear();
+        for (int i = 0; i < dieGroups.Count; i++)
+        {
+            groupIds.Add(dieGroups[i].groupId);
+        }
         if (!allResultsStored && DateTime.Now > start.AddSeconds(3))
         {
             start = DateTime.Now;
@@ -131,10 +120,7 @@ public class DiceManager : MonoBehaviour
                     if (dieB.GetComponent<DieBehaviour>().die.result != -1)
                     {
                         dieB.GetComponent<DieBehaviour>().SetCollision(false);
-                        Color currColor = dieB.GetComponent<MeshRenderer>().material.color;
-                        Color newColor = new Color(currColor.r, currColor.g, currColor.b, 0.25f);
-                        dieB.GetComponent<MeshRenderer>().material.color = newColor;
-                        //walls.GetComponent<Walls>().SetCollision(false);
+                        dieB.GetComponent<DieBehaviour>().SetTransparency(true);
                     }
                     else
                     {
@@ -162,6 +148,7 @@ public class DiceManager : MonoBehaviour
         {
             resultsUi.GetComponent<ResultsUI>().SetVisibility(true);
             resultsUi.GetComponent<ResultsUI>().CreateResultsPanels(dieGroupObjects);
+            Debug.Log("All dice rolled with result(s). Displaying results.");
             DisplayDice();
         }
 
@@ -175,11 +162,13 @@ public class DiceManager : MonoBehaviour
         {
             diceScale = 0.5f;
             DieGroupBehaviour.diceScale = 0.5f;
+            Debug.Log("Scaling dice to 0.5");
         }
         else if (totalNumOfDice > 55)
         {
             diceScale = 0.67f;
             DieGroupBehaviour.diceScale = 0.67f;
+            Debug.Log("Scaling dice to 0.67");
         }
         else if (totalNumOfDice <= 55f)
         {
@@ -188,11 +177,7 @@ public class DiceManager : MonoBehaviour
         }
 
         //destroy diegroup behaviour objects
-        while (transform.childCount > 0)
-        {
-            DestroyImmediate(transform.GetChild(0).gameObject);
-        }
-        dieGroupObjects.Clear();
+        DestroyDieGroups();
 
         //instantiate die group behaviours
         DieGroupBehaviour.ResetStartPosition();
@@ -202,7 +187,6 @@ public class DiceManager : MonoBehaviour
             dieGroupB.GetComponent<DieGroupBehaviour>().name = dieGroup.groupName;
             dieGroupB.GetComponent<DieGroupBehaviour>().dieGroup = dieGroup;
             dieGroupB.transform.localScale = new Vector3(diceScale, diceScale, diceScale);
-            Debug.Log(diceScale);
             dieGroupObjects.Add(dieGroupB);
         }
         foreach (GameObject dieGroupB in dieGroupObjects)
@@ -218,7 +202,9 @@ public class DiceManager : MonoBehaviour
             foreach (GameObject dieObj in dieGroupB.dice)
             {
                 DieBehaviour dieB = dieObj.GetComponent<DieBehaviour>();
-                dieB.DisplayDie();
+                dieB.MoveToStartPosition();
+                dieB.SetKinematic(true);
+                dieB.SetTransparency(false);
             }
         }
     }
@@ -245,11 +231,14 @@ public class DiceManager : MonoBehaviour
         return count;
     }
 
-    public void PrintAllDice()
+    public void PrintAllDieGroups()
     {
-        foreach (GameObject g in dieGroupObjects)
+        foreach (DieGroup _dieGroup in dieGroups)
         {
+            Debug.Log(_dieGroup.groupId);
+            //_dieGroup.PrintDieGroup();
         }
+        Debug.Log("=========");
     }
 
 }

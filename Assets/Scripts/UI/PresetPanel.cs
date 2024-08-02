@@ -47,8 +47,6 @@ public class PresetPanel : MonoBehaviour
     }
     public void DeselectPanel()
     {
-        Debug.Log(diegroup.colorIndex);
-        Debug.Log(diegroup.GetColor(false));
         gameObject.GetComponent<Outline>().effectDistance = new Vector2(2.5f, 2.5f);
         gameObject.GetComponent<CanvasRenderer>().SetColor(diegroup.GetColor(false));
     }

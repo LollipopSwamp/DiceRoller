@@ -41,9 +41,6 @@ public class DieGroupBehaviour : MonoBehaviour
 
             //set die obj name
             dieObj.name = "d20 (ID: " + dieBehaviour.die.dieId.ToString() + ")";
-
-            //fix position offset
-            dieObj.transform.position = dieBehaviour.OffsetPosition(nextStartPosition);
             IterateStartPosition();
         }
         //to hit dice if advantage or disadvantage, 2x d20
@@ -63,9 +60,6 @@ public class DieGroupBehaviour : MonoBehaviour
 
                 //set die obj name
                 dieObj.name = "d20 (ID: " + dieBehaviour.die.dieId.ToString() + ")";
-
-                //fix position offset
-                dieObj.transform.position = dieBehaviour.OffsetPosition(nextStartPosition);
                 IterateStartPosition();
             }
         }
@@ -86,9 +80,6 @@ public class DieGroupBehaviour : MonoBehaviour
 
             //set die obj name
             dieObj.name = Die.DieTypeToString(dieType) + " (ID: " + dieBehaviour.die.dieId.ToString() + ")";
-
-            //fix position offset
-            dieObj.transform.position = dieBehaviour.OffsetPosition(nextStartPosition);
             IterateStartPosition();
         }
 
@@ -109,10 +100,6 @@ public class DieGroupBehaviour : MonoBehaviour
             //set die obj name
             dieObj.name = Die.DieTypeToString(dieType) + " (ID: " + dieBehaviour.die.dieId.ToString() + ")";
 
-            //fix position offset
-            //Debug.Log(dieObj.transform.position);
-            //dieObj.transform.position = dieBehaviour.OffsetPosition(nextStartPosition);
-            //Debug.Log(dieObj.transform.position);
             //dieBehaviour.SetKinematic(true);
             IterateStartPosition();
 
@@ -121,7 +108,6 @@ public class DieGroupBehaviour : MonoBehaviour
 
     public void UpdateDie(Die _die)
     {
-        //bool diceUpdated = false;
         //check all dice
         for (int i = 0; i < dice.Count; ++i)
         {
@@ -129,14 +115,13 @@ public class DieGroupBehaviour : MonoBehaviour
             if (storedDie.dieId == _die.dieId)
             {
                 storedDie = _die;
-                //diceUpdated = true;
             }
         }
 
         CheckResults();
-        //CheckFinalResults();
         return;
     }
+
     public bool DiceStillRolling()
     {
         for (int i = 0; i < dice.Count; ++i)
@@ -144,13 +129,8 @@ public class DieGroupBehaviour : MonoBehaviour
             Die storedDie = dice[i].GetComponent<DieBehaviour>().die;
             if (storedDie.result == -1)
             {
-                Debug.Log(storedDie.dieId.ToString() + " Die is still rolling");
                 diceStillRolling = true;
                 return true;
-            }
-            else
-            {
-                Debug.Log(storedDie.dieId.ToString() + " Die is NOT still rolling");
             }
         }
         diceStillRolling = false;
@@ -189,8 +169,6 @@ public class DieGroupBehaviour : MonoBehaviour
                         break;
                 }
             }
-            //toHitResult += dieGroup.toHitModifier;
-            //damageResult += dieGroup.damageModifier;
 
             //tell DiceManager to check final results
             transform.parent.gameObject.GetComponent<DiceManager>().CheckFinalResults();
@@ -210,10 +188,5 @@ public class DieGroupBehaviour : MonoBehaviour
             nextStartPosition.x = -15;
             nextStartPosition.z -= 3* diceScale;
         }
-    }
-
-    public void PrintDieGroup()
-    {
-        //Debug.Log(string.Concat("Group ID: ", groupId, "Group Name: ", groupName, " || To Hit Modifer: ", toHitModifier, " || Damage Modifer: ", damageModifier, " || To Hit Result: ", toHitResult + toHitModifier, " || Damage Result: ", damageResult + damageModifier));
     }
 }

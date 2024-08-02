@@ -103,14 +103,12 @@ public class RollResultPanel : MonoBehaviour
     
     void SetTextStandard()
     {
-        Debug.Log("Setting standard text");
         standardTextPanels[0].GetComponent<TMP_Text>().text = groupName;
         standardTextPanels[1].GetComponent<TMP_Text>().text = damageDieTypes;
         standardTextPanels[2].GetComponent<TMP_Text>().text = damageResult;
     }
     void SetTextAttack()
     {
-        Debug.Log("Setting attack text");
         attackTextPanels[0].GetComponent<TMP_Text>().text = groupName;
         attackTextPanels[1].GetComponent<TMP_Text>().text = toHitDieTypes;
         attackTextPanels[2].GetComponent<TMP_Text>().text = toHitResult;

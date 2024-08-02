@@ -39,7 +39,6 @@ public class DieBehaviour : MonoBehaviour
         GameObject parent = transform.parent.gameObject;
         dieGroupBehaviour = parent.GetComponent<DieGroupBehaviour>();
         //raycasting = gameObject.transform.GetChild(0).gameObject;
-        Debug.Log(dieGroupBehaviour);
 
 
         //set random rotation and velocity
@@ -51,6 +50,7 @@ public class DieBehaviour : MonoBehaviour
             float velocityZ = (float)(r.NextDouble() - 0.5) * 50;
             rb.velocity = new Vector3(velocityX, 3, velocityZ);
         }
+        MoveToStartPosition();
     }
 
     public void SetVars(Die _die, GameObject _dmObj, Vector3 _initialPosition, float _rayScale)
@@ -74,6 +74,13 @@ public class DieBehaviour : MonoBehaviour
             return false;
         }
     }
+
+    public void SetResult(int _result)
+    {
+        die.result = _result;
+        dieGroupBehaviour.UpdateDie(die);
+        SetKinematic(true);
+    }
     public void SetKinematic(bool _kinematic)
     {
         gameObject.GetComponent<Rigidbody>().isKinematic = _kinematic;
@@ -85,42 +92,21 @@ public class DieBehaviour : MonoBehaviour
         gameObject.GetComponent<Collider>().enabled = collisionOn;
     }
 
-    public void SetResult(int _result)
-    {
-        die.result = _result;
-        dieGroupBehaviour.UpdateDie(die);
-        SetKinematic(true);
-    }
-
-    public void ToggleCollision()
-    {
-        collisionOn = !collisionOn;
-        if (collisionOn)
-        {
-            Physics.IgnoreCollision(gameObject.GetComponent<Collider>(), GetComponent<Collider>());
-        }
-        else
-        {
-            Physics.IgnoreCollision(gameObject.GetComponent<Collider>(), GetComponent<Collider>(), false);
-        }
-    }
-
-    public void DisplayDie()
+    public void MoveToStartPosition()
     {
         Vector3 offset = transform.rotation * raycasting.transform.localPosition * transform.localScale.x;
         transform.position = initialPosition - offset;
+    }
 
-        gameObject.GetComponent<Rigidbody>().isKinematic = true;
-        SetCollision(false);
-        Color currColor = mr.material.color;
-        Color newColor = new Color(currColor.r, currColor.g, currColor.b, 1);
-        mr.material.color = newColor;
-    }
-    public Vector3 OffsetPosition(Vector3 _initialPosition)
+    public void SetTransparency(bool _transparent)
     {
-        Vector3 offset = transform.rotation * raycasting.transform.localPosition * transform.localScale.x;
-        return _initialPosition - offset;
+        Color originalColor = mr.material.color;
+        Color opaqueColor = new Color(originalColor.r, originalColor.g, originalColor.b, 1f);
+        Color transparentColor = new Color(originalColor.r, originalColor.g, originalColor.b, 0.25f);
+        if (_transparent) { mr.material.color = transparentColor; }
+        else { mr.material.color = opaqueColor; }
     }
+
     public void ResetDie()
     {
         //Debug.Log("Resetting die");
@@ -129,6 +115,8 @@ public class DieBehaviour : MonoBehaviour
         float velocityX = (float)(r.NextDouble() - 0.5) * 50;
         float velocityZ = (float)(r.NextDouble() - 0.5) * 50;
         rb.velocity = new Vector3(velocityX, 3, velocityZ);
-        transform.position = initialPosition;
+        MoveToStartPosition();
+        SetTransparency(false);
+        SetKinematic(false);
     }
 }

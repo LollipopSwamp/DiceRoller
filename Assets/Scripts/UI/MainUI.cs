@@ -97,7 +97,6 @@ public class MainUI : MonoBehaviour
     {
         HideAll();
         nextSetupMenu--;
-        Debug.Log("Showing prev menu: " + nextSetupMenu.ToString());
         dieGroupSetupTitle.GetComponent<Canvas>().enabled = true;
         switch (nextSetupMenu)
         {
@@ -121,7 +120,6 @@ public class MainUI : MonoBehaviour
     public void NextDieGroupPanel()
     {
         HideAll();
-        Debug.Log("Showing next menu: " + nextSetupMenu.ToString());
         dieGroupSetupTitle.GetComponent<Canvas>().enabled = true;
         switch (nextSetupMenu)
         {
@@ -173,10 +171,10 @@ public class MainUI : MonoBehaviour
     public void InitDieGroupPanels()
     {
         //reset panels
-        foreach (GameObject panel in dieGroupPanels)
-        {
-            Destroy(panel);
-        }
+        foreach (GameObject panel in dieGroupPanels){Destroy(panel);}
+
+        //delete diegroup objects
+        diceManager.GetComponent<DiceManager>().DestroyDieGroups();
 
         //create panels
         for (int i = 0; i < diceManager.GetComponent<DiceManager>().dieGroups.Count; i++)

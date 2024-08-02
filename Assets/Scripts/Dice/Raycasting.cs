@@ -33,7 +33,6 @@ public class Raycasting : MonoBehaviour
                 //if ray is hitting floor, lock rotation and store globalVariables
                 if (Physics.Raycast(transform.position, rayDirection, out RaycastHit hit, rayScale, layersToHit) && result == -1)
                 {
-                    Debug.Log("floor hit!");
                     result = i + 1;
                     dieB.SetResult(result);
                 };

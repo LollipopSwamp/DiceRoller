@@ -32,7 +32,6 @@ public class DieTypeSetup : MonoBehaviour
 
     public void PlusButton(int _toHitType)
     {
-        Debug.Log("Plus button hit");
         if (count + 1 < 10) 
         {
             count++;
@@ -52,7 +51,6 @@ public class DieTypeSetup : MonoBehaviour
     public void MinusButton(int _toHitType)
     {
 
-        Debug.Log("Minus button hit");
         if (count - 1 >= 0)
         {
             count--;

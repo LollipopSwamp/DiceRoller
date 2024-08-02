@@ -12,7 +12,6 @@ public static class Presets
     {
         PresetsString presetsString = new PresetsString(dieGroups);
         string filePath = Application.persistentDataPath + "/Presets.json";
-        Debug.Log(filePath);
         string presetsData = JsonUtility.ToJson(presetsString);
         System.IO.File.WriteAllText(filePath, presetsData);
     }
@@ -24,10 +23,9 @@ public static class Presets
 
         string jsonString = System.IO.File.ReadAllText(filePath);
         PresetsString presetsString = JsonUtility.FromJson<PresetsString>(jsonString);
-        Debug.Log(presetsString.presetsString);
         dieGroups.Clear();
         dieGroups = presetsString.ConvertToDiegroups();
-        Debug.Log("Presets loaded: " + dieGroups.Count.ToString());
+        Debug.Log("Loaded " + dieGroups.Count.ToString() + " preset(s) from: " + filePath);
     }
 
     public static void AddPreset(DieGroup _dieGroup)
@@ -65,13 +63,11 @@ public class PresetsString
     {
         string[] strings = presetsString.Split('|');
         List<DieGroup> presets = new List<DieGroup>();
-        Debug.Log(strings[0]);
         foreach (string s in strings)
         {
             if (s != "")
             {
                 DieGroup dieGroup = JsonUtility.FromJson<DieGroup>(s);
-                dieGroup.PrintDieGroup();
                 presets.Add(dieGroup);
             }
         }
