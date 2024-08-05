@@ -8,8 +8,11 @@ public static class Presets
 {
     public static List<DieGroup> dieGroups = new List<DieGroup>();
 
+    private static int presetId = 0;
+
     public static void SaveToJSON()
     {
+        SetPresetIDs();
         PresetsString presetsString = new PresetsString(dieGroups);
         string filePath = Application.persistentDataPath + "/Presets.json";
         string presetsData = JsonUtility.ToJson(presetsString);
@@ -26,13 +29,48 @@ public static class Presets
         dieGroups.Clear();
         dieGroups = presetsString.ConvertToDiegroups();
         Debug.Log("Loaded " + dieGroups.Count.ToString() + " preset(s) from: " + filePath);
+        SetPresetIDs();
+    }
+    public static void SetPresetIDs()
+    {
+        presetId = 0;
+        foreach (DieGroup _dieGroup in dieGroups)
+        {
+            _dieGroup.groupId = presetId;
+            presetId++;
+        }
     }
 
     public static void AddPreset(DieGroup _dieGroup)
     {
         LoadFromJSON();
-        _dieGroup.groupId = -1;
         dieGroups.Add(_dieGroup);
+        SaveToJSON();
+    }
+    public static void UpdatePreset(DieGroup _dieGroup)
+    {
+        Debug.Log("Updating preset: " + _dieGroup.groupId.ToString());
+        for (int i = 0; i < dieGroups.Count; i++)
+        {
+            if (dieGroups[i].groupId == _dieGroup.groupId)
+            {
+                dieGroups[i] = _dieGroup;
+                break;
+            }
+        }
+        SaveToJSON();
+    }
+    public static void DeletePreset(DieGroup _dieGroup)
+    {
+        Debug.Log("Deleting preset: " + _dieGroup.groupId.ToString());
+        for (int i = 0; i < dieGroups.Count; i++)
+        {
+            if (dieGroups[i].groupId == _dieGroup.groupId)
+            {
+                dieGroups.RemoveAt(i);
+                break;
+            }
+        }
         SaveToJSON();
     }
 

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class DieGroupSetup : MonoBehaviour
 {
@@ -16,6 +17,9 @@ public class DieGroupSetup : MonoBehaviour
     //settings gameobjects
     public GameObject diceManager;
     public GameObject mainUI;
+
+    public GameObject title;
+
     public GameObject toHitTypeSetup;
     public List<GameObject> toHitDieTypes;
     public GameObject toHitModifier;
@@ -24,15 +28,17 @@ public class DieGroupSetup : MonoBehaviour
     public TMP_InputField groupNameInput;
     public GameObject colorPicker;
     public GameObject attackRollSlider;
-
+    public GameObject savePresetBtn;
+    
     //edit mode bool
-    public bool editMode = false;
+    public static int editMode = 0;
 
     public void Init()
     {
         Debug.Log("Creating new DieGroup");
+        title.GetComponent<TMP_Text>().text = "Create DieGroup";
         //edit mode false
-        editMode = false;
+        editMode = 0;
         //reset die group variables
         dieGroup = new DieGroup();
         attackRoll = true;
@@ -49,14 +55,24 @@ public class DieGroupSetup : MonoBehaviour
         foreach (GameObject g in damageDieTypes) { g.GetComponent<DieTypeSetup>().Init(); }
         damageModifier.GetComponent<ModifierSetup>().Init();
 
+        mainUI.GetComponent<MainUI>().NextDieGroupPanel();
         SetDieTypeString();
     }
 
-    public void Init(DieGroup _dieGroup)
+    public void Init(DieGroup _dieGroup, int _editMode)
     {
-        Debug.Log("Editing DieGroup with groupID: " + _dieGroup.groupId.ToString());
-        //edit mode true
-        editMode = true;
+        //edit mode
+        editMode = _editMode;
+        if (editMode == 1)
+        {
+            title.GetComponent<TMP_Text>().text = "Edit DieGroup";
+            Debug.Log("Editing DieGroup with groupID: " + _dieGroup.groupId.ToString());
+        }
+        else if (editMode == 2)
+        {
+            title.GetComponent<TMP_Text>().text = "Edit Preset";
+            Debug.Log("Editing Preset with presetID: " + _dieGroup.groupId.ToString());
+        }
 
         //set die group variables
         dieGroup = _dieGroup;
@@ -65,17 +81,23 @@ public class DieGroupSetup : MonoBehaviour
         groupNameInput.text = _dieGroup.groupName;
         colorPicker.GetComponent<ColorPicker>().UpdateButtons(_dieGroup.colorIndex);
 
-        for (int i = 0; i < damageDieTypesCount.Length; i++)
+        toHitTypeSetup.GetComponent<ToHitTypeUI>().Init(_dieGroup.toHitType);
+        toHitBonusDieTypesCount = _dieGroup.GetToHitBonusDieTypeInts();
+        for (int i = 0; i < toHitBonusDieTypesCount.Length; i++)
         {
             toHitDieTypes[i].GetComponent<DieTypeSetup>().Init(toHitBonusDieTypesCount[i]);
         }
         toHitModifier.GetComponent<ModifierSetup>().Init(1,_dieGroup.toHitModifier);
 
+        damageDieTypesCount = _dieGroup.GetDamageDieTypeInts();
         for (int i = 0; i < damageDieTypesCount.Length; i++)
         {
             damageDieTypes[i].GetComponent<DieTypeSetup>().Init(damageDieTypesCount[i]);
         }
         damageModifier.GetComponent<ModifierSetup>().Init(0, _dieGroup.damageModifier);
+        MainUI.nextSetupMenu = 0;
+        mainUI.GetComponent<MainUI>().NextDieGroupPanel();
+        
         SetDieTypeString();
     }
 
@@ -93,7 +115,6 @@ public class DieGroupSetup : MonoBehaviour
                 dieGroup.toHitType = DieGroup.ToHitType.Disadvantage;
                 break;
         }
-
     }
     public void SetModifier(bool _toHit, int _modifier)
     {
@@ -178,6 +199,14 @@ public class DieGroupSetup : MonoBehaviour
                 List<Die.DieType> _toHitBonusDice = DieTypeCountToDieList(toHitBonusDieTypesCount);
                 dieGroup.toHitBonusDice = _toHitBonusDice;
                 mainUI.GetComponent<MainUI>().NextDieGroupPanel();
+                if (editMode == 2)
+                {
+                    savePresetBtn.GetComponent<Button>().interactable = false;
+                }
+                else
+                {
+                    savePresetBtn.GetComponent<Button>().interactable = true;
+                }
                 break;
         }
     }
@@ -185,21 +214,27 @@ public class DieGroupSetup : MonoBehaviour
     {
         List<Die.DieType> _damageDice = DieTypeCountToDieList(damageDieTypesCount);
         dieGroup.damageDice = _damageDice;
-        if (editMode)
+        switch (editMode)
         {
-            if (!attackRoll)
-            {
-                dieGroup.toHitBonusDice = new List<Die.DieType>();
-                dieGroup.toHitModifier = 0;
-            }
-            diceManager.GetComponent<DiceManager>().UpdateDieGroup(dieGroup);
+            case 0: //create new
+                dieGroup.CommitDieGroup();
+                diceManager.GetComponent<DiceManager>().AddDieGroup(dieGroup);
+                mainUI.GetComponent<MainUI>().NextDieGroupPanel();
+                break;
+            case 1: // edit created die group
+                if (!attackRoll)
+                {
+                    dieGroup.toHitBonusDice = new List<Die.DieType>();
+                    dieGroup.toHitModifier = 0;
+                }
+                diceManager.GetComponent<DiceManager>().UpdateDieGroup(dieGroup);
+                mainUI.GetComponent<MainUI>().NextDieGroupPanel();
+                break;
+            case 2: //edit preset
+                Presets.UpdatePreset(dieGroup);
+                mainUI.GetComponent<MainUI>().LoadDieGroupPresetBtn();
+                break;
         }
-        else
-        {
-            dieGroup.CommitDieGroup();
-            diceManager.GetComponent<DiceManager>().AddDieGroup(dieGroup);
-        }
-        mainUI.GetComponent<MainUI>().NextDieGroupPanel();
     }
     public void SaveDieGroupPreset()
     {

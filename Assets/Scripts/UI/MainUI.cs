@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class MainUI : MonoBehaviour
 {
@@ -32,8 +33,10 @@ public class MainUI : MonoBehaviour
 
     public GameObject resultsUI;
 
+    public GameObject rollBtn;
+
     //current menu showing
-    private static int nextSetupMenu = 0;
+    public static int nextSetupMenu = 0;
 
     //presets
     //public Presets presets = new Presets();
@@ -59,6 +62,7 @@ public class MainUI : MonoBehaviour
         gameObject.GetComponent<Canvas>().enabled = visible;
         mainSetup.GetComponent<Canvas>().enabled = visible;
         if (visible) { InitDieGroupPanels(); }
+        UpdateRollBtn();
     }
 
     public void SetRollingDiceUIVisibility(bool visible)
@@ -85,7 +89,7 @@ public class MainUI : MonoBehaviour
     {
         nextSetupMenu = 0;
         dieGroupSetup.GetComponent<DieGroupSetup>().Init();
-        NextDieGroupPanel();
+        //NextDieGroupPanel();
     }
     public void LoadDieGroupPresetBtn()
     {
@@ -153,8 +157,7 @@ public class MainUI : MonoBehaviour
             if (_dieGroup.groupId == _groupId)
             {
                 nextSetupMenu = 0;
-                dieGroupSetup.GetComponent<DieGroupSetup>().Init(_dieGroup);
-                NextDieGroupPanel();
+                dieGroupSetup.GetComponent<DieGroupSetup>().Init(_dieGroup,1);
                 return;
             }
         }
@@ -194,6 +197,18 @@ public class MainUI : MonoBehaviour
                 dieGroupPanel.GetComponent<DieGroupPanel>().Init(diceManager.GetComponent<DiceManager>().dieGroups[i]);
                 dieGroupPanels.Add(dieGroupPanel);
             }
+        }
+    }
+    public void UpdateRollBtn()
+    {
+        //enable roll btn
+        if (diceManager.GetComponent<DiceManager>().dieGroups.Count > 0)
+        {
+            rollBtn.GetComponent<Button>().interactable = true;
+        }
+        else
+        {
+            rollBtn.GetComponent<Button>().interactable = false;
         }
     }
 }

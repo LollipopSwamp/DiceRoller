@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class PresetPanel : MonoBehaviour
 {
     public int index;
-    public DieGroup diegroup;
+    public DieGroup dieGroup;
 
     //strings
     public List<string> panelStrings = new List<string>();
@@ -18,7 +18,7 @@ public class PresetPanel : MonoBehaviour
 
     public void Init(int _index, DieGroup _dieGroup)
     {
-        diegroup = _dieGroup;
+        dieGroup = _dieGroup;
         index = _index;
         panelStrings.Add(_dieGroup.groupName);
         panelStrings.Add(_dieGroup.GetToHitDiceTypesString());
@@ -42,12 +42,12 @@ public class PresetPanel : MonoBehaviour
     {
         gameObject.GetComponentInParent<PresetsMenu>().SelectPanel(index);
         gameObject.GetComponent<Outline>().effectDistance = new Vector2(10, 10);
-        gameObject.GetComponent<CanvasRenderer>().SetColor(diegroup.GetColor(true));
-        transform.SetAsLastSibling();
+        gameObject.GetComponent<CanvasRenderer>().SetColor(dieGroup.GetColor(true));
+        //transform.SetAsLastSibling();
     }
     public void DeselectPanel()
     {
         gameObject.GetComponent<Outline>().effectDistance = new Vector2(2.5f, 2.5f);
-        gameObject.GetComponent<CanvasRenderer>().SetColor(diegroup.GetColor(false));
+        gameObject.GetComponent<CanvasRenderer>().SetColor(dieGroup.GetColor(false));
     }
 }

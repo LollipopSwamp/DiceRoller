@@ -52,6 +52,7 @@ public class DieGroupPanel : MonoBehaviour
     public void DeleteBtn()
     {
         gameObject.GetComponentInParent<MainUI>().DeleteDieGroup(groupId);
+        gameObject.GetComponentInParent<MainUI>().UpdateRollBtn();
         Destroy(gameObject);
     }
     void SetVars(DieGroup dieGroup)
