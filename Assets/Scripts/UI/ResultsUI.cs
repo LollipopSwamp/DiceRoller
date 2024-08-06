@@ -17,6 +17,8 @@ public class ResultsUI : MonoBehaviour
     //visibility
     private static bool showResultsUI = false;
 
+    public GameObject resultDetails;
+
     //main ui object
     public GameObject mainUi;
 
@@ -69,9 +71,11 @@ public class ResultsUI : MonoBehaviour
         SetVisibility(false);
         mainUi.GetComponent<MainUI>().SetVisibility(true);
     }
-    public void RollAgainButton()
+    public void ShowResultDetails(DieGroupBehaviour _dieGroupB)
     {
-
+        resultDetails.GetComponent<Canvas>().enabled = true;
+        resultDetails.GetComponent<ResultDetails>().Init(_dieGroupB);
+        gameObject.GetComponent<Canvas>().enabled = false;
     }
 
     public void UpdateText(string _groupText, string _diceTypeText, string _resultsText, Color _color)

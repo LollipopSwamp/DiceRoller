@@ -238,4 +238,25 @@ public class Die
                 return DieType.d20;
         }
     }
+    public static int GetFacesInt(DieType _dieType)
+    {
+        switch (_dieType)
+        {
+            case DieType.d4:
+                return 4;
+            case DieType.d6:
+                return 6;
+            case DieType.d8:
+                return 8;
+            case DieType.d10:
+                return 10;
+            case DieType.d12:
+                return 12;
+            case DieType.d20:
+                return 20;
+            default:
+                Debug.Log("Error in GetFacesInt, returning -1");
+                return -1;
+        }
+    }
 }

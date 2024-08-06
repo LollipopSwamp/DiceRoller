@@ -13,6 +13,9 @@ public class DieGroupBehaviour : MonoBehaviour
     public List<GameObject> dice = new List<GameObject>(); //damage if attack
 
     public int toHitResult;
+    public int skippedToHitResult;
+    public bool crit = false;
+    public bool critFail = false;
     public int damageResult;
 
     public bool diceStillRolling = true;
@@ -152,13 +155,31 @@ public class DieGroupBehaviour : MonoBehaviour
                         {
                             case DieGroup.ToHitType.Standard:
                                 toHitResult = d.result;
+                                skippedToHitResult = 0;
                                 break;
                             case DieGroup.ToHitType.Advantage:
                                 toHitResult = Mathf.Max(d.result, toHitResult);
+                                skippedToHitResult = Mathf.Min(d.result, toHitResult);
                                 break;
                             case DieGroup.ToHitType.Disadvantage:
                                 toHitResult = Mathf.Min(d.result, toHitResult);
+                                skippedToHitResult = Mathf.Max(d.result, toHitResult);
                                 break;
+                        }
+                        if (toHitResult == 20)
+                        {
+                            crit = true;
+                            critFail = false;
+                        }
+                        else if(toHitResult == 1)
+                        {
+                            crit = false;
+                            critFail = true;
+                        }
+                        else 
+                        { 
+                            crit = false;
+                            critFail = false;
                         }
                         break;
                     case Die.DieSubGroup.ToHitBonus:
@@ -168,6 +189,11 @@ public class DieGroupBehaviour : MonoBehaviour
                         damageResult += d.result;
                         break;
                 }
+            }
+            //get crit value if crit
+            if (crit)
+            {
+                damageResult = CritHandler.GetCritValue(dieGroup.damageDice, damageResult, dieGroup.damageModifier);
             }
 
             //tell DiceManager to check final results

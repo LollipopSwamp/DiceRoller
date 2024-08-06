@@ -28,10 +28,12 @@ public class MainUI : MonoBehaviour
     public GameObject dieGroupDamageSetup;
 
     public GameObject presetsMenu;
+    public GameObject settingsMenu;
 
     public GameObject rollingDiceUI;
 
     public GameObject resultsUI;
+    public GameObject resultDetails;
 
     public GameObject rollBtn;
 
@@ -43,12 +45,8 @@ public class MainUI : MonoBehaviour
 
     void Start()
     {
+        HideAll();
         mainSetup.GetComponent<Canvas>().enabled = true;
-        dieGroupSetupTitle.GetComponent<Canvas>().enabled = false;
-        dieGroupBasicSetup.GetComponent<Canvas>().enabled = false;
-        dieGroupToHitSetup.GetComponent<Canvas>().enabled = false;
-        dieGroupDamageSetup.GetComponent<Canvas>().enabled = false;
-        presetsMenu.GetComponent<Canvas>().enabled = false;
 
         //gameObject.GetComponent<Canvas>().enabled = false;
 
@@ -82,7 +80,10 @@ public class MainUI : MonoBehaviour
         dieGroupToHitSetup.GetComponent<Canvas>().enabled = false;
         dieGroupDamageSetup.GetComponent<Canvas>().enabled = false;
         rollingDiceUI.GetComponent<Canvas>().enabled = false;
+        resultsUI.GetComponent<Canvas>().enabled = false;
+        resultDetails.GetComponent<Canvas>().enabled = false;
         presetsMenu.GetComponent<Canvas>().enabled = false;
+        settingsMenu.GetComponent<Canvas>().enabled = false;
     }
 
     public void CreateDiegroupBtn()
@@ -96,6 +97,12 @@ public class MainUI : MonoBehaviour
         HideAll();
         presetsMenu.GetComponent<Canvas>().enabled = true;
         presetsMenu.GetComponent<PresetsMenu>().Init();
+    }
+    public void Settingsbtn()
+    {
+        HideAll();
+        settingsMenu.GetComponent<Canvas>().enabled = true;
+        settingsMenu.GetComponent<Settings>().Init();
     }
     public void PreviousDieGroupPanel()
     {

@@ -5,12 +5,20 @@ using TMPro;
 
 public class RollResultPanel : MonoBehaviour
 {
+    //die group B
+    public DieGroupBehaviour dieGroupB;
+
+    //parent
+    public GameObject resultsUI;
+
     //result strings
     public int groupId;
     public string groupName;
     public DieGroup.ToHitType toHitType;
     public string toHitDieTypes;
     public string toHitResult;
+    public bool crit;
+    public bool critFail;
     public string damageDieTypes;
     public string damageResult;
 
@@ -24,7 +32,9 @@ public class RollResultPanel : MonoBehaviour
 
     public void Init(GameObject dieGroupObj)
     {
-        DieGroupBehaviour dieGroupB = dieGroupObj.GetComponent<DieGroupBehaviour>();
+        resultsUI = gameObject.transform.parent.gameObject;
+
+        dieGroupB = dieGroupObj.GetComponent<DieGroupBehaviour>();
         DieGroup dieGroup = dieGroupB.dieGroup;
         groupId = dieGroup.groupId;
         groupName = dieGroup.groupName;
@@ -97,8 +107,27 @@ public class RollResultPanel : MonoBehaviour
         damageDieTypes += dieGroup.damageModifier.ToString();
 
         //set result vars
-        toHitResult = "Result: " + (dieGroupB.toHitResult + dieGroup.toHitModifier).ToString();
-        damageResult = "Result: " + (dieGroupB.damageResult + dieGroup.damageModifier).ToString();
+        if (dieGroupB.crit)
+        {
+            crit = true;
+            critFail = false;
+            toHitResult = "Critical Hit!";
+            damageResult = "Result: " + (dieGroupB.damageResult + dieGroup.damageModifier).ToString();
+        }
+        else if (dieGroupB.critFail)
+        {
+            crit = false;
+            critFail = true;
+            toHitResult = "Critical Fail";
+            damageResult = "Result: Critical Fail";
+        }
+        else
+        {
+            crit = false;
+            critFail = false;
+            toHitResult = "Result: " + (dieGroupB.toHitResult + dieGroup.toHitModifier).ToString();
+            damageResult = "Result: " + (dieGroupB.damageResult + dieGroup.damageModifier).ToString();
+        }
     }
     
     void SetTextStandard()
@@ -114,6 +143,20 @@ public class RollResultPanel : MonoBehaviour
         attackTextPanels[2].GetComponent<TMP_Text>().text = toHitResult;
         attackTextPanels[3].GetComponent<TMP_Text>().text = damageDieTypes;
         attackTextPanels[4].GetComponent<TMP_Text>().text = damageResult;
+        if (crit)
+        {
+            attackTextPanels[2].GetComponent<TMP_Text>().color = Color.green;
+            attackTextPanels[4].GetComponent<TMP_Text>().color = Color.green;
+        }
+        else if (critFail)
+        {
+            attackTextPanels[2].GetComponent<TMP_Text>().color = Color.red;
+            attackTextPanels[4].GetComponent<TMP_Text>().color = Color.red;
+        }
+    }
+    public void ShowDetails()
+    {
+        resultsUI.GetComponent<ResultsUI>().ShowResultDetails(dieGroupB);
     }
 
     public void PrintRollResult()
