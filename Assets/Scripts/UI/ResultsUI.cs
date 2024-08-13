@@ -13,6 +13,7 @@ public class ResultsUI : MonoBehaviour
 
     //panel objects
     public List<GameObject> resultPanels = new List<GameObject>();
+    public GameObject scrollContent;
 
     //visibility
     private static bool showResultsUI = false;
@@ -20,13 +21,8 @@ public class ResultsUI : MonoBehaviour
     public GameObject resultDetails;
 
     //main ui object
-    public GameObject mainUi;
+    public GameObject uiManager;
 
-    public void SetVisibility(bool visible)
-    {
-        showResultsUI = visible;
-        gameObject.GetComponent<Canvas>().enabled = visible;
-    }
 
     public void CreateResultsPanels(List<GameObject> dieGroups)
     {
@@ -40,50 +36,43 @@ public class ResultsUI : MonoBehaviour
             DieGroupBehaviour dieGroupB = dieGroups[i].GetComponent<DieGroupBehaviour>();
             if (dieGroupB.dieGroup.toHitType == DieGroup.ToHitType.None)
             {
-                GameObject resultPanel = Instantiate(resultsPanelPrefabStandard, Vector3.zero, Quaternion.identity, transform);
+                GameObject resultPanel = Instantiate(resultsPanelPrefabStandard, Vector3.zero, Quaternion.identity, scrollContent.transform);
                 resultPanel.transform.localPosition = new Vector3(0, 390 - (80 * i), 0);
                 resultPanel.GetComponent<RollResultPanel>().Init(dieGroups[i]);
                 resultPanels.Add(resultPanel);
             }
             else
             {
-                GameObject resultPanel = Instantiate(resultsPanelPrefabAttack, Vector3.zero, Quaternion.identity, transform);
+                GameObject resultPanel = Instantiate(resultsPanelPrefabAttack, Vector3.zero, Quaternion.identity, scrollContent.transform);
                 resultPanel.transform.localPosition = new Vector3(0, 390 - (80 * i), 0);
                 resultPanel.GetComponent<RollResultPanel>().Init(dieGroups[i]);
                 resultPanels.Add(resultPanel);
             }
-
-
         }
+        ResizeScrollContent();
     }
 
 
     public void ShowButton()
     {
-        SetVisibility(true);
+        uiManager.GetComponent<UIManager>().ShowResultsUI();
     }
     public void HideButton()
     {
-        SetVisibility(false);
+        uiManager.GetComponent<UIManager>().ShowDiceRolledUI();
     }
     public void SetupButton()
     {
-        SetVisibility(false);
-        mainUi.GetComponent<MainUI>().SetVisibility(true);
+        uiManager.GetComponent<UIManager>().ShowMainSetupUI();
     }
     public void ShowResultDetails(DieGroupBehaviour _dieGroupB)
     {
-        resultDetails.GetComponent<Canvas>().enabled = true;
-        resultDetails.GetComponent<ResultDetails>().Init(_dieGroupB);
-        gameObject.GetComponent<Canvas>().enabled = false;
+        uiManager.GetComponent<UIManager>().ShowResultDetails(_dieGroupB);
     }
-
-    public void UpdateText(string _groupText, string _diceTypeText, string _resultsText, Color _color)
+    public void ResizeScrollContent()
     {
-        //groupNameText.GetComponent<TMP_Text>().text = _groupText;
-        //diceTypesText.GetComponent<TMP_Text>().text = _diceTypeText;
-        //resultsText.GetComponent<TMP_Text>().text = _resultsText;
-        //separator0.SetActive(true);
-        //separator1.SetActive(true);
+        Vector2 newSize = new Vector2(1820, resultPanels.Count * 90 + 15);
+        scrollContent.GetComponent<RectTransform>().sizeDelta = newSize;
+        scrollContent.transform.localPosition = new Vector2(0, resultPanels.Count * -45);
     }
 }

@@ -5,6 +5,8 @@ using TMPro;
 
 public class DieGroupPanel : MonoBehaviour
 {
+    public GameObject uiManager;
+    public DieGroup dieGroup;
     //result strings
     public int groupId;
     public string groupName;
@@ -21,8 +23,11 @@ public class DieGroupPanel : MonoBehaviour
 
 
 
-    public void Init(DieGroup dieGroup)
+    public void Init(DieGroup _dieGroup)
     {
+        //set ui manager object
+        uiManager = transform.parent.gameObject.transform.parent.gameObject.transform.parent.gameObject;
+        dieGroup = _dieGroup;
         groupId = dieGroup.groupId;
         groupName = dieGroup.groupName;
         gameObject.name = groupName + " Panel";
@@ -42,17 +47,17 @@ public class DieGroupPanel : MonoBehaviour
     }
     public void DuplicateBtn()
     {
-        gameObject.GetComponentInParent<MainUI>().DuplicateDieGroup(groupId);
+        gameObject.GetComponentInParent<SetupUI>().DuplicateDieGroup(groupId);
     }
     public void EditBtn()
     {
-        gameObject.GetComponentInParent<MainUI>().EditDieGroup(groupId);
+        uiManager.GetComponent<UIManager>().ShowDieGroupSetup(dieGroup,1);
     }
 
     public void DeleteBtn()
     {
-        gameObject.GetComponentInParent<MainUI>().DeleteDieGroup(groupId);
-        gameObject.GetComponentInParent<MainUI>().UpdateRollBtn();
+        gameObject.GetComponentInParent<SetupUI>().DeleteDieGroup(groupId);
+        gameObject.GetComponentInParent<SetupUI>().UpdateRollBtn();
         Destroy(gameObject);
     }
     void SetVars(DieGroup dieGroup)

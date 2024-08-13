@@ -5,9 +5,8 @@ using UnityEngine.UI;
 
 public class PresetsMenu : MonoBehaviour
 {
-    public GameObject mainUI;
+    public GameObject uiManager;
     public GameObject diceManager;
-    public GameObject dieGroupSetup;
 
     public GameObject editBtn;
     public GameObject deleteBtn;
@@ -76,8 +75,8 @@ public class PresetsMenu : MonoBehaviour
     }
     public void EditBtn()
     {
-        selectedPreset.PrintDieGroup();
-        dieGroupSetup.GetComponent<DieGroupSetup>().Init(selectedPreset, 2);
+        //selectedPreset.PrintDieGroup();
+        uiManager.GetComponent<UIManager>().ShowDieGroupSetup(selectedPreset, 2);
     }
     public void DeleteBtn()
     {
@@ -98,11 +97,11 @@ public class PresetsMenu : MonoBehaviour
         int presetId = selectedPreset.groupId;
         selectedPreset.GetNewGroupID();
         diceManager.GetComponent<DiceManager>().dieGroups.Add(selectedPreset);
-        mainUI.GetComponent<MainUI>().SetVisibility(true);
+        uiManager.GetComponent<UIManager>().ShowMainSetupUI();
         Debug.Log("Loaded preset (" + presetId.ToString() + ") with new groupId: " + selectedPreset.groupId.ToString());
     }
     public void BackBtn()
     {
-        mainUI.GetComponent<MainUI>().SetVisibility(true);
+        uiManager.GetComponent<UIManager>().ShowMainSetupUI();
     }
 }

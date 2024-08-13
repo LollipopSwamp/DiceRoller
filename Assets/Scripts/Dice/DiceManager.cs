@@ -13,7 +13,7 @@ public class DiceManager : MonoBehaviour
     private static Vector3 dieStartPosition = new Vector3(-9, 15, 6);
 
     //ui objects
-    public GameObject mainUi;
+    public GameObject uiManager;
     public GameObject resultsUi;
 
 
@@ -37,7 +37,7 @@ public class DiceManager : MonoBehaviour
     {
         start = DateTime.Now;
         allResultsStored = false;
-        mainUi.GetComponent<MainUI>().SetVisibility(false);
+        uiManager.GetComponent<UIManager>().HideAll();
         InstantiateDieGroups();
         Debug.Log("Rolling " + dieGroups.Count.ToString() + " DieGroup(s) with " + CountAllDice().ToString() + " total dice");
     }
@@ -146,8 +146,7 @@ public class DiceManager : MonoBehaviour
         //if dice0 done rolling, print results and show results ui
         if (allResultsStored)
         {
-            resultsUi.GetComponent<ResultsUI>().SetVisibility(true);
-            resultsUi.GetComponent<ResultsUI>().CreateResultsPanels(dieGroupObjects);
+            uiManager.GetComponent<UIManager>().ShowResultsUI();
             Debug.Log("All dice rolled with result(s). Displaying results.");
             DisplayDice();
         }

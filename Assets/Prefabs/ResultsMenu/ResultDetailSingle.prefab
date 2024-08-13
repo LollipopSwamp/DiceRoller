@@ -35,7 +35,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -400, y: 0}
-  m_SizeDelta: {x: 10, y: 80}
+  m_SizeDelta: {x: 10, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1785456050456136163
 CanvasRenderer:
@@ -173,7 +173,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 5
+  m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -307,7 +307,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 5
+  m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -516,7 +516,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e50a22b60f036f44a7e0dcedc12f3b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  detailTitle0: {fileID: 3596539894673662720}
-  detailInfo0: {fileID: 8208800980880986895}
-  detailTitle1: {fileID: 0}
-  detailInfo1: {fileID: 0}
+  detailTitles:
+  - {fileID: 3596539894673662720}
+  detailInfos:
+  - {fileID: 8208800980880986895}

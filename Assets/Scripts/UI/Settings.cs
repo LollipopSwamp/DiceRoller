@@ -13,7 +13,7 @@ public class Settings : MonoBehaviour
     public GameObject exampleText;
     public List<string> exampleStrings = new List<string>();
 
-    public GameObject mainUI;
+    public GameObject uiManager;
 
     public static int CritTypeIndex()
     {
@@ -65,6 +65,6 @@ public class Settings : MonoBehaviour
 
     public void BackBtn()
     {
-        mainUI.GetComponent<MainUI>().SetVisibility(true);
+        uiManager.GetComponent<UIManager>().ShowMainSetupUI();
     }
 }

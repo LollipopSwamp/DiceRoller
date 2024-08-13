@@ -16,7 +16,7 @@ public class DieGroupSetup : MonoBehaviour
 
     //settings gameobjects
     public GameObject diceManager;
-    public GameObject mainUI;
+    public GameObject uiManager;
 
     public GameObject title;
 
@@ -29,7 +29,8 @@ public class DieGroupSetup : MonoBehaviour
     public GameObject colorPicker;
     public GameObject attackRollSlider;
     public GameObject savePresetBtn;
-    
+
+
     //edit mode bool
     public static int editMode = 0;
 
@@ -55,7 +56,6 @@ public class DieGroupSetup : MonoBehaviour
         foreach (GameObject g in damageDieTypes) { g.GetComponent<DieTypeSetup>().Init(); }
         damageModifier.GetComponent<ModifierSetup>().Init();
 
-        mainUI.GetComponent<MainUI>().NextDieGroupPanel();
         SetDieTypeString();
     }
 
@@ -95,9 +95,8 @@ public class DieGroupSetup : MonoBehaviour
             damageDieTypes[i].GetComponent<DieTypeSetup>().Init(damageDieTypesCount[i]);
         }
         damageModifier.GetComponent<ModifierSetup>().Init(0, _dieGroup.damageModifier);
-        MainUI.nextSetupMenu = 0;
-        mainUI.GetComponent<MainUI>().NextDieGroupPanel();
-        
+        UIManager.nextSetupMenu = 0;
+
         SetDieTypeString();
     }
 
@@ -177,8 +176,8 @@ public class DieGroupSetup : MonoBehaviour
 
     public void BackButton(int _currMenu)
     {
-        if (!attackRoll && _currMenu == 2) { mainUI.GetComponent<MainUI>().PreviousDieGroupPanel(); }
-        mainUI.GetComponent<MainUI>().PreviousDieGroupPanel();
+        if (!attackRoll && _currMenu == 2) { uiManager.GetComponent<UIManager>().PreviousDieGroupMenu(); }
+        uiManager.GetComponent<UIManager>().PreviousDieGroupMenu();
     }
     public void NextButton(int _currMenu)
     {
@@ -191,14 +190,14 @@ public class DieGroupSetup : MonoBehaviour
                 if (!attackRoll) 
                 { 
                     dieGroup.toHitType = DieGroup.ToHitType.None;
-                    mainUI.GetComponent<MainUI>().NextDieGroupPanel();
+                    uiManager.GetComponent<UIManager>().NextDieGroupMenu();
                 }
-                mainUI.GetComponent<MainUI>().NextDieGroupPanel();
+                uiManager.GetComponent<UIManager>().NextDieGroupMenu();
                 break;
             case 1:
                 List<Die.DieType> _toHitBonusDice = DieTypeCountToDieList(toHitBonusDieTypesCount);
                 dieGroup.toHitBonusDice = _toHitBonusDice;
-                mainUI.GetComponent<MainUI>().NextDieGroupPanel();
+                uiManager.GetComponent<UIManager>().NextDieGroupMenu();
                 if (editMode == 2)
                 {
                     savePresetBtn.GetComponent<Button>().interactable = false;
@@ -219,7 +218,7 @@ public class DieGroupSetup : MonoBehaviour
             case 0: //create new
                 dieGroup.CommitDieGroup();
                 diceManager.GetComponent<DiceManager>().AddDieGroup(dieGroup);
-                mainUI.GetComponent<MainUI>().NextDieGroupPanel();
+                uiManager.GetComponent<UIManager>().NextDieGroupMenu();
                 break;
             case 1: // edit created die group
                 if (!attackRoll)
@@ -228,18 +227,23 @@ public class DieGroupSetup : MonoBehaviour
                     dieGroup.toHitModifier = 0;
                 }
                 diceManager.GetComponent<DiceManager>().UpdateDieGroup(dieGroup);
-                mainUI.GetComponent<MainUI>().NextDieGroupPanel();
+                uiManager.GetComponent<UIManager>().NextDieGroupMenu();
                 break;
             case 2: //edit preset
+                if (!attackRoll)
+                {
+                    dieGroup.toHitBonusDice = new List<Die.DieType>();
+                    dieGroup.toHitModifier = 0;
+                }
                 Presets.UpdatePreset(dieGroup);
-                mainUI.GetComponent<MainUI>().LoadDieGroupPresetBtn();
+                uiManager.GetComponent<UIManager>().ShowPresetsUI();
                 break;
         }
     }
     public void SaveDieGroupPreset()
     {
         SaveDieGroup();
-        mainUI.GetComponent<MainUI>().SaveDieGroupPreset(dieGroup);
+        uiManager.GetComponent<UIManager>().SaveDieGroupPreset(dieGroup);
     }
 
     List<Die.DieType> DieTypeCountToDieList(int[] dieTypesCount)

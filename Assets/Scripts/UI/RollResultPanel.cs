@@ -32,7 +32,7 @@ public class RollResultPanel : MonoBehaviour
 
     public void Init(GameObject dieGroupObj)
     {
-        resultsUI = gameObject.transform.parent.gameObject;
+        resultsUI = gameObject.transform.parent.gameObject.transform.parent.gameObject.transform.parent.gameObject;
 
         dieGroupB = dieGroupObj.GetComponent<DieGroupBehaviour>();
         DieGroup dieGroup = dieGroupB.dieGroup;
