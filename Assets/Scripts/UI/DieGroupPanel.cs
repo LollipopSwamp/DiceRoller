@@ -26,7 +26,7 @@ public class DieGroupPanel : MonoBehaviour
     public void Init(DieGroup _dieGroup)
     {
         //set ui manager object
-        uiManager = transform.parent.gameObject.transform.parent.gameObject.transform.parent.gameObject;
+        uiManager = transform.parent.gameObject.transform.parent.gameObject.transform.parent.gameObject.transform.parent.gameObject.transform.parent.gameObject;
         dieGroup = _dieGroup;
         groupId = dieGroup.groupId;
         groupName = dieGroup.groupName;
@@ -51,6 +51,7 @@ public class DieGroupPanel : MonoBehaviour
     }
     public void EditBtn()
     {
+        dieGroup.PrintDieGroup();
         uiManager.GetComponent<UIManager>().ShowDieGroupSetup(dieGroup,1);
     }
 

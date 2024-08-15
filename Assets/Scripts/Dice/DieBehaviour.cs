@@ -25,8 +25,8 @@ public class DieBehaviour : MonoBehaviour
     public bool collisionOn = true;
 
     //rays and directions
-    private List<Ray> rays = new List<Ray>();
-    public float rayScale = 1f;
+    //private List<Ray> rays = new List<Ray>();
+    //public float rayScale = 1f;
 
     public GameObject raycasting; 
 

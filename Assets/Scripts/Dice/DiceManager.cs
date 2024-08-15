@@ -32,6 +32,12 @@ public class DiceManager : MonoBehaviour
     public int totalNumOfDice = 0;
     public static float diceScale = 1f;//0.5f;
 
+    //statistics tests
+    public int numOfD6 = 0;
+    public int totalRoll = 0;
+    public double avgRoll = 0;
+    public int[] allRolls = new int[6];
+
 
     public void RollDice()
     {
@@ -149,6 +155,8 @@ public class DiceManager : MonoBehaviour
             uiManager.GetComponent<UIManager>().ShowResultsUI();
             Debug.Log("All dice rolled with result(s). Displaying results.");
             DisplayDice();
+            //ProcessD6Stats();
+            //RollDice();
         }
 
     }
@@ -239,5 +247,24 @@ public class DiceManager : MonoBehaviour
         }
         Debug.Log("=========");
     }
-
+    public void ProcessD6Stats()
+    {
+        foreach(GameObject dieGroupBObj in dieGroupObjects)
+        {
+            DieGroupBehaviour dieGroupB = dieGroupBObj.GetComponent<DieGroupBehaviour>();
+            foreach (GameObject dieObj in dieGroupB.dice)
+            {
+                Die die = dieObj.GetComponent<DieBehaviour>().die;
+                if (die.dieType == Die.DieType.d6)
+                {
+                    numOfD6++;
+                    totalRoll += die.result;
+                    avgRoll = (double)totalRoll / (double)numOfD6;
+                    allRolls[die.result - 1]++;
+                }
+            }
+        }
+        Debug.Log("D6 stats updated || numOfD6: " + numOfD6.ToString() + " || avgRoll: " + avgRoll.ToString());
+        Debug.Log("All Rolls || 1: " + allRolls[0].ToString() + "|| 2: " + allRolls[1].ToString() + "|| 3: " + allRolls[2].ToString() + "|| 4: " + allRolls[3].ToString() + "|| 5: " + allRolls[4].ToString() + "|| 6: " + allRolls[5].ToString());
+    }
 }

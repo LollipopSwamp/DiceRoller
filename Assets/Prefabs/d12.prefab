@@ -109,7 +109,6 @@ MonoBehaviour:
   dieResult: -1
   initialPosition: {x: 0, y: 0, z: 0}
   collisionOn: 1
-  rayScale: 1
   raycasting: {fileID: 6306632468461323355}
 --- !u!64 &311111598477437091
 MeshCollider:
@@ -211,7 +210,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   rayDirections: []
-  rayScale: 1
+  rayScale: 1.5
   result: -1
 --- !u!33 &8222758832531349536
 MeshFilter:

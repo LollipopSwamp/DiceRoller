@@ -157,7 +157,6 @@ MonoBehaviour:
   dieResult: -1
   initialPosition: {x: 0, y: 0, z: 0}
   collisionOn: 1
-  rayScale: 1
   raycasting: {fileID: 5566391683134265675}
 --- !u!1 &5566391683134265675
 GameObject:
@@ -207,5 +206,5 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   rayDirections: []
-  rayScale: 1
+  rayScale: 1.25
   result: -1
