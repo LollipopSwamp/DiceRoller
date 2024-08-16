@@ -63,7 +63,7 @@ public class DieBehaviour : MonoBehaviour
     }
     void OnCollisionEnter(Collision collision)
     {
-        if (totalAudiosPlayed < 5 && !audioPlayed && collision.gameObject.tag == "Floor" && DateTime.Now > lastPlayed.AddSeconds(0.1f))
+        if (!Settings.disableSound && totalAudiosPlayed < 5 && !audioPlayed && collision.gameObject.tag == "Floor" && DateTime.Now > lastPlayed.AddSeconds(0.1f))
         {
             lastPlayed = DateTime.Now;
             Debug.Log(collision.gameObject.tag);

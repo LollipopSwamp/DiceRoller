@@ -10,6 +10,9 @@ public class Settings : MonoBehaviour
     public static CritType critType = CritType.DoubleDice;
     public int critTypeIndex = 0;
 
+    public static bool disableSound = false;
+    public GameObject disableSoundCheckBox;
+
     public List<GameObject> critTypeButtons = new List<GameObject>();
     public GameObject exampleText;
     public List<string> exampleStrings = new List<string>();
@@ -59,6 +62,14 @@ public class Settings : MonoBehaviour
         //set example text
         exampleText.GetComponent<TMP_Text>().text = exampleStrings[_critTypeIndex];
 
+        //set disableSoundCheckBox
+        disableSoundCheckBox.GetComponent<DisableSound>().Init(disableSound);
+
+    }
+
+    public static void SetDisableSound(bool _disableSound)
+    {
+        disableSound = _disableSound;
     }
 
     public static void SetCritType(int _critTypeIndex)
@@ -81,7 +92,7 @@ public class Settings : MonoBehaviour
         return exampleStrings[CritTypeIndex()];
     }
 
-    public void BackBtn()
+    public void SaveBtn()
     {
         SaveToJSON();
         uiManager.GetComponent<UIManager>().ShowMainSetupUI();
@@ -89,7 +100,7 @@ public class Settings : MonoBehaviour
 
     public void SaveToJSON()
     {
-        SettingsJSON settingsJson = new SettingsJSON(critTypeIndex);
+        SettingsJSON settingsJson = new SettingsJSON(critTypeIndex, disableSound);
         settingsJson.SaveToJSON();
     }
 
@@ -102,14 +113,16 @@ public class Settings : MonoBehaviour
 public class SettingsJSON
 {
     public int critTypeIndex = 0;
+    public bool disableSound = false;
 
     public SettingsJSON()
     {
         critTypeIndex = 0;
     }
-    public SettingsJSON(int _critTypeIndex)
+    public SettingsJSON(int _critTypeIndex, bool _disableSound)
     {
         critTypeIndex = _critTypeIndex;
+        disableSound = _disableSound;
     }
 
     public void SaveToJSON()
@@ -117,7 +130,7 @@ public class SettingsJSON
         string filePath = Application.persistentDataPath + "/Settings.json";
         string settingsData = JsonUtility.ToJson(this);
         System.IO.File.WriteAllText(filePath, settingsData);
-        Debug.Log("Saved settings to: " + filePath + " || Crit Type: " + Settings.critType.ToString());
+        Debug.Log("Saved settings to: " + filePath + " || Crit Type: " + Settings.critType.ToString() + " || Disable Sound: " + disableSound);
     }
 
     public void LoadFromJSON()
@@ -128,7 +141,9 @@ public class SettingsJSON
         string jsonString = System.IO.File.ReadAllText(filePath);
         SettingsJSON settingsJson = JsonUtility.FromJson<SettingsJSON>(jsonString);
         critTypeIndex = settingsJson.critTypeIndex;
+        disableSound = settingsJson.disableSound;
         Settings.SetCritType(critTypeIndex);
-        Debug.Log("Loaded settings from: " + filePath + " || Crit Type: " + Settings.critType.ToString());
+        Settings.SetDisableSound(disableSound);
+        Debug.Log("Loaded settings from: " + filePath + " || Crit Type: " + Settings.critType.ToString() + " || Disable Sound: " + disableSound);
     }
 }
