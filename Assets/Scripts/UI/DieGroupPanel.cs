@@ -21,6 +21,8 @@ public class DieGroupPanel : MonoBehaviour
     public List<GameObject> standardTextPanels;
     public List<GameObject> attackTextPanels;
 
+    public int panelHeight;
+
 
 
     public void Init(DieGroup _dieGroup)

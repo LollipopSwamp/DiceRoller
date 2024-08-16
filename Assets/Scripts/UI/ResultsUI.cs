@@ -28,6 +28,7 @@ public class ResultsUI : MonoBehaviour
     {
         //reset results panels
         foreach(GameObject g in resultPanels) { Destroy(g); }
+        resultPanels.Clear();
 
         //create results panels
         for (int i = 0; i < dieGroups.Count; i++)
@@ -71,8 +72,8 @@ public class ResultsUI : MonoBehaviour
     }
     public void ResizeScrollContent()
     {
-        Vector2 newSize = new Vector2(1820, resultPanels.Count * 90 + 15);
-        scrollContent.GetComponent<RectTransform>().sizeDelta = newSize;
-        scrollContent.transform.localPosition = new Vector2(0, resultPanels.Count * -45);
+        int newHeight = resultPanels.Count * 175 + 25;
+        scrollContent.GetComponent<RectTransform>().sizeDelta = new Vector2(1820, newHeight);
+        scrollContent.transform.localPosition = new Vector2(0, newHeight * -0.5f);
     }
 }

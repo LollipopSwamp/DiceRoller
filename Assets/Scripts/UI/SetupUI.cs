@@ -90,20 +90,21 @@ public class SetupUI : MonoBehaviour
         diceManager.GetComponent<DiceManager>().DestroyDieGroups();
 
         //create panels
+        int scrollHeight = 0;
         for (int i = 0; i < diceManager.GetComponent<DiceManager>().dieGroups.Count; i++)
         {
             //create panel from prefab
             if (diceManager.GetComponent<DiceManager>().dieGroups[i].toHitType == DieGroup.ToHitType.None)
             {
                 GameObject dieGroupPanel = Instantiate(dieGroupPanelPrefabStandard, Vector3.zero, Quaternion.identity, scrollContent.transform);
-                dieGroupPanel.transform.localPosition = new Vector3(0, 390 - (80 * i), 0);
+                //dieGroupPanel.transform.localPosition = new Vector3(0, 390 - (80 * i), 0);
                 dieGroupPanel.GetComponent<DieGroupPanel>().Init(diceManager.GetComponent<DiceManager>().dieGroups[i]);
                 dieGroupPanels.Add(dieGroupPanel);
             }
             else
             {
                 GameObject dieGroupPanel = Instantiate(dieGroupPanelPrefabAttack, Vector3.zero, Quaternion.identity, scrollContent.transform);
-                dieGroupPanel.transform.localPosition = new Vector3(0, 390 - (80 * i), 0);
+                //dieGroupPanel.transform.localPosition = new Vector3(0, 390 - (80 * i), 0);
                 dieGroupPanel.GetComponent<DieGroupPanel>().Init(diceManager.GetComponent<DiceManager>().dieGroups[i]);
                 dieGroupPanels.Add(dieGroupPanel);
             }
@@ -112,9 +113,9 @@ public class SetupUI : MonoBehaviour
     }
     public void ResizeScrollContent()
     {
-        Vector2 newSize = new Vector2(1820, dieGroupPanels.Count * 90 + 15);
-        scrollContent.GetComponent<RectTransform>().sizeDelta = newSize;
-        scrollContent.transform.localPosition = new Vector2(0, dieGroupPanels.Count * -45);
+        int newHeight = dieGroupPanels.Count * 200 + 25;
+        scrollContent.GetComponent<RectTransform>().sizeDelta = new Vector2(1820, newHeight);
+        scrollContent.transform.localPosition = new Vector2(0, newHeight * -0.5f);
     }
     public void UpdateRollBtn()
     {

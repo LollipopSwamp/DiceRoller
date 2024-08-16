@@ -59,8 +59,9 @@ public class PresetsMenu : MonoBehaviour
 
         //set scrollContent height
         //scrollContent.GetComponent<RectTransform>().Axis.Vertical = 500;
-        scrollContent.GetComponent<RectTransform>().sizeDelta = new Vector2(1820, Presets.dieGroups.Count * 90 + 15);
-        scrollContent.transform.localPosition = new Vector2(0, Presets.dieGroups.Count * -45);
+        int newHeight = Presets.dieGroups.Count * 175 + 25;
+        scrollContent.GetComponent<RectTransform>().sizeDelta = new Vector2(1820, newHeight);
+        scrollContent.transform.localPosition = new Vector2(0, newHeight * -0.5f);
     }
     public void SelectPanel(int panelIndex)
     {

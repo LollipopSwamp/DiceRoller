@@ -16,6 +16,9 @@ public class DiceManager : MonoBehaviour
     public GameObject uiManager;
     public GameObject resultsUi;
 
+    //floor object for audio
+    public GameObject floor;
+
 
     //public int resultsSaved = 0;
     public List<DieGroup> dieGroups = new List<DieGroup>();
@@ -190,7 +193,7 @@ public class DiceManager : MonoBehaviour
         DieGroupBehaviour.ResetStartPosition();
         foreach (DieGroup dieGroup in dieGroups)
         {
-            GameObject dieGroupB = Instantiate(dieGroupBehaviourPrefab, Vector3.zero, Quaternion.identity, transform);
+            GameObject dieGroupB = Instantiate(dieGroupBehaviourPrefab, new Vector3(0,15,0), Quaternion.identity, transform);
             dieGroupB.GetComponent<DieGroupBehaviour>().name = dieGroup.groupName;
             dieGroupB.GetComponent<DieGroupBehaviour>().dieGroup = dieGroup;
             dieGroupB.transform.localScale = new Vector3(diceScale, diceScale, diceScale);

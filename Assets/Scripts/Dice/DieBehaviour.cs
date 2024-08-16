@@ -28,7 +28,13 @@ public class DieBehaviour : MonoBehaviour
     //private List<Ray> rays = new List<Ray>();
     //public float rayScale = 1f;
 
-    public GameObject raycasting; 
+    public GameObject raycasting;
+
+    public AudioSource audioSource;
+    public List<AudioClip> audioClips = new List<AudioClip>();
+    public bool audioPlayed = false;
+    public static int totalAudiosPlayed = 0;
+    public static DateTime lastPlayed;
 
     void Start()
     {
@@ -38,6 +44,9 @@ public class DieBehaviour : MonoBehaviour
         start = DateTime.Now;
         GameObject parent = transform.parent.gameObject;
         dieGroupBehaviour = parent.GetComponent<DieGroupBehaviour>();
+        audioPlayed = false;
+        totalAudiosPlayed = 0;
+        lastPlayed = DateTime.Now;
         //raycasting = gameObject.transform.GetChild(0).gameObject;
 
 
@@ -51,6 +60,18 @@ public class DieBehaviour : MonoBehaviour
             rb.velocity = new Vector3(velocityX, 3, velocityZ);
         }
         MoveToStartPosition();
+    }
+    void OnCollisionEnter(Collision collision)
+    {
+        if (totalAudiosPlayed < 5 && !audioPlayed && collision.gameObject.tag == "Floor" && DateTime.Now > lastPlayed.AddSeconds(0.1f))
+        {
+            lastPlayed = DateTime.Now;
+            Debug.Log(collision.gameObject.tag);
+            audioSource.clip = audioClips[totalAudiosPlayed];
+            audioSource.Play();
+            totalAudiosPlayed++;
+            audioPlayed = true;
+        }
     }
 
     public void SetVars(Die _die, GameObject _dmObj, Vector3 _initialPosition, float _rayScale)
@@ -118,5 +139,7 @@ public class DieBehaviour : MonoBehaviour
         MoveToStartPosition();
         SetTransparency(false);
         SetKinematic(false);
+        audioPlayed = false;
+        totalAudiosPlayed = 0;
     }
 }
