@@ -6954,7 +6954,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &479105487
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7005,6 +7005,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6793783aa0481bf42a1dc2a12e46804f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  critTypeIndex: 0
   critTypeButtons:
   - {fileID: 412891313}
   - {fileID: 569792843}
@@ -7014,7 +7015,7 @@ MonoBehaviour:
   - 'Example 2d6: (2d6 * 2) + modifier'
   - 'Example 2d6: (2d6 + modifier) * 2'
   - 'Example 2d6: (6 + 6 + modifier) + (2d6 + modifier)'
-  uiManager: {fileID: 0}
+  uiManager: {fileID: 2084353767}
 --- !u!114 &479105490
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14275,9 +14276,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2084353770}
-        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
-        m_MethodName: ShowMainSetupUI
+      - m_Target: {fileID: 479105489}
+        m_TargetAssemblyTypeName: Settings, Assembly-CSharp
+        m_MethodName: BackBtn
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
