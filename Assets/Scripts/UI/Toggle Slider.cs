@@ -13,11 +13,6 @@ public class ToggleSlider : MonoBehaviour
     public GameObject sliderBackground;
     public GameObject sliderCircle;
 
-    void Start()
-    {
-        
-    }
-
     public void SliderHit()
     {
         state = !state;

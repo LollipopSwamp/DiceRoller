@@ -20,7 +20,9 @@ public class ToHitTypeUI : MonoBehaviour
 
     public void UpdateButtons(int _toHitType)
     {
+        if (_toHitType == 3) { return; }
         toHitType = _toHitType;
+        foreach(GameObject button in toHitTypeButtons) { button.GetComponent<Outline>().enabled = false; }
         toHitTypeButtons[_toHitType].GetComponent<Outline>().enabled = true;
         
         dieGroupSetup.GetComponent<DieGroupSetup>().dieGroup.toHitType = toHitType;

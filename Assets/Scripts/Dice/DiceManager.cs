@@ -41,7 +41,10 @@ public class DiceManager : MonoBehaviour
     public double avgRoll = 0;
     public int[] allRolls = new int[6];
 
-
+    void Start()
+    {
+        dieGroups = SaveSession.Load();
+    }
     public void RollDice()
     {
         start = DateTime.Now;

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class ResultDetails : MonoBehaviour
 {
@@ -19,6 +20,9 @@ public class ResultDetails : MonoBehaviour
 
     public void Init(DieGroupBehaviour _dieGroupB)
     {
+        //set title text
+        title.GetComponent<TMP_Text>().text = _dieGroupB.dieGroup.groupName + " Result Details";
+
         //reset panels
         foreach (GameObject _panel in detailPanels)
         {
@@ -27,13 +31,13 @@ public class ResultDetails : MonoBehaviour
         detailPanels.Clear();
 
         //create panels
-        if (_dieGroupB.dieGroup.toHitType != 0)
+        if (_dieGroupB.dieGroup.toHitType != 3)
         {
             //title panel
             CreateTitlePanel("To Hit");
 
             //to hit type
-            CreateSinglePanel("To Hit Type", _dieGroupB.dieGroup.toHitType.ToString());
+            CreateSinglePanel("To Hit Type", _dieGroupB.dieGroup.ToHitTypeString());
 
             //to hit die types
             CreateSinglePanel("To Hit Dice", _dieGroupB.dieGroup.GetToHitDiceTypesString());

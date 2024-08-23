@@ -23,6 +23,7 @@ public class DieGroupSetup : MonoBehaviour
     public GameObject toHitTypeSetup;
     public List<GameObject> toHitDieTypes;
     public GameObject toHitModifier;
+    public GameObject critOn;
     public List<GameObject> damageDieTypes;
     public GameObject damageModifier;
     public TMP_InputField groupNameInput;
@@ -43,8 +44,8 @@ public class DieGroupSetup : MonoBehaviour
         //reset die group variables
         dieGroup = new DieGroup();
         attackRoll = true;
-        toHitBonusDieTypesCount = new int[6];
-        damageDieTypesCount = new int[6];
+        toHitBonusDieTypesCount = new int[7];
+        damageDieTypesCount = new int[7];
 
         //reset ui variables
         groupNameInput.text = "(Group Name)";
@@ -53,6 +54,7 @@ public class DieGroupSetup : MonoBehaviour
         toHitTypeSetup.GetComponent<ToHitTypeUI>().Init();
         foreach (GameObject g in toHitDieTypes) { g.GetComponent<DieTypeSetup>().Init(); }
         toHitModifier.GetComponent<ModifierSetup>().Init();
+        critOn.GetComponent<CritOn>().Init();
         foreach (GameObject g in damageDieTypes) { g.GetComponent<DieTypeSetup>().Init(); }
         damageModifier.GetComponent<ModifierSetup>().Init();
 
@@ -80,6 +82,14 @@ public class DieGroupSetup : MonoBehaviour
         //set ui variables
         groupNameInput.text = _dieGroup.groupName;
         colorPicker.GetComponent<ColorPicker>().UpdateButtons(_dieGroup.colorIndex);
+        if (_dieGroup.toHitType == 3)
+        {
+            attackRollSlider.GetComponent<ToggleSlider>().SetState(false);
+        }
+        else
+        {
+            attackRollSlider.GetComponent<ToggleSlider>().SetState(true);
+        }
 
         toHitTypeSetup.GetComponent<ToHitTypeUI>().Init(_dieGroup.toHitType);
         toHitBonusDieTypesCount = _dieGroup.GetToHitBonusDieTypesArray();
@@ -88,6 +98,7 @@ public class DieGroupSetup : MonoBehaviour
             toHitDieTypes[i].GetComponent<DieTypeSetup>().Init(toHitBonusDieTypesCount[i]);
         }
         toHitModifier.GetComponent<ModifierSetup>().Init(1,_dieGroup.toHitModifier);
+        critOn.GetComponent<CritOn>().Init(_dieGroup.critOn);
 
         damageDieTypesCount = _dieGroup.GetDamageDieTypesArray();
         for (int i = 0; i < damageDieTypesCount.Length; i++)
@@ -113,8 +124,8 @@ public class DieGroupSetup : MonoBehaviour
     }
     public void SetDieTypeString()
     {
-        toHitBonusDieTypesString.GetComponent<TMP_Text>().text = dieGroup.GetToHitDiceTypesString();
-        damageDieTypesString.GetComponent<TMP_Text>().text = dieGroup.GetDamageDiceTypesString();
+        toHitBonusDieTypesString.GetComponent<TMP_Text>().text = dieGroup.GetToHitDiceTypesString(toHitBonusDieTypesCount);
+        damageDieTypesString.GetComponent<TMP_Text>().text = dieGroup.GetDamageDiceTypesString(damageDieTypesCount);
     }
 
     public void BackButton(int _currMenu)
@@ -132,7 +143,7 @@ public class DieGroupSetup : MonoBehaviour
                 attackRoll = attackRollSlider.GetComponent<ToggleSlider>().state;
                 if (!attackRoll) 
                 { 
-                    dieGroup.toHitType = 0;
+                    dieGroup.toHitType = 3;
                     uiManager.GetComponent<UIManager>().NextDieGroupMenu();
                 }
                 uiManager.GetComponent<UIManager>().NextDieGroupMenu();
@@ -152,10 +163,19 @@ public class DieGroupSetup : MonoBehaviour
                 break;
         }
     }
-    public void SaveDieGroup()
+    private int DiceCount()
     {
         List<int> _damageDice = DieTypeCountToDieList(damageDieTypesCount);
         dieGroup.damageDice = _damageDice;
+        return dieGroup.damageDice.Count;
+    }
+    public void SaveDieGroup()
+    {
+        if (DiceCount() == 0)
+        {
+            uiManager.GetComponent<UIManager>().ShowError("Cannot create Die Group with no dice");
+            return;
+        }
         switch (editMode)
         {
             case 0: //create new
@@ -182,9 +202,16 @@ public class DieGroupSetup : MonoBehaviour
                 uiManager.GetComponent<UIManager>().ShowPresetsUI();
                 break;
         }
+        //save to session
+        SaveSession.Save(diceManager.GetComponent<DiceManager>().dieGroups);
     }
     public void SaveDieGroupPreset()
     {
+        if (DiceCount() == 0)
+        {
+            uiManager.GetComponent<UIManager>().ShowError("Cannot create Die Group with no dice");
+            return;
+        }
         SaveDieGroup();
         uiManager.GetComponent<UIManager>().SaveDieGroupPreset(dieGroup);
     }

@@ -19,6 +19,7 @@ public class DieGroup
     //results type
     public enum ToHitType { None, Standard, Advantage, Disadvantage};
     public int toHitType = 0;
+    public int critOn = 20;
 
     //die color
     public int colorIndex = 0;
@@ -179,6 +180,28 @@ public class DieGroup
             return dieColorLight[_colorIndexbool];
         }
     }
+    public string ToHitTypeString()
+    {
+        switch(toHitType)
+        {
+            case 0:
+                return "Standard";
+            case 1:
+                return "Advantage";
+            case 2:
+                return "Disadvantage";
+            case 3:
+                return "None";
+            default:
+                return "Error with ToHitTypeString";
+        }
+    }
+    public void CommitDieGroup()
+    {
+        groupId = groupIdIndex;
+        ++groupIdIndex;
+    }
+
     public int[] GetToHitBonusDieTypesArray()
     {
         int[] toHitBonusDieTypesCount = new int[7];
@@ -197,22 +220,19 @@ public class DieGroup
         }
         return damageDieTypesCount;
     }
-    public void CommitDieGroup()
-    {
-        groupId = groupIdIndex;
-        ++groupIdIndex;
-    }
-
     public string GetDamageDiceTypesString()
     {
+        return GetDamageDiceTypesString(GetDamageDieTypesArray());
+    }
+
+    public string GetDamageDiceTypesString(int[] _damageDieTypesCount)
+    {
         string damageDieTypes = "";
-        int[] damageDieTypesCount = new int[7];
-        foreach (int dieType in damageDice) { damageDieTypesCount[dieType]++; }
-        for (int i = 0; i < damageDieTypesCount.Length; i++)
+        for (int i = 0; i < _damageDieTypesCount.Length; i++)
         {
-            if (damageDieTypesCount[i] != 0)
+            if (_damageDieTypesCount[i] != 0)
             {
-                damageDieTypes += damageDieTypesCount[i].ToString() + Die.DieTypeToString(i) + " + ";
+                damageDieTypes += _damageDieTypesCount[i].ToString() + Die.DieTypeToString(i) + " + ";
             }
         }
         damageDieTypes += damageModifier.ToString();
@@ -220,10 +240,11 @@ public class DieGroup
     }
     public string GetToHitDiceTypesString()
     {
+        return GetToHitDiceTypesString(GetToHitBonusDieTypesArray());
+    }
+    public string GetToHitDiceTypesString(int[] _toHitBonusDieTypesCount)
+    {
         string toHitDieTypes = "";
-        //get count of each type of die
-        int[] toHitBonusDieTypesCount = new int[7];
-        foreach (int dieType in toHitBonusDice) { toHitBonusDieTypesCount[dieType]++; }
         //add die type names to string
         switch (toHitType)
         {
@@ -240,11 +261,11 @@ public class DieGroup
                 toHitDieTypes += "";
                 break;
         }
-        for (int i = 0; i < toHitBonusDieTypesCount.Length; i++)
+        for (int i = 0; i < _toHitBonusDieTypesCount.Length; i++)
         {
-            if (toHitBonusDieTypesCount[i] != 0)
+            if (_toHitBonusDieTypesCount[i] != 0)
             {
-                toHitDieTypes += toHitBonusDieTypesCount[i].ToString() + Die.DieTypeToString(i) + " + ";
+                toHitDieTypes += _toHitBonusDieTypesCount[i].ToString() + Die.DieTypeToString(i) + " + ";
             }
         }
         toHitDieTypes += toHitModifier.ToString();
@@ -268,5 +289,20 @@ public class DieGroup
     {
         groupId = groupIdIndex;
         groupIdIndex++;
+    }
+
+    public void PrintDieGroup()
+    {
+        string dieTypeIndexes = "";
+        foreach (int _dieType in toHitBonusDice)
+        {
+            dieTypeIndexes += _dieType.ToString() + " | ";
+        }
+        dieTypeIndexes += " | ";
+        foreach (int _dieType in damageDice)
+        {
+            dieTypeIndexes += _dieType.ToString() + " | ";
+        }
+        Debug.Log(dieTypeIndexes);
     }
 }

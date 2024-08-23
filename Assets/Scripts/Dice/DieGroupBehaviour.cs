@@ -33,12 +33,12 @@ public class DieGroupBehaviour : MonoBehaviour
         if (dieGroup.toHitType == 0)
         {
             //create die gameobject
-            GameObject dieObj = Instantiate(diePrefabs[5], nextStartPosition, Quaternion.identity, transform);
+            GameObject dieObj = Instantiate(diePrefabs[6], nextStartPosition, Quaternion.identity, transform);
             dieObj.GetComponent<MeshRenderer>().material.color = dieGroup.GetColor(true);
             dice.Add(dieObj);
 
             //set DieBehaviour variables
-            Die d20 = new Die(5, dieGroup.groupId, 0);
+            Die d20 = new Die(6, dieGroup.groupId, 0);
             DieBehaviour dieBehaviour = dieObj.GetComponent<DieBehaviour>();
             dieBehaviour.SetVars(d20, gameObject, nextStartPosition, diceScale);
 
@@ -52,12 +52,12 @@ public class DieGroupBehaviour : MonoBehaviour
             for (int i = 0; i < 2; i++)
             {
                 //create die gameobject
-                GameObject dieObj = Instantiate(diePrefabs[5], nextStartPosition, Quaternion.identity, transform);
+                GameObject dieObj = Instantiate(diePrefabs[6], nextStartPosition, Quaternion.identity, transform);
                 dieObj.GetComponent<MeshRenderer>().material.color = dieGroup.GetColor(true);
                 dice.Add(dieObj);
 
                 //set DieBehaviour variables
-                Die d20 = new Die(0, dieGroup.groupId, 0);
+                Die d20 = new Die(6, dieGroup.groupId,0);
                 DieBehaviour dieBehaviour = dieObj.GetComponent<DieBehaviour>();
                 dieBehaviour.SetVars(d20, gameObject, nextStartPosition, diceScale);
 
@@ -99,7 +99,7 @@ public class DieGroupBehaviour : MonoBehaviour
             dieBehaviour.SetVars(die, gameObject, nextStartPosition, diceScale);
 
             //set die obj name
-            dieObj.name = die.DieTypeString() + " (ID: " + dieBehaviour.die.dieFaces.ToString() + ")";
+            dieObj.name = die.DieTypeString() + " (ID: " + dieBehaviour.die.dieId.ToString() + ")";
 
             //dieBehaviour.SetKinematic(true);
             IterateStartPosition();
@@ -153,18 +153,31 @@ public class DieGroupBehaviour : MonoBehaviour
                         {
                             case 0:
                                 toHitResult = d.result;
-                                skippedToHitResult = 0;
                                 break;
                             case 1:
-                                toHitResult = Mathf.Max(d.result, toHitResult);
-                                skippedToHitResult = Mathf.Min(d.result, toHitResult);
+                                if (toHitResult == -1)
+                                {
+                                    toHitResult = d.result;
+                                }
+                                else
+                                {
+                                    skippedToHitResult = Mathf.Min(d.result, toHitResult);
+                                    toHitResult = Mathf.Max(d.result, toHitResult);
+                                }
                                 break;
                             case 2:
-                                toHitResult = Mathf.Min(d.result, toHitResult);
-                                skippedToHitResult = Mathf.Max(d.result, toHitResult);
+                                if (toHitResult == -1)
+                                {
+                                    toHitResult = d.result;
+                                }
+                                else
+                                {
+                                    toHitResult = Mathf.Min(d.result, toHitResult);
+                                    skippedToHitResult = Mathf.Max(d.result, toHitResult);
+                                }
                                 break;
                         }
-                        if (toHitResult == 20)
+                        if (toHitResult >= dieGroup.critOn)
                         {
                             crit = true;
                             critFail = false;

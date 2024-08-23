@@ -316,7 +316,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   rayDirections: []
-  rayScale: 1.5
+  rayScale: 1.4
   result: -1
 --- !u!33 &8222758832531349536
 MeshFilter:

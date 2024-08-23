@@ -12,6 +12,8 @@ public static class CritHandler
             case CritType.DoubleDice:
                 return (_damageValue * 2);
             case CritType.DoubleTotal:
+                Debug.Log(_damageValue);
+                Debug.Log(_modifier);
                 return (_damageValue * 2) + _modifier;
             case CritType.MaxPlusRoll:
                 int maxDamage = 0;
@@ -19,7 +21,7 @@ public static class CritHandler
                 {
                     maxDamage += Die.GetFacesInt(_dieType);
                 }
-                Debug.Log(maxDamage.ToString());
+                maxDamage += _modifier;
                 return maxDamage + _damageValue + _modifier;
             default:
                 Debug.Log("Error with GetCritValue, returning -1");
@@ -64,7 +66,7 @@ public static class CritHandler
                         critCalculation += _die.dieFaces.ToString() + " + ";
                     }
                 }
-                critCalculation += _dieGroupB.dieGroup.damageModifier.ToString() + "}*2 + ";
+                critCalculation += _dieGroupB.dieGroup.damageModifier.ToString() + "} + ";
 
                 foreach (GameObject _dieB in _dieGroupB.dice)
                 {

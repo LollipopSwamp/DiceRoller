@@ -1,44 +1,80 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.IO;
+using System;
 
 public class SaveSession
 {
+    public static List<DieGroup> dieGroups = new List<DieGroup>();
 
-    public int groupId;
-    public string groupName;
+    private static int dieGroupId = 0;
 
-    public string toHitBonusDice; //damage if attack
-    public string damageDice; //damage if attack
-
-    public int toHitType;
-
-    public int toHitModifier;
-    public int damageModifier;
-
-    public int colorIndex = 0;
-
-    public string DiceListToString(List<int> _dice)
+    public static void Save(List<DieGroup> _dieGroups)
     {
-        string outputString = "";
-        foreach (int dieType in _dice)
-        {
-            outputString += dieType.ToString() + '|';
-        }
-        outputString = outputString.Remove(outputString.Length - 1);
-        return outputString;
+        dieGroups = _dieGroups;
+        SetDieGroupIDs();
+        SaveSessionString saveSessionString = new SaveSessionString(dieGroups);
+        string filePath = Application.persistentDataPath + "/SavedSession.json";
+        string sessionData = JsonUtility.ToJson(saveSessionString);
+        System.IO.File.WriteAllText(filePath, sessionData);
+        Debug.Log("Saved " + dieGroups.Count.ToString() + " DieGroups(s) to Saved Session: " + filePath);
     }
-    public List<int> StringToDieList(string _diceString)
-    {
-        //example "0|0|0|1|4|4
-        List<int> dice = new List<int>();
 
-        for (int i = 0; i <_diceString.Length; i += 2)
+    public static List<DieGroup> Load()
+    {
+        string filePath = Application.persistentDataPath + "/SavedSession.json";
+        if (!System.IO.File.Exists(filePath)) { Save(new List<DieGroup>()); }
+
+        string jsonString = System.IO.File.ReadAllText(filePath);
+        SaveSessionString saveSessionString = JsonUtility.FromJson<SaveSessionString>(jsonString);
+        dieGroups.Clear();
+        dieGroups = saveSessionString.ConvertToDiegroups();
+        Debug.Log("Loaded " + dieGroups.Count.ToString() + " DieGroups(s) from Saved Session: " + filePath);
+        SetDieGroupIDs();
+        return dieGroups;
+    }
+    private static void SetDieGroupIDs()
+    {
+        dieGroupId = 0;
+        foreach (DieGroup _dieGroup in dieGroups)
         {
-            string dyeTypeIndexString = _diceString.Substring(i,i+1);
-            int dieType = int.Parse(dyeTypeIndexString);
-            dice.Add(dieType);
+            _dieGroup.groupId = dieGroupId;
+            dieGroupId++;
         }
-        return dice;
     }
 }
+
+public class SaveSessionString
+{
+    public string savedSessionString = "";
+
+    public SaveSessionString(List<DieGroup> savedDieGroups)
+    {
+        foreach (DieGroup dieGroup in savedDieGroups)
+        {
+            string json = JsonUtility.ToJson(dieGroup);
+            savedSessionString += json + "|";
+        }
+        if (savedSessionString != "")
+        {
+            savedSessionString = savedSessionString.Substring(0, savedSessionString.Length - 1);
+        }
+    }
+
+    public List<DieGroup> ConvertToDiegroups()
+    {
+        string[] strings = savedSessionString.Split('|');
+        List<DieGroup> savedSession = new List<DieGroup>();
+        foreach (string s in strings)
+        {
+            if (s != "")
+            {
+                DieGroup dieGroup = JsonUtility.FromJson<DieGroup>(s);
+                savedSession.Add(dieGroup);
+            }
+        }
+        return savedSession;
+    }
+}
+

@@ -27,17 +27,17 @@ public class DieTypeSetup : MonoBehaviour
     void UpdateText()
     {
         //Debug.Log(dieType.ToString());
-        text.GetComponent<TMP_Text>().text = count.ToString() + dieType.ToString().ToLower();
+        text.GetComponent<TMP_Text>().text = count.ToString() + Die.DieTypeToString(dieType);
     }
 
-    public void PlusButton(int _toHitType)
+    public void PlusButton(int _dieSubGroup)
     {
         if (count + 1 <= 20) 
         {
             count++;
         }
         UpdateText();
-        if (_toHitType == 0)
+        if (_dieSubGroup == 0)
         {
             dieGroupSetup.GetComponent<DieGroupSetup>().toHitBonusDieTypesCount[dieType] = count;
         }
@@ -48,7 +48,7 @@ public class DieTypeSetup : MonoBehaviour
         dieGroupSetup.GetComponent<DieGroupSetup>().SetDieTypeString();
     }
 
-    public void MinusButton(int _toHitType)
+    public void MinusButton(int _dieSubGroup)
     {
 
         if (count - 1 >= 0)
@@ -56,7 +56,7 @@ public class DieTypeSetup : MonoBehaviour
             count--;
         }
         UpdateText();
-        if (_toHitType == 0)
+        if (_dieSubGroup == 0)
         {
             dieGroupSetup.GetComponent<DieGroupSetup>().toHitBonusDieTypesCount[dieType] = count;
         }

@@ -15,7 +15,7 @@ TagManager:
   - UI
   - Collision
   - Dice
-  - 
+  - ErrorText
   - 
   - 
   - 
@@ -42,4 +42,7 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: UI
+    uniqueID: 1729875803
     locked: 0

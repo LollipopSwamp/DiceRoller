@@ -94,7 +94,7 @@ public class SetupUI : MonoBehaviour
         for (int i = 0; i < diceManager.GetComponent<DiceManager>().dieGroups.Count; i++)
         {
             //create panel from prefab
-            if (diceManager.GetComponent<DiceManager>().dieGroups[i].toHitType == 0)
+            if (diceManager.GetComponent<DiceManager>().dieGroups[i].toHitType == 3)
             {
                 GameObject dieGroupPanel = Instantiate(dieGroupPanelPrefabStandard, Vector3.zero, Quaternion.identity, scrollContent.transform);
                 //dieGroupPanel.transform.localPosition = new Vector3(0, 390 - (80 * i), 0);

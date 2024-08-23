@@ -35,7 +35,7 @@ public class DieGroupPanel : MonoBehaviour
         gameObject.name = groupName + " Panel";
         gameObject.GetComponent<CanvasRenderer>().SetColor(dieGroup.GetColor(false));
         //if roll was standard
-        if (dieGroup.toHitType == 0)
+        if (dieGroup.toHitType == 3)
         {
             SetVars(dieGroup);
             SetTextStandard();

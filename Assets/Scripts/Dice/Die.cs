@@ -48,7 +48,7 @@ public class Die
                         new Vector3(0.82f, 0.47f, 0.33f), //3
                         new Vector3(-0.81f, 0.48f, 0.34f) //4
                 };
-                dieType = 0;
+                dieFaces = 4;
                 break;
             case 1:
                 rayDirections = new Vector3[] {
@@ -59,7 +59,7 @@ public class Die
                         new Vector3(-1,0,0), //5
                         new Vector3(0,0,1) //6
                 };
-                dieType = 1;
+                dieFaces = 6;
                 break;
             case 2:
                 rayDirections = new Vector3[] {
@@ -72,7 +72,7 @@ public class Die
                         new Vector3(0.54f,-0.54f,-0.65f), //7
                         new Vector3(-0.54f,-0.54f,0.65f) //8
                 };
-                dieType = 2;
+                dieFaces = 8;
                 break;
             case 3:
             case 4:
@@ -88,8 +88,8 @@ public class Die
                         new Vector3(0.71f,-0.23f,-0.67f), //9
                         new Vector3(-0.71f,0.23f,0.67f) //10
                 };
-                dieType = 3;
                 break;
+                dieFaces = 10;
             case 5:
                 rayDirections = new Vector3[] {
                         new Vector3(0f,0f,-1f), //1
@@ -105,7 +105,7 @@ public class Die
                         new Vector3(0f,0.89f,0.45f), //11
                         new Vector3(0f,0f,1f) //12
                 };
-                dieType = 4;
+                dieFaces = 12;
                 break;
             case 6:
                 rayDirections = new Vector3[] {
@@ -130,7 +130,7 @@ public class Die
                     new Vector3(0.31f, 0.93f, 0.18f), //19
                     new Vector3(0.30f, -0.94f, 0.17f) //20
                 };
-                dieType = 5;
+                dieFaces = 20;
                 break;
 
         }

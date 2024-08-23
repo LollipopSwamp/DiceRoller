@@ -49,9 +49,13 @@ MonoBehaviour:
   - {fileID: 3022694146834697503, guid: eed346ff2dc8e6d4088f639ccd0aa81d, type: 3}
   - {fileID: 8274596456199189387, guid: d1cd94402d2b6b24a871ce3913cb12a6, type: 3}
   - {fileID: 870838527823196199, guid: 69f209f89abb7674da7a58f7b94bb0b8, type: 3}
+  - {fileID: 870838527823196199, guid: 69f209f89abb7674da7a58f7b94bb0b8, type: 3}
   - {fileID: 1697501476163516670, guid: 48781b3155045984a8086c4d2d6e89e5, type: 3}
   - {fileID: 1572887373195906741, guid: 93a0f79b1ddef8a4a95462e98d5fdbb5, type: 3}
   dice: []
   toHitResult: 0
+  skippedToHitResult: 0
+  crit: 0
+  critFail: 0
   damageResult: 0
   diceStillRolling: 1

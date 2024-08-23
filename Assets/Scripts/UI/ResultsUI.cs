@@ -35,7 +35,7 @@ public class ResultsUI : MonoBehaviour
         {
             //create panel from prefab
             DieGroupBehaviour dieGroupB = dieGroups[i].GetComponent<DieGroupBehaviour>();
-            if (dieGroupB.dieGroup.toHitType == 0)
+            if (dieGroupB.dieGroup.toHitType == 3)
             {
                 GameObject resultPanel = Instantiate(resultsPanelPrefabStandard, Vector3.zero, Quaternion.identity, scrollContent.transform);
                 resultPanel.transform.localPosition = new Vector3(0, 390 - (80 * i), 0);

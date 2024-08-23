@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
+using DateTime = System.DateTime;
 
 public class UIManager : MonoBehaviour
 {
@@ -17,6 +19,11 @@ public class UIManager : MonoBehaviour
     public GameObject diceRolledUI;
 
     public GameObject settings;
+
+    public GameObject errorTextPanel;
+    public GameObject errorText;
+    public bool errorShown = false;
+    public DateTime errorStart;
 
     public Color uiBackground = new Color(223, 223, 223,63);
 
@@ -36,7 +43,31 @@ public class UIManager : MonoBehaviour
         diceRolledUI.GetComponent<Canvas>().enabled = true;
 
         settings.GetComponent<Canvas>().enabled = true;
+        HideError();
+        //ShowError("Cannot create DieGroup with no dice");
         ShowMainSetupUI();
+    }
+
+    void Update()
+    {
+        if (errorShown && DateTime.Now > errorStart.AddSeconds(3))
+        {
+            HideError();
+        }
+    }
+
+    public void ShowError(string errorMessage)
+    {
+        errorStart = DateTime.Now;
+        errorTextPanel.SetActive(true);
+        errorShown = true;
+        errorText.GetComponent<TMP_Text>().text = errorMessage;
+
+    }
+    public void HideError()
+    {
+        errorTextPanel.SetActive(false);
+        errorShown = false;
     }
 
     public void HideAll()
@@ -82,6 +113,7 @@ public class UIManager : MonoBehaviour
         HideAll();
         dieGroupSetup.SetActive(true);
         dieGroupSetup.GetComponent<DieGroupSetup>().Init();
+        nextSetupMenu = 0;
         NextDieGroupMenu();
     }
 

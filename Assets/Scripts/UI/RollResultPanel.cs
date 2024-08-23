@@ -41,7 +41,7 @@ public class RollResultPanel : MonoBehaviour
         gameObject.name = groupName + " Panel";
         gameObject.GetComponent<CanvasRenderer>().SetColor(dieGroup.GetColor(false));
         //if roll was standard
-        if (dieGroupB.dieGroup.toHitType == 0)
+        if (dieGroupB.dieGroup.toHitType == 3)
         {
             SetVars(dieGroupB);
             SetTextStandard();

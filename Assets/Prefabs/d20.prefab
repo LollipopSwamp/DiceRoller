@@ -313,5 +313,5 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   rayDirections: []
-  rayScale: 1.75
+  rayScale: 1.25
   result: -1
