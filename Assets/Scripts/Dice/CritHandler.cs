@@ -5,7 +5,7 @@ using static Settings;
 
 public static class CritHandler
 {
-    public static int GetCritValue(List<Die.DieType> _damageDice, int _damageValue, int _modifier)
+    public static int GetCritValue(List<int> _damageDice, int _damageValue, int _modifier)
     {
         switch (Settings.critType)
         {
@@ -15,7 +15,7 @@ public static class CritHandler
                 return (_damageValue * 2) + _modifier;
             case CritType.MaxPlusRoll:
                 int maxDamage = 0;
-                foreach(Die.DieType _dieType in _damageDice)
+                foreach(int _dieType in _damageDice)
                 {
                     maxDamage += Die.GetFacesInt(_dieType);
                 }
@@ -35,9 +35,9 @@ public static class CritHandler
                 foreach (GameObject _dieB in _dieGroupB.dice)
                 {
                     Die _die = _dieB.GetComponent<DieBehaviour>().die;
-                    if (_die.dieSubGroup == Die.DieSubGroup.Damage)
+                    if (_die.dieSubGroup == 2)
                     {
-                        critCalculation += "(" + _die.DieTypeToString() + ") " + _die.result.ToString() + "*2 + ";
+                        critCalculation += "(" + _die.DieTypeString() + ") " + _die.result.ToString() + "*2 + ";
                     }
                 }
                 critCalculation += _dieGroupB.dieGroup.damageModifier.ToString();
@@ -47,9 +47,9 @@ public static class CritHandler
                 foreach (GameObject _dieB in _dieGroupB.dice)
                 {
                     Die _die = _dieB.GetComponent<DieBehaviour>().die;
-                    if (_die.dieSubGroup == Die.DieSubGroup.Damage)
+                    if (_die.dieSubGroup == 2)
                     {
-                        critCalculation += "(" + _die.DieTypeToString() + ") " + _die.result.ToString() + " + ";
+                        critCalculation += "(" + _die.DieTypeString() + ") " + _die.result.ToString() + " + ";
                     }
                 }
                 critCalculation += _dieGroupB.dieGroup.damageModifier.ToString() + "}*2";
@@ -59,9 +59,9 @@ public static class CritHandler
                 foreach (GameObject _dieB in _dieGroupB.dice)
                 {
                     Die _die = _dieB.GetComponent<DieBehaviour>().die;
-                    if (_die.dieSubGroup == Die.DieSubGroup.Damage)
+                    if (_die.dieSubGroup == 2)
                     {
-                        critCalculation += Die.GetFacesInt(_die.dieType) + " + ";
+                        critCalculation += _die.dieFaces.ToString() + " + ";
                     }
                 }
                 critCalculation += _dieGroupB.dieGroup.damageModifier.ToString() + "}*2 + ";
@@ -69,9 +69,9 @@ public static class CritHandler
                 foreach (GameObject _dieB in _dieGroupB.dice)
                 {
                     Die _die = _dieB.GetComponent<DieBehaviour>().die;
-                    if (_die.dieSubGroup == Die.DieSubGroup.Damage)
+                    if (_die.dieSubGroup == 2)
                     {
-                        critCalculation += "(" + _die.DieTypeToString() + ") " + _die.result.ToString() + " + ";
+                        critCalculation += "(" + _die.DieTypeString() + ") " + _die.result.ToString() + " + ";
                     }
                 }
                 critCalculation += _dieGroupB.dieGroup.damageModifier.ToString();

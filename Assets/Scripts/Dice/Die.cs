@@ -8,13 +8,15 @@ public class Die
 {
 
     //sides on die
-    public enum DieType { d4, d6, d8, d10, d12, d20 };
-    public DieType dieType = DieType.d4;
-    public int dieTypeIndex;
+    //public enum DieType { d4, d6, d8, d10, d12, d20 };
+    //public DieType dieType = DieType.d4;
+    public int dieType;
+    public int dieFaces;
 
     //sub diegroup type
-    public enum DieSubGroup { ToHit, ToHitBonus, Damage };
-    public DieSubGroup dieSubGroup = DieSubGroup.Damage;
+    //public enum DieSubGroup { ToHit, ToHitBonus, Damage };
+    //public DieSubGroup dieSubGroup = DieSubGroup.Damage;
+    public int dieSubGroup; // 0 is to hit, 1 is to hit bonus, 2 is damage
 
 
     //ray directions & length
@@ -23,36 +25,32 @@ public class Die
 
     //other vars
     public int result = -1;
-    public int dieId;
     public int groupId;
+    public int dieId;
     private static int dieIdIndex = 0;
 
-    public Die(DieType _dieType, int _groupId, DieSubGroup _dieSubGroup)
+    public Die(int _dieType, int _groupId, int _dieSubGroup)
     {
         dieType = _dieType;
         groupId = _groupId;
         dieSubGroup = _dieSubGroup;
-        //scale = _scale;
         result = -1;
 
         dieId = dieIdIndex;
         dieIdIndex += 1;
 
-        //Debug.Log(string.Concat("Creating ", dieType, " || Die ID: ", dieId));
-
-
         switch (dieType)
         {
-            case DieType.d4:
+            case 0:
                 rayDirections = new Vector3[] {
                         new Vector3(0,0,-1), //1
                         new Vector3(0, -0.94f, 0.33f), //2
                         new Vector3(0.82f, 0.47f, 0.33f), //3
                         new Vector3(-0.81f, 0.48f, 0.34f) //4
                 };
-                dieTypeIndex = 0;
+                dieType = 0;
                 break;
-            case DieType.d6:
+            case 1:
                 rayDirections = new Vector3[] {
                         new Vector3(0,0,-1), //1
                         new Vector3(1,0,0), //2
@@ -61,9 +59,9 @@ public class Die
                         new Vector3(-1,0,0), //5
                         new Vector3(0,0,1) //6
                 };
-                dieTypeIndex = 1;
+                dieType = 1;
                 break;
-            case DieType.d8:
+            case 2:
                 rayDirections = new Vector3[] {
                         new Vector3(0.54f,0.54f,-0.65f), //1
                         new Vector3(-0.54f,0.54f,0.65f), //2
@@ -74,9 +72,10 @@ public class Die
                         new Vector3(0.54f,-0.54f,-0.65f), //7
                         new Vector3(-0.54f,-0.54f,0.65f) //8
                 };
-                dieTypeIndex = 2;
+                dieType = 2;
                 break;
-            case DieType.d10:
+            case 3:
+            case 4:
                 rayDirections = new Vector3[] {
                         new Vector3(0f,-0.74f,-0.67f), //1
                         new Vector3(0.71f,0.23f,0.67f), //2
@@ -89,9 +88,9 @@ public class Die
                         new Vector3(0.71f,-0.23f,-0.67f), //9
                         new Vector3(-0.71f,0.23f,0.67f) //10
                 };
-                dieTypeIndex = 3;
+                dieType = 3;
                 break;
-            case DieType.d12:
+            case 5:
                 rayDirections = new Vector3[] {
                         new Vector3(0f,0f,-1f), //1
                         new Vector3(0f,-0.89f,-0.45f), //2
@@ -106,9 +105,9 @@ public class Die
                         new Vector3(0f,0.89f,0.45f), //11
                         new Vector3(0f,0f,1f) //12
                 };
-                dieTypeIndex = 4;
+                dieType = 4;
                 break;
-            case DieType.d20:
+            case 6:
                 rayDirections = new Vector3[] {
                     new Vector3(-0.30f, 0.94f, -0.17f), //1
                     new Vector3(-0.31f, -0.93f, -0.18f), //2
@@ -131,7 +130,7 @@ public class Die
                     new Vector3(0.31f, 0.93f, 0.18f), //19
                     new Vector3(0.30f, -0.94f, 0.17f) //20
                 };
-                dieTypeIndex = 5;
+                dieType = 5;
                 break;
 
         }
@@ -147,13 +146,13 @@ public class Die
     {
         groupId = _groupId;
     }
-    public string DieTypeToString()
+    public string DieTypeString()
     {
-        return DieTypeToString(dieTypeIndex);
+        return DieTypeToString(dieType);
     }
-    public static string DieTypeToString(int _dieTypeIndex)
+    public static string DieTypeToString(int _dieType)
     {
-        switch (_dieTypeIndex)
+        switch (_dieType)
         {
             case 0:
                 return "d4";
@@ -164,29 +163,11 @@ public class Die
             case 3:
                 return "d10";
             case 4:
-                return "d12";
+                return "d%";
             case 5:
-                return "d20";
-            default:
-                return "DieTypeError";
-        }
-    }
-    public static string DieTypeToString(DieType _dieType)
-    {
-        switch (_dieType)
-        {
-            case DieType.d20:
-                return "d20";
-            case DieType.d12:
                 return "d12";
-            case DieType.d10:
-                return "d10";
-            case DieType.d8:
-                return "d8";
-            case DieType.d6:
-                return "d6";
-            case DieType.d4:
-                return "d4";
+            case 6:
+                return "d20";
             default:
                 return "DieTypeError";
         }
@@ -195,64 +176,23 @@ public class Die
     {
         Debug.Log(string.Concat("DieType: ", dieType, " || GroupID: ", groupId, " || Result: ", result));
     }
-
-    public static int DieTypeToIndex(DieType _dieType)
+    public static int GetFacesInt(int _dieType)
     {
         switch (_dieType)
-        {
-            case DieType.d4:
-                return 0;
-            case DieType.d6:
-                return 1;
-            case DieType.d8:
-                return 2;
-            case DieType.d10:
-                return 3;
-            case DieType.d12:
-                return 4;
-            case DieType.d20:
-                return 5;
-            default:
-                Debug.Log("Error in IndexToDieType, returning d20 index (0)");
-                return -1;
-        }
-    }
-    public static DieType IndexToDieType(int _index)
-    {
-        switch (_index)
         {
             case 0:
-                return DieType.d4;
-            case 1:
-                return DieType.d6;
-            case 2:
-                return DieType.d8;
-            case 3:
-                return DieType.d10;
-            case 4:
-                return DieType.d12;
-            case 5:
-                return DieType.d20;
-            default:
-                Debug.Log("Error in IndexToDieType, returning d20");
-                return DieType.d20;
-        }
-    }
-    public static int GetFacesInt(DieType _dieType)
-    {
-        switch (_dieType)
-        {
-            case DieType.d4:
                 return 4;
-            case DieType.d6:
+            case 1:
                 return 6;
-            case DieType.d8:
+            case 2:
                 return 8;
-            case DieType.d10:
+            case 3:
                 return 10;
-            case DieType.d12:
+            case 4:
+                return 100;
+            case 5:
                 return 12;
-            case DieType.d20:
+            case 6:
                 return 20;
             default:
                 Debug.Log("Error in GetFacesInt, returning -1");

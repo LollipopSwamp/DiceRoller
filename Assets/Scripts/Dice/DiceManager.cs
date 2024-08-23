@@ -227,14 +227,14 @@ public class DiceManager : MonoBehaviour
             count += diegroup.damageDice.Count;
             switch (diegroup.toHitType)
             {
-                case DieGroup.ToHitType.Standard:
+                case 0:
+                    break;
+                case 1:
                     count++;
                     break;
-                case DieGroup.ToHitType.Advantage:
-                case DieGroup.ToHitType.Disadvantage:
+                case 2:
+                case 3:
                     count += 2;
-                    break;
-                case DieGroup.ToHitType.None:
                     break;
             }
         }
@@ -258,7 +258,7 @@ public class DiceManager : MonoBehaviour
             foreach (GameObject dieObj in dieGroupB.dice)
             {
                 Die die = dieObj.GetComponent<DieBehaviour>().die;
-                if (die.dieType == Die.DieType.d6)
+                if (die.dieType == 1)
                 {
                     numOfD6++;
                     totalRoll += die.result;

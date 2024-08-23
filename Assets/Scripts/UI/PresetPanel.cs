@@ -26,7 +26,7 @@ public class PresetPanel : MonoBehaviour
         DeselectPanel();
 
         //set strings
-        if (_dieGroup.toHitType == DieGroup.ToHitType.None)
+        if (_dieGroup.toHitType == 0)
         {
             standardTextPanels[0].GetComponent<TMP_Text>().text = panelStrings[0];
             standardTextPanels[1].GetComponent<TMP_Text>().text = panelStrings[2];

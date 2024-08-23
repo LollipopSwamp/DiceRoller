@@ -41,7 +41,7 @@ public class PresetsMenu : MonoBehaviour
         for (int i = 0; i < Presets.dieGroups.Count; i++)
         {
             //create panel from prefab
-            if (Presets.dieGroups[i].toHitType == DieGroup.ToHitType.None)
+            if (Presets.dieGroups[i].toHitType == 0)
             {
                 GameObject panel = Instantiate(damagePresetPanelPrefab, Vector3.zero, Quaternion.identity, scrollContent.transform);
                 //panel.transform.localPosition = new Vector3(0, 390 - (80 * i), 0);

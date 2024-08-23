@@ -6,7 +6,7 @@ using TMPro;
 public class DieTypeSetup : MonoBehaviour
 {
     //[SerializeField]
-    public Die.DieType dieType;
+    public int dieType;
 
     public GameObject text;
     public GameObject dieGroupSetup;
@@ -32,18 +32,18 @@ public class DieTypeSetup : MonoBehaviour
 
     public void PlusButton(int _toHitType)
     {
-        if (count + 1 < 10) 
+        if (count + 1 <= 20) 
         {
             count++;
         }
         UpdateText();
         if (_toHitType == 0)
         {
-            dieGroupSetup.GetComponent<DieGroupSetup>().toHitBonusDieTypesCount[Die.DieTypeToIndex(dieType)] = count;
+            dieGroupSetup.GetComponent<DieGroupSetup>().toHitBonusDieTypesCount[dieType] = count;
         }
         else
         {
-            dieGroupSetup.GetComponent<DieGroupSetup>().damageDieTypesCount[Die.DieTypeToIndex(dieType)] = count;
+            dieGroupSetup.GetComponent<DieGroupSetup>().damageDieTypesCount[dieType] = count;
         }
         dieGroupSetup.GetComponent<DieGroupSetup>().SetDieTypeString();
     }
@@ -58,11 +58,11 @@ public class DieTypeSetup : MonoBehaviour
         UpdateText();
         if (_toHitType == 0)
         {
-            dieGroupSetup.GetComponent<DieGroupSetup>().toHitBonusDieTypesCount[Die.DieTypeToIndex(dieType)] = count;
+            dieGroupSetup.GetComponent<DieGroupSetup>().toHitBonusDieTypesCount[dieType] = count;
         }
         else
         {
-            dieGroupSetup.GetComponent<DieGroupSetup>().damageDieTypesCount[Die.DieTypeToIndex(dieType)] = count;
+            dieGroupSetup.GetComponent<DieGroupSetup>().damageDieTypesCount[dieType] = count;
         }
         dieGroupSetup.GetComponent<DieGroupSetup>().SetDieTypeString();
     }

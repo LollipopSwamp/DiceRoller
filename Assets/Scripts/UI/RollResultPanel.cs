@@ -41,7 +41,7 @@ public class RollResultPanel : MonoBehaviour
         gameObject.name = groupName + " Panel";
         gameObject.GetComponent<CanvasRenderer>().SetColor(dieGroup.GetColor(false));
         //if roll was standard
-        if (dieGroupB.dieGroup.toHitType == DieGroup.ToHitType.None)
+        if (dieGroupB.dieGroup.toHitType == 0)
         {
             SetVars(dieGroupB);
             SetTextStandard();
@@ -58,53 +58,8 @@ public class RollResultPanel : MonoBehaviour
     {
         DieGroup dieGroup = dieGroupB.dieGroup;
         //get count of each type of die
-        int[] toHitBonusDieTypesCount = new int[6];
-        int[] damageDieTypesCount = new int[6];
-        foreach (GameObject dieB in dieGroupB.dice)
-        {
-            Die d = dieB.GetComponent<DieBehaviour>().die;
-            switch (d.dieSubGroup)
-            {
-                case Die.DieSubGroup.ToHitBonus:
-                    toHitBonusDieTypesCount[d.dieTypeIndex]++;
-                    break;
-                case Die.DieSubGroup.Damage:
-                    damageDieTypesCount[d.dieTypeIndex]++;
-                    break;
-            }
-        }
-        //add die type names to string
-        switch (dieGroup.toHitType)
-        {
-            case DieGroup.ToHitType.Standard:
-                toHitDieTypes += "d20 + ";
-                break;
-            case DieGroup.ToHitType.Advantage:
-                toHitDieTypes += "d20 (ADV) + ";
-                break;
-            case DieGroup.ToHitType.Disadvantage:
-                toHitDieTypes += "d20 (DIS) + ";
-                break;
-            case DieGroup.ToHitType.None:
-                //Debug.Log("Error with ToHitType");
-                break;
-        }
-        for (int i = 0; i < toHitBonusDieTypesCount.Length; i++)
-        {
-            if (toHitBonusDieTypesCount[i] != 0)
-            {
-                toHitDieTypes += toHitBonusDieTypesCount[i].ToString() + Die.DieTypeToString(i) + " + ";
-            }
-        }
-        toHitDieTypes += dieGroup.toHitModifier.ToString();
-        for (int i = 0; i < damageDieTypesCount.Length; i++)
-        {
-            if (damageDieTypesCount[i] != 0)
-            {
-                damageDieTypes += damageDieTypesCount[i].ToString() + Die.DieTypeToString(i) + " + ";
-            }
-        }
-        damageDieTypes += dieGroup.damageModifier.ToString();
+        toHitDieTypes += dieGroup.GetToHitDiceTypesString();
+        damageDieTypes += dieGroup.GetDamageDiceTypesString();
 
         //set result vars
         if (dieGroupB.crit)

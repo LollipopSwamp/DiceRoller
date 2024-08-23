@@ -27,7 +27,7 @@ public class ResultDetails : MonoBehaviour
         detailPanels.Clear();
 
         //create panels
-        if (_dieGroupB.dieGroup.toHitType != DieGroup.ToHitType.None)
+        if (_dieGroupB.dieGroup.toHitType != 0)
         {
             //title panel
             CreateTitlePanel("To Hit");
@@ -43,7 +43,7 @@ public class ResultDetails : MonoBehaviour
             foreach (GameObject _dieObj in _dieGroupB.dice)
             {
                 Die _die = _dieObj.GetComponent<DieBehaviour>().die;
-                if (_die.dieSubGroup == Die.DieSubGroup.ToHit || _die.dieSubGroup == Die.DieSubGroup.ToHitBonus)
+                if (_die.dieSubGroup == 0 || _die.dieSubGroup == 1)
                 {
                     toHitStrings.Add("Die Result (" + Die.DieTypeToString(_die.dieType) + ")");
                     toHitStrings.Add(_die.result.ToString());
@@ -90,7 +90,7 @@ public class ResultDetails : MonoBehaviour
         foreach (GameObject _dieObj in _dieGroupB.dice)
         {
             Die _die = _dieObj.GetComponent<DieBehaviour>().die;
-            if (_die.dieSubGroup == Die.DieSubGroup.Damage)
+            if (_die.dieSubGroup == 2)
             {
                 damageResultStrings.Add("Die Result (" + Die.DieTypeToString(_die.dieType) + ")");
                 damageResultStrings.Add(_die.result.ToString());

@@ -58,6 +58,7 @@ public class DieBehaviour : MonoBehaviour
             float velocityX = (float)(r.NextDouble() - 0.5) * 50;
             float velocityZ = (float)(r.NextDouble() - 0.5) * 50;
             rb.velocity = new Vector3(velocityX, 3, velocityZ);
+            rb.angularVelocity = Vector3.forward * 100.0f;
         }
         MoveToStartPosition();
     }

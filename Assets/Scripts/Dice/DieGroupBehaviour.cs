@@ -30,7 +30,7 @@ public class DieGroupBehaviour : MonoBehaviour
     public void InstantiateDice()
     {
         //to hit dice if standard, 1x d20
-        if (dieGroup.toHitType == DieGroup.ToHitType.Standard)
+        if (dieGroup.toHitType == 0)
         {
             //create die gameobject
             GameObject dieObj = Instantiate(diePrefabs[5], nextStartPosition, Quaternion.identity, transform);
@@ -38,7 +38,7 @@ public class DieGroupBehaviour : MonoBehaviour
             dice.Add(dieObj);
 
             //set DieBehaviour variables
-            Die d20 = new Die(Die.DieType.d20, dieGroup.groupId, Die.DieSubGroup.ToHit);
+            Die d20 = new Die(5, dieGroup.groupId, 0);
             DieBehaviour dieBehaviour = dieObj.GetComponent<DieBehaviour>();
             dieBehaviour.SetVars(d20, gameObject, nextStartPosition, diceScale);
 
@@ -47,7 +47,7 @@ public class DieGroupBehaviour : MonoBehaviour
             IterateStartPosition();
         }
         //to hit dice if advantage or disadvantage, 2x d20
-        else if (dieGroup.toHitType == DieGroup.ToHitType.Advantage || dieGroup.toHitType == DieGroup.ToHitType.Disadvantage)
+        else if (dieGroup.toHitType == 1 || dieGroup.toHitType == 2)
         {
             for (int i = 0; i < 2; i++)
             {
@@ -57,7 +57,7 @@ public class DieGroupBehaviour : MonoBehaviour
                 dice.Add(dieObj);
 
                 //set DieBehaviour variables
-                Die d20 = new Die(Die.DieType.d20, dieGroup.groupId, Die.DieSubGroup.ToHit);
+                Die d20 = new Die(0, dieGroup.groupId, 0);
                 DieBehaviour dieBehaviour = dieObj.GetComponent<DieBehaviour>();
                 dieBehaviour.SetVars(d20, gameObject, nextStartPosition, diceScale);
 
@@ -68,40 +68,38 @@ public class DieGroupBehaviour : MonoBehaviour
         }
 
         //create bonus to hit dice, if any
-        foreach (Die.DieType dieType in dieGroup.toHitBonusDice)
+        foreach (int dieType in dieGroup.toHitBonusDice)
         {
             //create die gameobject
-            int dieTypeIndex = Die.DieTypeToIndex(dieType);
-            GameObject dieObj = Instantiate(diePrefabs[dieTypeIndex], nextStartPosition, Quaternion.identity, transform);
+            GameObject dieObj = Instantiate(diePrefabs[dieType], nextStartPosition, Quaternion.identity, transform);
             dieObj.GetComponent<MeshRenderer>().material.color = dieGroup.GetColor(true);
             dice.Add(dieObj);
 
             //set DieBehaviour variables
-            Die die = new Die(dieType, dieGroup.groupId, Die.DieSubGroup.ToHitBonus);
+            Die die = new Die(dieType, dieGroup.groupId, 1);
             DieBehaviour dieBehaviour = dieObj.GetComponent<DieBehaviour>();
             dieBehaviour.SetVars(die, gameObject, nextStartPosition, diceScale);
 
             //set die obj name
-            dieObj.name = Die.DieTypeToString(dieType) + " (ID: " + dieBehaviour.die.dieId.ToString() + ")";
+            dieObj.name = die.DieTypeString() + " (ID: " + dieBehaviour.die.dieId.ToString() + ")";
             IterateStartPosition();
         }
 
         //create damage/standard dice
-        foreach (Die.DieType dieType in dieGroup.damageDice)
+        foreach (int dieType in dieGroup.damageDice)
         {
             //create die gameobject
-            int dieTypeIndex = Die.DieTypeToIndex(dieType);
-            GameObject dieObj = Instantiate(diePrefabs[dieTypeIndex], nextStartPosition, Quaternion.identity, transform);
+            GameObject dieObj = Instantiate(diePrefabs[dieType], nextStartPosition, Quaternion.identity, transform);
             dieObj.GetComponent<MeshRenderer>().material.color = dieGroup.GetColor(false);
             dice.Add(dieObj);
 
             //set DieBehaviour variables
-            Die die = new Die(dieType, dieGroup.groupId, Die.DieSubGroup.Damage);
+            Die die = new Die(dieType, dieGroup.groupId, 2);
             DieBehaviour dieBehaviour = dieObj.GetComponent<DieBehaviour>();
             dieBehaviour.SetVars(die, gameObject, nextStartPosition, diceScale);
 
             //set die obj name
-            dieObj.name = Die.DieTypeToString(dieType) + " (ID: " + dieBehaviour.die.dieId.ToString() + ")";
+            dieObj.name = die.DieTypeString() + " (ID: " + dieBehaviour.die.dieFaces.ToString() + ")";
 
             //dieBehaviour.SetKinematic(true);
             IterateStartPosition();
@@ -150,18 +148,18 @@ public class DieGroupBehaviour : MonoBehaviour
                 Die d = dObj.GetComponent<DieBehaviour>().die;
                 switch (d.dieSubGroup)
                 {
-                    case Die.DieSubGroup.ToHit:
+                    case 0:
                         switch (dieGroup.toHitType)
                         {
-                            case DieGroup.ToHitType.Standard:
+                            case 0:
                                 toHitResult = d.result;
                                 skippedToHitResult = 0;
                                 break;
-                            case DieGroup.ToHitType.Advantage:
+                            case 1:
                                 toHitResult = Mathf.Max(d.result, toHitResult);
                                 skippedToHitResult = Mathf.Min(d.result, toHitResult);
                                 break;
-                            case DieGroup.ToHitType.Disadvantage:
+                            case 2:
                                 toHitResult = Mathf.Min(d.result, toHitResult);
                                 skippedToHitResult = Mathf.Max(d.result, toHitResult);
                                 break;
@@ -182,10 +180,10 @@ public class DieGroupBehaviour : MonoBehaviour
                             critFail = false;
                         }
                         break;
-                    case Die.DieSubGroup.ToHitBonus:
+                    case 1:
                         toHitResult += d.result;
                         break;
-                    case Die.DieSubGroup.Damage:
+                    case 2:
                         damageResult += d.result;
                         break;
                 }
