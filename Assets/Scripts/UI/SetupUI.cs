@@ -78,6 +78,7 @@ public class SetupUI : MonoBehaviour
     public void DeleteDieGroup(int _groupId)
     {
         diceManager.GetComponent<DiceManager>().DeleteDieGroup(_groupId);
+        SaveSession.Save(diceManager.GetComponent<DiceManager>().dieGroups);
         InitDieGroupPanels();
     }
     public void InitDieGroupPanels()
@@ -94,16 +95,16 @@ public class SetupUI : MonoBehaviour
         for (int i = 0; i < diceManager.GetComponent<DiceManager>().dieGroups.Count; i++)
         {
             //create panel from prefab
-            if (diceManager.GetComponent<DiceManager>().dieGroups[i].toHitType == 3)
+            if (diceManager.GetComponent<DiceManager>().dieGroups[i].dieGroupType == 1)
             {
-                GameObject dieGroupPanel = Instantiate(dieGroupPanelPrefabStandard, Vector3.zero, Quaternion.identity, scrollContent.transform);
+                GameObject dieGroupPanel = Instantiate(dieGroupPanelPrefabAttack, Vector3.zero, Quaternion.identity, scrollContent.transform);
                 //dieGroupPanel.transform.localPosition = new Vector3(0, 390 - (80 * i), 0);
                 dieGroupPanel.GetComponent<DieGroupPanel>().Init(diceManager.GetComponent<DiceManager>().dieGroups[i]);
                 dieGroupPanels.Add(dieGroupPanel);
             }
             else
             {
-                GameObject dieGroupPanel = Instantiate(dieGroupPanelPrefabAttack, Vector3.zero, Quaternion.identity, scrollContent.transform);
+                GameObject dieGroupPanel = Instantiate(dieGroupPanelPrefabStandard, Vector3.zero, Quaternion.identity, scrollContent.transform);
                 //dieGroupPanel.transform.localPosition = new Vector3(0, 390 - (80 * i), 0);
                 dieGroupPanel.GetComponent<DieGroupPanel>().Init(diceManager.GetComponent<DiceManager>().dieGroups[i]);
                 dieGroupPanels.Add(dieGroupPanel);

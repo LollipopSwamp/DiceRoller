@@ -98,7 +98,10 @@ public class DieBehaviour : MonoBehaviour
 
     public void SetResult(int _result)
     {
-        die.result = _result;
+        if (die.dieType == 4 && _result == 10) { die.result = 0; }
+        else if (die.dieType == 4) { die.result = _result * 10; }
+        else { die.result = _result; }
+
         dieGroupBehaviour.UpdateDie(die);
         SetKinematic(true);
     }

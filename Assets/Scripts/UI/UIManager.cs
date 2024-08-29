@@ -9,6 +9,7 @@ public class UIManager : MonoBehaviour
     public GameObject diceManager;
     public GameObject mainSetupUI;
     public GameObject presetsUI;
+    public GameObject dieGroupGroupsUI;
 
     public GameObject dieGroupSetup;
     public List<GameObject> dieGroupSetupMenus = new List<GameObject>();
@@ -31,6 +32,7 @@ public class UIManager : MonoBehaviour
     {
         mainSetupUI.GetComponent<Canvas>().enabled = true;
         presetsUI.GetComponent<Canvas>().enabled = true;
+        dieGroupGroupsUI.GetComponent<Canvas>().enabled = true;
 
         dieGroupSetup.GetComponent<Canvas>().enabled = true;
         foreach(GameObject menu in dieGroupSetupMenus)
@@ -74,6 +76,7 @@ public class UIManager : MonoBehaviour
     {
         mainSetupUI.SetActive(false);
         presetsUI.SetActive(false);
+        dieGroupGroupsUI.SetActive(false);
 
         dieGroupSetup.SetActive(false);
         foreach (GameObject menu in dieGroupSetupMenus)
@@ -107,6 +110,12 @@ public class UIManager : MonoBehaviour
         presetsUI.SetActive(true);
         presetsUI.GetComponent<PresetsMenu>().Init();
     }
+    public void ShowDieGroupGroupsUI()
+    {
+        HideAll();
+        dieGroupGroupsUI.SetActive(true);
+        dieGroupGroupsUI.GetComponent<DieGroupGroupsUI>().Init();
+    }
 
     public void ShowDieGroupSetup()
     {
@@ -114,7 +123,7 @@ public class UIManager : MonoBehaviour
         dieGroupSetup.SetActive(true);
         dieGroupSetup.GetComponent<DieGroupSetup>().Init();
         nextSetupMenu = 0;
-        NextDieGroupMenu();
+        NextDieGroupMenu(0);
     }
 
     public void ShowDieGroupSetup(DieGroup _dieGroup, int _editMode)
@@ -122,48 +131,35 @@ public class UIManager : MonoBehaviour
         HideAll();
         dieGroupSetup.SetActive(true);
         dieGroupSetup.GetComponent<DieGroupSetup>().Init(_dieGroup, _editMode);
-        NextDieGroupMenu();
+        NextDieGroupMenu(0);
     }
-    public void PreviousDieGroupMenu()
+    public void PreviousDieGroupMenu(int _prevMenu)
     {
         foreach (GameObject menu in dieGroupSetupMenus) { menu.SetActive(false); }
-        nextSetupMenu--;
-        switch (nextSetupMenu)
+        if (_prevMenu == -1)
         {
-            case 0:
-                ShowMainSetupUI();
-                break;
-            case 1:
-                dieGroupSetupMenus[0].SetActive(true);
-                break;
-            case 2:
-                dieGroupSetupMenus[1].SetActive(true);
-                break;
-            case 3:
-                dieGroupSetupMenus[2].SetActive(true);
-                break;
+            ShowMainSetupUI();
+            return;
         }
+        dieGroupSetup.GetComponent<DieGroupSetup>().SetDieTypeString();
+        dieGroupSetupMenus[_prevMenu].SetActive(true);
     }
-    public void NextDieGroupMenu()
+    public void NextDieGroupMenu(int _nextMenu)
     {
         foreach (GameObject menu in dieGroupSetupMenus) { menu.SetActive(false); }
-        switch (nextSetupMenu)
+        switch (_nextMenu)
         {
-            case 0:
-                dieGroupSetupMenus[0].SetActive(true);
-                break;
-            case 1:
-                dieGroupSetupMenus[1].SetActive(true);
+            case 2:
                 dieGroupSetup.GetComponent<DieGroupSetup>().SetDieTypeString();
                 break;
-            case 2:
-                dieGroupSetupMenus[2].SetActive(true);
-                break;
             case 3:
                 ShowMainSetupUI();
+                return;
+            default:
                 break;
         }
-        nextSetupMenu++;
+        dieGroupSetup.GetComponent<DieGroupSetup>().SetDieTypeString();
+        dieGroupSetupMenus[_nextMenu].SetActive(true);
     }
     public void SaveDieGroupPreset(DieGroup _dieGroup)
     {

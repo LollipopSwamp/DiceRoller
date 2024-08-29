@@ -146,7 +146,7 @@ GameObject:
   - component: {fileID: 4244551978545805250}
   - component: {fileID: 2858826835686085812}
   m_Layer: 5
-  m_Name: DiceTypes
+  m_Name: DieGroupsCount
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -199,7 +199,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: XdX + XdX + XdX + X
+  m_text: '# of DieGroups: XX'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -280,10 +280,10 @@ GameObject:
   - component: {fileID: 3554426129553190418}
   - component: {fileID: 1553770285693250675}
   - component: {fileID: 8891694193433831706}
-  - component: {fileID: 3967995940275898542}
   - component: {fileID: 7288763070244833226}
+  - component: {fileID: 851453275533514197}
   m_Layer: 5
-  m_Name: PresetPanelStandardPrefab
+  m_Name: DieGroupGroupPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -364,23 +364,6 @@ MonoBehaviour:
   m_EffectColor: {r: 0, g: 0, b: 0, a: 1}
   m_EffectDistance: {x: 5, y: 5}
   m_UseGraphicAlpha: 1
---- !u!114 &3967995940275898542
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4964548079426282400}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c13d61dbf78d66a4fbcf60d9b072c72c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  index: 0
-  panelStrings: []
-  textPanels:
-  - {fileID: 1903957639100750019}
-  - {fileID: 2199898789678358607}
 --- !u!114 &7288763070244833226
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -425,8 +408,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 3967995940275898542}
-        m_TargetAssemblyTypeName: PresetPanel, Assembly-CSharp
+      - m_Target: {fileID: 851453275533514197}
+        m_TargetAssemblyTypeName: DieGroupGroupPanel, Assembly-CSharp
         m_MethodName: SelectPanel
         m_Mode: 1
         m_Arguments:
@@ -437,6 +420,21 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &851453275533514197
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4964548079426282400}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: efdfd0bff5f0e1148b1751cd5a4df2a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dieGroupGroupId: 0
+  dieGroupGroupName: {fileID: 1903957639100750019}
+  text: {fileID: 2199898789678358607}
 --- !u!1 &8784733349656374110
 GameObject:
   m_ObjectHideFlags: 0

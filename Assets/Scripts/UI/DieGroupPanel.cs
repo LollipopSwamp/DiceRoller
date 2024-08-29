@@ -18,8 +18,7 @@ public class DieGroupPanel : MonoBehaviour
     public bool attackRoll;
 
     //prefabs
-    public List<GameObject> standardTextPanels;
-    public List<GameObject> attackTextPanels;
+    public List<GameObject> textPanels;
 
     public int panelHeight;
 
@@ -34,14 +33,17 @@ public class DieGroupPanel : MonoBehaviour
         groupName = dieGroup.groupName;
         gameObject.name = groupName + " Panel";
         gameObject.GetComponent<CanvasRenderer>().SetColor(dieGroup.GetColor(false));
-        //if roll was standard
-        if (dieGroup.toHitType == 3)
+        if (dieGroup.dieGroupType == 0 || dieGroup.dieGroupType == 2)//standard or percentile
         {
             SetVars(dieGroup);
             SetTextStandard();
         }
-        //if roll is attack
-        else
+        else if (dieGroup.dieGroupType == 3)//skill check
+        {
+            SetVars(dieGroup);
+            SetTextSkillCheck();
+        }
+        else //attack
         {
             SetVars(dieGroup);
             SetTextAttack();
@@ -70,14 +72,20 @@ public class DieGroupPanel : MonoBehaviour
 
     void SetTextStandard()
     {
-        standardTextPanels[0].GetComponent<TMP_Text>().text = groupName;
-        standardTextPanels[1].GetComponent<TMP_Text>().text = damageDieTypes;
+        textPanels[0].GetComponent<TMP_Text>().text = groupName;
+        textPanels[1].GetComponent<TMP_Text>().text = damageDieTypes;
+    }
+    void SetTextSkillCheck()
+    {
+        Debug.Log("SetTextSkillCheck()");
+        textPanels[0].GetComponent<TMP_Text>().text = groupName;
+        textPanels[1].GetComponent<TMP_Text>().text = toHitDieTypes;
     }
     void SetTextAttack()
     {
-        attackTextPanels[0].GetComponent<TMP_Text>().text = groupName;
-        attackTextPanels[1].GetComponent<TMP_Text>().text = toHitDieTypes;
-        attackTextPanels[2].GetComponent<TMP_Text>().text = damageDieTypes;
+        textPanels[0].GetComponent<TMP_Text>().text = groupName;
+        textPanels[1].GetComponent<TMP_Text>().text = toHitDieTypes;
+        textPanels[2].GetComponent<TMP_Text>().text = damageDieTypes;
     }
 
     public void PrintRollResult()

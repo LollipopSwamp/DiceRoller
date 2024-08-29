@@ -31,6 +31,7 @@ public class PresetsMenu : MonoBehaviour
     public void CreatePresetPanels()
     {
         //reset panels
+        Debug.Log(presetPanels.Count);
         foreach (GameObject panel in presetPanels)
         {
             Destroy(panel);
@@ -41,18 +42,18 @@ public class PresetsMenu : MonoBehaviour
         for (int i = 0; i < Presets.dieGroups.Count; i++)
         {
             //create panel from prefab
-            if (Presets.dieGroups[i].toHitType == 3)
+            if (Presets.dieGroups[i].dieGroupType == 1)
             {
-                GameObject panel = Instantiate(damagePresetPanelPrefab, Vector3.zero, Quaternion.identity, scrollContent.transform);
+                GameObject panel = Instantiate(attackPresetPanelPrefab, Vector3.zero, Quaternion.identity, scrollContent.transform);
                 //panel.transform.localPosition = new Vector3(0, 390 - (80 * i), 0);
                 panel.GetComponent<PresetPanel>().Init(i, Presets.dieGroups[i]);
                 presetPanels.Add(panel);
             }
             else
             {
-                GameObject panel = Instantiate(attackPresetPanelPrefab, Vector3.zero, Quaternion.identity, scrollContent.transform);
+                GameObject panel = Instantiate(damagePresetPanelPrefab, Vector3.zero, Quaternion.identity, scrollContent.transform);
                 //panel.transform.localPosition = new Vector3(0, 390 - (80 * i), 0);
-                panel.GetComponent<PresetPanel>().Init(i,Presets.dieGroups[i]);
+                panel.GetComponent<PresetPanel>().Init(i, Presets.dieGroups[i]);
                 presetPanels.Add(panel);
             }
         }

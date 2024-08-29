@@ -21,7 +21,6 @@ public static class CritHandler
                 {
                     maxDamage += Die.GetFacesInt(_dieType);
                 }
-                maxDamage += _modifier;
                 return maxDamage + _damageValue + _modifier;
             default:
                 Debug.Log("Error with GetCritValue, returning -1");
@@ -63,7 +62,7 @@ public static class CritHandler
                     Die _die = _dieB.GetComponent<DieBehaviour>().die;
                     if (_die.dieSubGroup == 2)
                     {
-                        critCalculation += _die.dieFaces.ToString() + " + ";
+                        critCalculation += Die.GetFacesInt(_die.dieType) + " + ";
                     }
                 }
                 critCalculation += _dieGroupB.dieGroup.damageModifier.ToString() + "} + ";

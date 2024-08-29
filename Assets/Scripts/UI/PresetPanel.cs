@@ -13,8 +13,7 @@ public class PresetPanel : MonoBehaviour
     public List<string> panelStrings = new List<string>();
 
     //panels
-    public List<GameObject> standardTextPanels;
-    public List<GameObject> attackTextPanels;
+    public List<GameObject> textPanels;
 
     public void Init(int _index, DieGroup _dieGroup)
     {
@@ -26,16 +25,16 @@ public class PresetPanel : MonoBehaviour
         DeselectPanel();
 
         //set strings
-        if (_dieGroup.toHitType == 3)
+        if (_dieGroup.toHitType == 1)
         {
-            standardTextPanels[0].GetComponent<TMP_Text>().text = panelStrings[0];
-            standardTextPanels[1].GetComponent<TMP_Text>().text = panelStrings[2];
+            textPanels[0].GetComponent<TMP_Text>().text = panelStrings[0];
+            textPanels[1].GetComponent<TMP_Text>().text = panelStrings[1];
+            textPanels[2].GetComponent<TMP_Text>().text = panelStrings[2];
         }
         else
         {
-            attackTextPanels[0].GetComponent<TMP_Text>().text = panelStrings[0];
-            attackTextPanels[1].GetComponent<TMP_Text>().text = panelStrings[1];
-            attackTextPanels[2].GetComponent<TMP_Text>().text = panelStrings[2];
+            textPanels[0].GetComponent<TMP_Text>().text = panelStrings[0];
+            textPanels[1].GetComponent<TMP_Text>().text = panelStrings[2];
         }
     }
     public void SelectPanel()

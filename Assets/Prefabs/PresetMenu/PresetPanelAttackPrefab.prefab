@@ -724,8 +724,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   index: 0
   panelStrings: []
-  standardTextPanels: []
-  attackTextPanels:
+  textPanels:
   - {fileID: 1903957639100750019}
   - {fileID: 5321793374782333711}
   - {fileID: 2199898789678358607}

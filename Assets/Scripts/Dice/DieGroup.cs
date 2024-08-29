@@ -8,14 +8,19 @@ public class DieGroup
     public int groupId;
     private static int groupIdIndex = 0;
 
+    public int dieGroupGroupId = -1;
+
     public string groupName;
+    public string dieGroupGroupName;
 
     public List<int> toHitBonusDice = new List<int>(); //damage if attack
     public List<int> damageDice = new List<int>(); //damage if attack
 
     public int toHitModifier;
     public int damageModifier;
-    
+
+    //diegroup type
+    public int dieGroupType; //0 is attack, 1 is damage, 2 is skill check, 3 is percentile
     //results type
     public enum ToHitType { None, Standard, Advantage, Disadvantage};
     public int toHitType = 0;
@@ -63,8 +68,8 @@ public class DieGroup
         damageModifier = 0;
 
         colorIndex = 0;
-
-        toHitType = 1;
+        dieGroupType = 0;
+        toHitType = 0;
     }
 
     //includes to hit dice and bonus to hit dice
@@ -235,7 +240,14 @@ public class DieGroup
                 damageDieTypes += _damageDieTypesCount[i].ToString() + Die.DieTypeToString(i) + " + ";
             }
         }
-        damageDieTypes += damageModifier.ToString();
+        if (dieGroupType != 2)
+        {
+            damageDieTypes += damageModifier.ToString();
+        }
+        else
+        {
+            damageDieTypes = damageDieTypes.Substring(0, damageDieTypes.Length - 3);
+        }
         return damageDieTypes;
     }
     public string GetToHitDiceTypesString()
@@ -244,6 +256,7 @@ public class DieGroup
     }
     public string GetToHitDiceTypesString(int[] _toHitBonusDieTypesCount)
     {
+        if (dieGroupType != 1 && dieGroupType != 3) { return ""; }
         string toHitDieTypes = "";
         //add die type names to string
         switch (toHitType)
@@ -258,7 +271,6 @@ public class DieGroup
                 toHitDieTypes += "d20 (DIS) + ";
                 break;
             default:
-                toHitDieTypes += "";
                 break;
         }
         for (int i = 0; i < _toHitBonusDieTypesCount.Length; i++)
@@ -268,7 +280,14 @@ public class DieGroup
                 toHitDieTypes += _toHitBonusDieTypesCount[i].ToString() + Die.DieTypeToString(i) + " + ";
             }
         }
-        toHitDieTypes += toHitModifier.ToString();
+        if (dieGroupType != 2)
+        {
+            toHitDieTypes += toHitModifier.ToString();
+        }
+        else
+        {
+            toHitDieTypes = toHitDieTypes.Substring(0, toHitDieTypes.Length - 3);
+        }
         return toHitDieTypes;
     }
 

@@ -148,13 +148,13 @@ public class DieGroupBehaviour : MonoBehaviour
                 Die d = dObj.GetComponent<DieBehaviour>().die;
                 switch (d.dieSubGroup)
                 {
-                    case 0:
+                    case 0://to hit
                         switch (dieGroup.toHitType)
                         {
-                            case 0:
+                            case 0://standard
                                 toHitResult = d.result;
                                 break;
-                            case 1:
+                            case 1://advantage
                                 if (toHitResult == -1)
                                 {
                                     toHitResult = d.result;
@@ -165,7 +165,7 @@ public class DieGroupBehaviour : MonoBehaviour
                                     toHitResult = Mathf.Max(d.result, toHitResult);
                                 }
                                 break;
-                            case 2:
+                            case 2://disadvantage
                                 if (toHitResult == -1)
                                 {
                                     toHitResult = d.result;
@@ -193,10 +193,10 @@ public class DieGroupBehaviour : MonoBehaviour
                             critFail = false;
                         }
                         break;
-                    case 1:
+                    case 1://to hit bonus
                         toHitResult += d.result;
                         break;
-                    case 2:
+                    case 2://damage
                         damageResult += d.result;
                         break;
                 }

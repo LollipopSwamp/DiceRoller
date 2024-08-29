@@ -7,6 +7,7 @@ public class RollResultPanel : MonoBehaviour
 {
     //die group B
     public DieGroupBehaviour dieGroupB;
+    public int dieGroupType;
 
     //parent
     public GameObject resultsUI;
@@ -26,8 +27,7 @@ public class RollResultPanel : MonoBehaviour
     public bool attackRoll;
 
     //prefabs
-    public List<GameObject> standardTextPanels;
-    public List<GameObject> attackTextPanels;
+    public List<GameObject> textPanels;
 
 
     public void Init(GameObject dieGroupObj)
@@ -35,22 +35,27 @@ public class RollResultPanel : MonoBehaviour
         resultsUI = gameObject.transform.parent.gameObject.transform.parent.gameObject.transform.parent.gameObject;
 
         dieGroupB = dieGroupObj.GetComponent<DieGroupBehaviour>();
+        dieGroupType = dieGroupB.dieGroup.dieGroupType;
         DieGroup dieGroup = dieGroupB.dieGroup;
         groupId = dieGroup.groupId;
         groupName = dieGroup.groupName;
         gameObject.name = groupName + " Panel";
         gameObject.GetComponent<CanvasRenderer>().SetColor(dieGroup.GetColor(false));
-        //if roll was standard
-        if (dieGroupB.dieGroup.toHitType == 3)
+        switch (dieGroupType)
         {
-            SetVars(dieGroupB);
-            SetTextStandard();
-        }
-        //if roll is attack
-        else
-        {
-            SetVars(dieGroupB);
-            SetTextAttack();
+            case 0:
+            case 2:
+                SetVars(dieGroupB);
+                SetTextStandard();
+                break;
+            case 1:
+                SetVars(dieGroupB);
+                SetTextAttack();
+                break;
+            case 3:
+                SetVars(dieGroupB);
+                SetTextSkillCheck();
+                break;
         }
     }
 
@@ -87,26 +92,43 @@ public class RollResultPanel : MonoBehaviour
     
     void SetTextStandard()
     {
-        standardTextPanels[0].GetComponent<TMP_Text>().text = groupName;
-        standardTextPanels[1].GetComponent<TMP_Text>().text = damageDieTypes;
-        standardTextPanels[2].GetComponent<TMP_Text>().text = damageResult;
+        textPanels[0].GetComponent<TMP_Text>().text = groupName;
+        textPanels[1].GetComponent<TMP_Text>().text = damageDieTypes;
+        textPanels[2].GetComponent<TMP_Text>().text = damageResult;
     }
     void SetTextAttack()
     {
-        attackTextPanels[0].GetComponent<TMP_Text>().text = groupName;
-        attackTextPanels[1].GetComponent<TMP_Text>().text = toHitDieTypes;
-        attackTextPanels[2].GetComponent<TMP_Text>().text = toHitResult;
-        attackTextPanels[3].GetComponent<TMP_Text>().text = damageDieTypes;
-        attackTextPanels[4].GetComponent<TMP_Text>().text = damageResult;
+        textPanels[0].GetComponent<TMP_Text>().text = groupName;
+        textPanels[1].GetComponent<TMP_Text>().text = toHitDieTypes;
+        textPanels[2].GetComponent<TMP_Text>().text = toHitResult;
+        textPanels[3].GetComponent<TMP_Text>().text = damageDieTypes;
+        textPanels[4].GetComponent<TMP_Text>().text = damageResult;
         if (crit)
         {
-            attackTextPanels[2].GetComponent<TMP_Text>().color = Color.green;
-            attackTextPanels[4].GetComponent<TMP_Text>().color = Color.green;
+            textPanels[2].GetComponent<TMP_Text>().color = Color.green;
+            textPanels[4].GetComponent<TMP_Text>().color = Color.green;
         }
         else if (critFail)
         {
-            attackTextPanels[2].GetComponent<TMP_Text>().color = Color.red;
-            attackTextPanels[4].GetComponent<TMP_Text>().color = Color.red;
+            textPanels[2].GetComponent<TMP_Text>().color = Color.red;
+            textPanels[4].GetComponent<TMP_Text>().color = Color.red;
+        }
+    }
+    void SetTextSkillCheck()
+    {
+        textPanels[0].GetComponent<TMP_Text>().text = groupName;
+        textPanels[1].GetComponent<TMP_Text>().text = toHitDieTypes;
+        textPanels[2].GetComponent<TMP_Text>().text = toHitResult;
+        Debug.Log(toHitDieTypes);
+        Debug.Log(textPanels[1].GetComponent<TMP_Text>().text);
+        if (crit)
+        {
+            textPanels[2].GetComponent<TMP_Text>().text = "Critical!";
+            textPanels[2].GetComponent<TMP_Text>().color = Color.green;
+        }
+        else if (critFail)
+        {
+            textPanels[2].GetComponent<TMP_Text>().color = Color.red;
         }
     }
     public void ShowDetails()

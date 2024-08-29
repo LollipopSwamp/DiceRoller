@@ -28,7 +28,7 @@ public class DieGroupSetup : MonoBehaviour
     public GameObject damageModifier;
     public TMP_InputField groupNameInput;
     public GameObject colorPicker;
-    public GameObject attackRollSlider;
+    public GameObject dieGroupType;
     public GameObject savePresetBtn;
 
 
@@ -50,7 +50,7 @@ public class DieGroupSetup : MonoBehaviour
         //reset ui variables
         groupNameInput.text = "(Group Name)";
         colorPicker.GetComponent<ColorPicker>().UpdateButtons(0);
-        attackRollSlider.GetComponent<ToggleSlider>().SetState(true);
+        dieGroupType.GetComponent<DieGroupType>().UpdateButtons(0);
         toHitTypeSetup.GetComponent<ToHitTypeUI>().Init();
         foreach (GameObject g in toHitDieTypes) { g.GetComponent<DieTypeSetup>().Init(); }
         toHitModifier.GetComponent<ModifierSetup>().Init();
@@ -82,14 +82,7 @@ public class DieGroupSetup : MonoBehaviour
         //set ui variables
         groupNameInput.text = _dieGroup.groupName;
         colorPicker.GetComponent<ColorPicker>().UpdateButtons(_dieGroup.colorIndex);
-        if (_dieGroup.toHitType == 3)
-        {
-            attackRollSlider.GetComponent<ToggleSlider>().SetState(false);
-        }
-        else
-        {
-            attackRollSlider.GetComponent<ToggleSlider>().SetState(true);
-        }
+        dieGroupType.GetComponent<DieGroupType>().UpdateButtons(_dieGroup.dieGroupType);
 
         toHitTypeSetup.GetComponent<ToHitTypeUI>().Init(_dieGroup.toHitType);
         toHitBonusDieTypesCount = _dieGroup.GetToHitBonusDieTypesArray();
@@ -97,7 +90,7 @@ public class DieGroupSetup : MonoBehaviour
         {
             toHitDieTypes[i].GetComponent<DieTypeSetup>().Init(toHitBonusDieTypesCount[i]);
         }
-        toHitModifier.GetComponent<ModifierSetup>().Init(1,_dieGroup.toHitModifier);
+        toHitModifier.GetComponent<ModifierSetup>().Init(0,_dieGroup.toHitModifier);
         critOn.GetComponent<CritOn>().Init(_dieGroup.critOn);
 
         damageDieTypesCount = _dieGroup.GetDamageDieTypesArray();
@@ -105,7 +98,7 @@ public class DieGroupSetup : MonoBehaviour
         {
             damageDieTypes[i].GetComponent<DieTypeSetup>().Init(damageDieTypesCount[i]);
         }
-        damageModifier.GetComponent<ModifierSetup>().Init(0, _dieGroup.damageModifier);
+        damageModifier.GetComponent<ModifierSetup>().Init(1, _dieGroup.damageModifier);
         UIManager.nextSetupMenu = 0;
 
         SetDieTypeString();
@@ -130,28 +123,78 @@ public class DieGroupSetup : MonoBehaviour
 
     public void BackButton(int _currMenu)
     {
-        if (!attackRoll && _currMenu == 2) { uiManager.GetComponent<UIManager>().PreviousDieGroupMenu(); }
-        uiManager.GetComponent<UIManager>().PreviousDieGroupMenu();
+        switch (_currMenu)
+        {
+            case 0: //basic setup
+                uiManager.GetComponent<UIManager>().PreviousDieGroupMenu(-1);
+                break;
+            case 1: //to hit setup
+                uiManager.GetComponent<UIManager>().PreviousDieGroupMenu(0);
+                break;
+            case 2: //damage setup
+                if (dieGroup.dieGroupType == 0) //standard
+                {
+                    uiManager.GetComponent<UIManager>().PreviousDieGroupMenu(0);
+                }
+                else
+                {
+                    uiManager.GetComponent<UIManager>().PreviousDieGroupMenu(1);
+                }
+                break;
+        }
+                //if (dieGroup.dieGroupType == 0 && _currMenu == 2) { uiManager.GetComponent<UIManager>().PreviousDieGroupMenu(); }
+        //else if (dieGroup.dieGroupType == 3 && _currMenu == 3) { uiManager.GetComponent<UIManager>().PreviousDieGroupMenu(); }
+        //uiManager.GetComponent<UIManager>().PreviousDieGroupMenu(_currMenu-1);
     }
+
     public void NextButton(int _currMenu)
     {
         switch (_currMenu)
         {
-            case 0:
+            case 0: //basic setup
                 dieGroup.groupName = groupNameInput.text;
                 dieGroup.colorIndex = colorPicker.GetComponent<ColorPicker>().selectedColorIndex;
-                attackRoll = attackRollSlider.GetComponent<ToggleSlider>().state;
-                if (!attackRoll) 
-                { 
-                    dieGroup.toHitType = 3;
-                    uiManager.GetComponent<UIManager>().NextDieGroupMenu();
+                dieGroup.dieGroupType = dieGroupType.GetComponent<DieGroupType>().dieGroupType;
+                switch (dieGroup.dieGroupType) 
+                {
+                    case 0: //standard
+                        dieGroup.toHitType = 3;
+                        uiManager.GetComponent<UIManager>().NextDieGroupMenu(2);
+                        toHitTypeSetup.GetComponent<ToHitTypeUI>().Init();
+                        break;
+                    case 1: //attack
+                        uiManager.GetComponent<UIManager>().NextDieGroupMenu(1);
+                        return;
+                    case 2: //percentile
+                        dieGroup.toHitType = 3;
+                        damageDieTypesCount[4] = 1;
+                        damageDieTypesCount[3] = 1;
+                        SaveDieGroup();
+                        return;
+                    case 3: //skill check
+                        uiManager.GetComponent<UIManager>().NextDieGroupMenu(1);
+                        toHitTypeSetup.GetComponent<ToHitTypeUI>().Init();
+                        break;
+                    default:
+                        break;
                 }
-                uiManager.GetComponent<UIManager>().NextDieGroupMenu();
                 break;
-            case 1:
+            case 1: // to hit setup
                 List<int> _toHitBonusDice = DieTypeCountToDieList(toHitBonusDieTypesCount);
                 dieGroup.toHitBonusDice = _toHitBonusDice;
-                uiManager.GetComponent<UIManager>().NextDieGroupMenu();
+                dieGroup.toHitModifier = ModifierSetup.toHitCount;
+
+                //dieGroupType
+                if (dieGroup.dieGroupType == 3) //skill check
+                {
+                    SaveDieGroup();
+                }
+                else
+                {
+                    uiManager.GetComponent<UIManager>().NextDieGroupMenu(2);
+                }
+
+                //edit mode
                 if (editMode == 2)
                 {
                     savePresetBtn.GetComponent<Button>().interactable = false;
@@ -171,29 +214,33 @@ public class DieGroupSetup : MonoBehaviour
     }
     public void SaveDieGroup()
     {
-        if (DiceCount() == 0)
+        if (DiceCount() == 0 && dieGroup.dieGroupType != 3)
         {
             uiManager.GetComponent<UIManager>().ShowError("Cannot create Die Group with no dice");
             return;
+        }
+        else if (dieGroup.dieGroupType == 3)
+        {
+            dieGroup.damageDice.Clear();
         }
         switch (editMode)
         {
             case 0: //create new
                 dieGroup.CommitDieGroup();
                 diceManager.GetComponent<DiceManager>().AddDieGroup(dieGroup);
-                uiManager.GetComponent<UIManager>().NextDieGroupMenu();
+                uiManager.GetComponent<UIManager>().NextDieGroupMenu(3);
                 break;
             case 1: // edit created die group
-                if (!attackRoll)
+                if (dieGroup.dieGroupType != 1 && dieGroup.dieGroupType != 3)
                 {
                     dieGroup.toHitBonusDice = new List<int>();
                     dieGroup.toHitModifier = 0;
                 }
                 diceManager.GetComponent<DiceManager>().UpdateDieGroup(dieGroup);
-                uiManager.GetComponent<UIManager>().NextDieGroupMenu();
+                uiManager.GetComponent<UIManager>().NextDieGroupMenu(3);
                 break;
             case 2: //edit preset
-                if (!attackRoll)
+                if (dieGroup.dieGroupType != 1 && dieGroup.dieGroupType != 3)
                 {
                     dieGroup.toHitBonusDice = new List<int>();
                     dieGroup.toHitModifier = 0;

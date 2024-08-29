@@ -464,11 +464,10 @@ MonoBehaviour:
   damageDieTypes: 
   damageResult: 
   attackRoll: 0
-  standardTextPanels:
+  textPanels:
   - {fileID: 1903957639100750019}
   - {fileID: 2199898789678358607}
   - {fileID: 8835673031809088069}
-  attackTextPanels: []
 --- !u!114 &3187437336255654080
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -12,27 +12,28 @@ public class ModifierSetup : MonoBehaviour
     public static int toHitCount = 0;
     public static int damageCount = 0;
 
-    public int toHitType = 0;
+    public int modifierType; //0 is d20, 1 is damage
 
     public void Init()
     {
         //text.GetComponent<TMP_Text>().text = "+" + (0).ToString();
+        modifierType = 0;
         toHitCount = 0;
         damageCount = 0;
         UpdateText();
     }
-    public void Init(int toHitType, int _count)
+    public void Init(int _modifierType, int _count)
     {
-        toHitType = toHitType;
-        toHitCount = _count;
-        damageCount = _count;
+        modifierType = _modifierType;
+        if (modifierType == 0) { toHitCount = _count; }
+        else { damageCount = _count; }
         UpdateText();
     }
 
     void UpdateText()
     {
         //attack
-        if (toHitType == 0)
+        if (modifierType == 0)
         {
             string modifierText = "";
             if (toHitCount >= 0) { modifierText += "+"; }
@@ -49,10 +50,10 @@ public class ModifierSetup : MonoBehaviour
         }
     }
 
-    public void PlusButton(int _toHitType)
+    public void PlusButton(int _modifierType)
     {
-        toHitType = _toHitType;
-        if (_toHitType == 0)
+        modifierType = _modifierType;
+        if (modifierType == 0)
         {
             if (toHitCount + 1 <= 25)
             {
@@ -72,11 +73,11 @@ public class ModifierSetup : MonoBehaviour
         dieGroupSetup.GetComponent<DieGroupSetup>().SetDieTypeString();
     }
 
-    public void MinusButton(int _toHitType)
+    public void MinusButton(int _modifierType)
     {
-
+        modifierType = _modifierType;
         UpdateText();
-        if (_toHitType == 0)
+        if (modifierType == 0)
         {
             if (toHitCount - 1 >= -25)
             {

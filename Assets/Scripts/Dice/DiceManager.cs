@@ -44,6 +44,7 @@ public class DiceManager : MonoBehaviour
     void Start()
     {
         dieGroups = SaveSession.Load();
+        SaveDieGroupGroup.LoadFromJSON();
     }
     public void RollDice()
     {
